@@ -17,6 +17,27 @@ import {
 const preprocessMarkdown = (markdown, currentPath, t) => {
   if (!markdown) return '';
 
+  const resolveMarkdownPath = (href) => {
+    if (!href || /^(https?:|mailto:|#|\/)/i.test(href) || !href.includes('.md')) {
+      return href;
+    }
+
+    const [rawPath, hash = ''] = href.split('#');
+    const currentDir = currentPath.split('/').slice(0, -1);
+    const parts = rawPath.split('/');
+
+    parts.forEach((part) => {
+      if (!part || part === '.') return;
+      if (part === '..') {
+        currentDir.pop();
+      } else {
+        currentDir.push(part);
+      }
+    });
+
+    return `#${currentDir.join('/')}${hash ? `#${hash}` : ''}`;
+  };
+
   // 1. Rewrite relative image paths to absolute public paths:
   // e.g. `../../images/refactoring/clean-code.png` -> `./Doc/images/refactoring/clean-code.png`
   let processed = markdown.replace(
@@ -29,6 +50,11 @@ const preprocessMarkdown = (markdown, currentPath, t) => {
       }
       return match;
     }
+  );
+
+  processed = processed.replace(
+    /(?<!!)\[([^\]]+)\]\(([^)]+\.md(?:#[^)]+)?)\)/g,
+    (match, label, href) => `[${label}](${resolveMarkdownPath(href)})`
   );
 
   // 2. Parse GitHub style alerts:
@@ -138,11 +164,11 @@ const ContentReader = ({ path, placeholder }) => {
   const [unityRefreshToken, setUnityRefreshToken] = useState(0);
   
   const { isArticleCompleted, toggleArticleCompleted } = useProgress();
-  const { t, navTitle } = useLanguage();
+  const { language, t, navTitle } = useLanguage();
   const { prev, next, currentItem } = getPagination(path);
   const isDirectUnityDoc = path.startsWith('unity-doc:');
-  const isUnityDoc = isDirectUnityDoc || isUnityScriptingPath(path);
-  const unityDocTarget = isUnityDoc
+  const shouldUseLiveUnityDoc = isDirectUnityDoc || (language === 'en' && isUnityScriptingPath(path));
+  const unityDocTarget = shouldUseLiveUnityDoc
     ? isDirectUnityDoc
       ? (() => {
           const docPath = decodeURIComponent(path.replace('unity-doc:', ''));
@@ -197,7 +223,7 @@ const ContentReader = ({ path, placeholder }) => {
       setError(null);
     });
 
-    if (isUnityDoc) {
+    if (shouldUseLiveUnityDoc) {
       fetchUnityDoc(unityDocPath, { force: unityRefreshToken > 0 })
         .then((payload) => {
           const parsed = parseUnityDocHtml(payload, {
@@ -227,6 +253,10 @@ const ContentReader = ({ path, placeholder }) => {
         return res.text();
       })
       .then(text => {
+        if (/^\s*<!doctype html/i.test(text) || text.includes('/@vite/client')) {
+          throw new Error(t('loadError', path));
+        }
+
         const preprocessed = preprocessMarkdown(text, path, t);
         const html = marked.parse(preprocessed);
         let cleanHtml = DOMPurify.sanitize(html);
@@ -253,7 +283,7 @@ const ContentReader = ({ path, placeholder }) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [path, placeholder, t, isUnityDoc, unityDocPath, unityRefreshToken]);
+  }, [path, placeholder, t, language, shouldUseLiveUnityDoc, unityDocPath, unityRefreshToken]);
 
   if (placeholder) {
     return (

@@ -29,28 +29,28 @@ Làm chủ hệ thống quản lý gói tài nguyên (Unity Package Manager - UP
 Sơ đồ dưới đây so sánh sự khác biệt trong kiến trúc biên dịch giữa dự án Unity mặc định (không dùng `.asmdef`) và dự án chuẩn hóa Modular (sử dụng các file `.asmdef` riêng biệt):
 
 ```mermaid
-graph TD
-    subgraph Kich_Thuoc_Monolithic [1. Biên dịch Mặc định (Chậm & Spaghetti)]
-        A1[PlayerInput.cs] -->|Biên dịch chung| AC[Assembly-CSharp.dll]
-        A2[HealthSystem.cs] -->|Biên dịch chung| AC
-        A3[UIPanel.cs] -->|Biên dịch chung| AC
-        A4[ThirdPartyPlugin.cs] -->|Biên dịch chung| AC
-        Note over AC: Thay đổi 1 dòng code ở bất kỳ file nào<br/>buộc biên dịch lại toàn bộ DLL này.
+flowchart TD
+    subgraph Mono["1. Biên dịch mặc định: chậm và khó kiểm soát"]
+        A1["PlayerInput.cs"] -->|Biên dịch chung| AC["Assembly-CSharp.dll"]
+        A2["HealthSystem.cs"] -->|Biên dịch chung| AC
+        A3["UIPanel.cs"] -->|Biên dịch chung| AC
+        A4["ThirdPartyPlugin.cs"] -->|Biên dịch chung| AC
+        AC -.-> MonoNote["Thay đổi 1 dòng code ở bất kỳ file nào<br/>buộc Unity biên dịch lại toàn bộ DLL này"]
     end
 
-    subgraph Kich_Thuoc_Modular [2. Biên dịch Modular với Assembly Definitions (Nhanh & Sạch)]
-        M1[PlayerInput.cs] -->|Thuộc về| ASM_Gameplay[MyGame.Gameplay.asmdef]
-        M2[HealthSystem.cs] -->|Thuộc về| ASM_Core[MyGame.Core.asmdef]
-        M3[UIPanel.cs] -->|Thuộc về| ASM_UI[MyGame.UI.asmdef]
+    subgraph Modular["2. Biên dịch modular với Assembly Definitions"]
+        M1["PlayerInput.cs"] -->|Thuộc về| ASM_Gameplay["MyGame.Gameplay.asmdef"]
+        M2["HealthSystem.cs"] -->|Thuộc về| ASM_Core["MyGame.Core.asmdef"]
+        M3["UIPanel.cs"] -->|Thuộc về| ASM_UI["MyGame.UI.asmdef"]
         
         ASM_Gameplay -->|Tham chiếu / Phụ thuộc| ASM_Core
         ASM_UI -->|Tham chiếu / Phụ thuộc| ASM_Core
         
-        ASM_Gameplay -.->|Biên dịch riêng| DLL_Gameplay[MyGame.Gameplay.dll]
-        ASM_Core -.->|Biên dịch riêng| DLL_Core[MyGame.Core.dll]
-        ASM_UI -.->|Biên dịch riêng| DLL_UI[MyGame.UI.dll]
+        ASM_Gameplay -.->|Biên dịch riêng| DLL_Gameplay["MyGame.Gameplay.dll"]
+        ASM_Core -.->|Biên dịch riêng| DLL_Core["MyGame.Core.dll"]
+        ASM_UI -.->|Biên dịch riêng| DLL_UI["MyGame.UI.dll"]
         
-        Note over DLL_Core: Nếu sửa code ở MyGame.Gameplay.dll:<br/>Chỉ biên dịch duy nhất DLL đó.<br/>DLL_Core và DLL_UI được giữ nguyên cache!
+        DLL_Gameplay -.-> ModularNote["Nếu sửa code ở MyGame.Gameplay.dll:<br/>chỉ biên dịch duy nhất DLL đó.<br/>DLL_Core và DLL_UI được giữ nguyên cache"]
     end
 ```
 

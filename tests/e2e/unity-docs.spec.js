@@ -12,6 +12,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Unity namespace route does not show a 404 reader error', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('gamedev_language', 'en');
+  });
   await page.goto(routes.accessibility);
 
   await expect(page.locator('.unity-doc-toolbar')).toBeVisible();
@@ -21,6 +24,9 @@ test('Unity namespace route does not show a 404 reader error', async ({ page }) 
 });
 
 test('Unity docs strip Unity feedback and submission UI', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('gamedev_language', 'en');
+  });
   await page.goto(routes.gameObject);
 
   await expect(page.locator('.unity-doc-body h1, .unity-doc-body .heading').first()).toContainText('GameObject');
@@ -31,18 +37,28 @@ test('Unity docs strip Unity feedback and submission UI', async ({ page }) => {
   await expect(page.locator('textarea#suggest_body')).toHaveCount(0);
 });
 
-test('language toggle updates Unity adapter chrome', async ({ page }) => {
+test('language toggle switches Scripting API between Vietnamese local docs and English live docs', async ({ page }) => {
   await page.goto(routes.gameObject);
 
-  await expect(page.getByRole('button', { name: /cập nhật từ unity/i })).toBeVisible();
+  await expect(page.locator('.unity-doc-toolbar')).toHaveCount(0);
+  await expect(page.locator('.markdown-body h1').first()).toContainText(/UnityEngine Core API|UnityEngine/);
+
   await page.getByRole('button', { name: /chuyển ngôn ngữ/i }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.getByRole('button', { name: /refresh from unity/i })).toBeVisible();
   await expect(page.getByText('Open source page')).toBeVisible();
   await expect(page.getByText('Mở trang gốc')).toHaveCount(0);
+
+  await page.getByRole('button', { name: /switch language/i }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
+  await expect(page.locator('.unity-doc-toolbar')).toHaveCount(0);
+  await expect(page.getByText('Open source page')).toHaveCount(0);
 });
 
 test('Unity doc internal links route through the adapter', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('gamedev_language', 'en');
+  });
   await page.goto(routes.gameObject);
 
   await page.locator('.unity-doc-body a[href^="#unity-doc:Component.html"]').first().click();
