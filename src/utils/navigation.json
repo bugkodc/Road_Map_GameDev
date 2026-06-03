@@ -686,86 +686,72 @@
                 {
                   "id": "unityengine-accessibility",
                   "title": "UnityEngine.Accessibility",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/accessibility.md",
-                  "placeholder": "Cung cấp các API hỗ trợ khả năng tiếp cận (Accessibility) trong game, tích hợp với các công cụ đọc màn hình (Screen Readers) và cấu hình phím điều khiển đặc biệt dành cho người chơi khuyết tật."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/accessibility.md"
                 },
                 {
                   "id": "unityengine-adaptiveperformance",
                   "title": "UnityEngine.AdaptivePerformance",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/adaptive-performance.md",
-                  "placeholder": "API quản lý hiệu năng thích ứng, cho phép game tự động phát hiện tình trạng nhiệt độ, CPU/GPU quá tải của thiết bị di động (đặc biệt là Android) để tự điều chỉnh đồ họa nhằm giữ FPS ổn định và tiết kiệm pin."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/adaptive-performance.md"
                 },
                 {
                   "id": "unityengine-amd",
                   "title": "UnityEngine.AMD",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/amd.md",
-                  "placeholder": "Cung cấp các API chuyên biệt tối ưu hóa riêng cho card đồ họa và CPU của AMD, chẳng hạn như truy cập bộ nhớ đệm và các lệnh đồ họa cấp thấp."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/amd.md"
                 },
                 {
                   "id": "unityengine-android",
                   "title": "UnityEngine.Android",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/android.md",
-                  "placeholder": "API tương tác đặc thù với hệ điều hành Android: Gọi các Activity, kiểm tra và yêu cầu cấp quyền runtime (Permissions), gọi bàn phím Android hoặc kết nối Java native plugins."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/android.md"
                 },
                 {
                   "id": "unityengine-apple",
                   "title": "UnityEngine.Apple",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/apple.md",
-                  "placeholder": "Cơ chế lập trình tích hợp sâu với hệ điều hành Apple: Hỗ trợ Game Center, lưu trữ iCloud, Apple TV, và quản lý các thiết lập dành riêng cho iOS/macOS."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/apple.md"
                 },
                 {
                   "id": "unityengine-assemblies",
                   "title": "UnityEngine.Assemblies",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/assemblies.md",
-                  "placeholder": "Lớp quản lý và tra cứu thông tin của tất cả các cụm mã nguồn đã biên dịch (Assemblies) đang nạp chạy trong bộ nhớ RAM lúc runtime."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/assemblies.md"
                 },
                 {
                   "id": "unityengine-assertions",
                   "title": "UnityEngine.Assertions",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/assertions.md",
-                  "placeholder": "Cung cấp các hàm kiểm thử khẳng định dữ liệu (Assert) giúp lập trình viên kiểm tra lỗi logic game lúc chạy thử (ví dụ: ép buộc đối tượng Player khi spawn không được null)."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/assertions.md"
                 },
                 {
                   "id": "unityengine-categorization",
                   "title": "UnityEngine.Categorization",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/categorization.md",
-                  "placeholder": "Cung cấp các cấu trúc phân loại và sắp xếp siêu dữ liệu (Metadata) cho các thực thể trong trò chơi."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/categorization.md"
                 },
                 {
                   "id": "unityengine-crashreporthandler",
                   "title": "UnityEngine.CrashReportHandler",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/crash-report-handler.md",
-                  "placeholder": "Lập trình tương tác với hệ thống thu thập báo cáo sập game (Crash Reporting). Cho phép tùy biến thông tin đính kèm và gửi trực tiếp dữ liệu lỗi về Unity Cloud Diagnostics."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/crash-report-handler.md"
                 },
                 {
                   "id": "unityengine-dedicatedserver",
                   "title": "UnityEngine.DedicatedServer",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/dedicated-server.md",
-                  "placeholder": "Cấu hình tối ưu hóa dành riêng cho việc biên dịch chạy máy chủ chuyên dụng (Dedicated Server), ngắt kết nối render hình ảnh để giảm tải tối đa CPU."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/dedicated-server.md"
                 },
                 {
                   "id": "unityengine-diagnostics",
                   "title": "UnityEngine.Diagnostics",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/diagnostics.md",
-                  "placeholder": "Các API đo đạc và chẩn đoán sâu tình trạng hoạt động của Engine, bao gồm kiểm tra tính toàn vẹn của dữ liệu và chẩn đoán bộ nhớ."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/diagnostics.md"
                 },
                 {
                   "id": "unityengine-experimental",
                   "title": "UnityEngine.Experimental",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/experimental.md",
-                  "placeholder": "Không gian chứa các thư viện và API đang trong giai đoạn thử nghiệm (Experimental) của Unity. Chúng có thể được tích hợp chính thức hoặc loại bỏ hoàn toàn trong các bản cập nhật sau."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/experimental.md"
                 },
                 {
                   "id": "unityengine-identifiers",
                   "title": "UnityEngine.Identifiers",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/identifiers.md",
-                  "placeholder": "API quản lý và định danh các đối tượng thông qua cơ chế GUID (Global Unique Identifier) trong thế giới game."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/identifiers.md"
                 },
                 {
                   "id": "unityengine-ios",
                   "title": "UnityEngine.iOS",
-                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/ios.md",
-                  "placeholder": "Lập trình tương tác đặc thù với iOS: Điều khiển phản hồi xúc giác (Haptic Feedback), tạo thông báo đẩy Local Notifications, và cấu hình bàn phím ảo iOS."
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/ios.md"
                 }
               ]
             },
@@ -792,128 +778,107 @@
                 {
                   "id": "unityeditor-actions",
                   "title": "UnityEditor.Actions",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/actions.md",
-                  "placeholder": "API quản lý việc ghi nhận và tự động hóa các hành động của người dùng trong Editor phục vụ cho việc tạo macro hoặc viết script tự động hóa."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/actions.md"
                 },
                 {
                   "id": "unityeditor-adaptiveperformance",
                   "title": "UnityEditor.AdaptivePerformance",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/adaptive-performance.md",
-                  "placeholder": "Các công cụ cấu hình cài đặt và theo dõi hiệu năng thích ứng (Adaptive Performance) cho dự án trực tiếp trong Editor."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/adaptive-performance.md"
                 },
                 {
                   "id": "unityeditor-advertisements",
                   "title": "UnityEditor.Advertisements",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/advertisements.md",
-                  "placeholder": "API quản lý và thiết lập cấu hình tích hợp gói quảng cáo Unity Ads cho các nền tảng di động trong Editor."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/advertisements.md"
                 },
                 {
                   "id": "unityeditor-ai",
                   "title": "UnityEditor.AI",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/ai.md",
-                  "placeholder": "Quản lý việc nướng bản đồ tìm đường (NavMesh Baking), thiết lập khu vực di chuyển (NavMesh Areas) thông qua Editor Script."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/ai.md"
                 },
                 {
                   "id": "unityeditor-analytics",
                   "title": "UnityEditor.Analytics",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/analytics.md",
-                  "placeholder": "Cấu hình cài đặt và theo dõi lưu lượng dữ liệu phân tích Unity Analytics phục vụ marketing và vận hành game."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/analytics.md"
                 },
                 {
                   "id": "unityeditor-android",
                   "title": "UnityEditor.Android",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/android.md",
-                  "placeholder": "Cấu hình chi tiết bộ cài Android: Thiết lập Keystore bảo mật, chọn kiến trúc CPU (ARM64, ARMv7) và quản lý xuất file AAB/APK."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/android.md"
                 },
                 {
                   "id": "unityeditor-animatedvalues",
                   "title": "UnityEditor.AnimatedValues",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/animated-values.md",
-                  "placeholder": "Các cấu trúc giá trị nội suy động (như AnimFloat, AnimBool) dùng để làm mượt mà các hiệu ứng chuyển đổi giao diện trong Custom Editor Windows."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/animated-values.md"
                 },
                 {
                   "id": "unityeditor-animations",
                   "title": "UnityEditor.Animations",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/animations.md",
-                  "placeholder": "API cho phép chỉnh sửa, tạo mới và cấu hình Animator Controllers, Blend Trees, State Machine Transitions hoàn toàn bằng code C# Editor."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/animations.md"
                 },
                 {
                   "id": "unityeditor-appletv",
                   "title": "UnityEditor.AppleTV",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/apple-tv.md",
-                  "placeholder": "Thiết lập cài đặt build, chứng chỉ và cấu hình dành riêng cho xuất bản game lên nền tảng Apple TV."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/apple-tv.md"
                 },
                 {
                   "id": "unityeditor-build",
                   "title": "UnityEditor.Build",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/build.md",
-                  "placeholder": "Các API can thiệp vào tiến trình build game (IPreprocessBuild, IPostprocessBuild). Thích hợp tự động hóa tối ưu hình ảnh hoặc nạp mã cấu hình trước khi build."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/build.md"
                 },
                 {
                   "id": "unityeditor-callbacks",
                   "title": "UnityEditor.Callbacks",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/callbacks.md",
-                  "placeholder": "Đăng ký các hàm tự kích hoạt (Callback) sau khi Unity hoàn tất biên dịch code (DidReloadScripts) hoặc sau khi build game hoàn tất (PostProcessBuild)."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/callbacks.md"
                 },
                 {
                   "id": "unityeditor-categorization",
                   "title": "UnityEditor.Categorization",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/categorization.md",
-                  "placeholder": "API quản lý việc phân loại và tổ chức các Asset phục vụ xây dựng kho tài nguyên quy mô lớn."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/categorization.md"
                 },
                 {
                   "id": "unityeditor-compilation",
                   "title": "UnityEditor.Compilation",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/compilation.md",
-                  "placeholder": "Quản lý việc biên dịch các file mã nguồn C# trong Editor, can thiệp thứ tự biên dịch và nạp thư viện động."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/compilation.md"
                 },
                 {
                   "id": "unityeditor-connect",
                   "title": "UnityEditor.Connect",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/connect.md",
-                  "placeholder": "API quản lý kết nối giữa Unity Editor và các dịch vụ trực tuyến của tài khoản nhà phát triển (Unity Cloud Services)."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/connect.md"
                 },
                 {
                   "id": "unityeditor-crashreporting",
                   "title": "UnityEditor.CrashReporting",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/crash-reporting.md",
-                  "placeholder": "Thiết lập cấu hình thu thập dữ liệu báo cáo lỗi sập nguồn game tự động từ Editor."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/crash-reporting.md"
                 },
                 {
                   "id": "unityeditor-devicesimulation",
                   "title": "UnityEditor.DeviceSimulation",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/device-simulation.md",
-                  "placeholder": "API điều khiển mô phỏng thiết bị (Device Simulator) thông qua mã C#, cho phép tự động test xoay màn hình và độ phân giải."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/device-simulation.md"
                 },
                 {
                   "id": "unityeditor-editortools",
                   "title": "UnityEditor.EditorTools",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/editor-tools.md",
-                  "placeholder": "Thiết kế các công cụ tương tác trực quan (Custom Editor Tools) hiển thị trên thanh công cụ chính để thao tác trực tiếp với vật thể ở Scene View."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/editor-tools.md"
                 },
                 {
                   "id": "unityeditor-embree",
                   "title": "UnityEditor.Embree",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/embree.md",
-                  "placeholder": "Tương tác với thư viện Embree của Intel, phục vụ tối ưu hóa CPU cho tác vụ nướng ánh sáng (Lightmap Baking)."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/embree.md"
                 },
                 {
                   "id": "unityeditor-enginediagnostics",
                   "title": "UnityEditor.EngineDiagnostics",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/engine-diagnostics.md",
-                  "placeholder": "API chẩn đoán sâu hoạt động của Engine phục vụ gỡ lỗi kỹ thuật trong Editor."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/engine-diagnostics.md"
                 },
                 {
                   "id": "unityeditor-events",
                   "title": "UnityEditor.Events",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/events.md",
-                  "placeholder": "API chỉnh sửa cấu hình các hàm sự kiện UnityEvent kéo thả trên Inspector thông qua Editor Scripts."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/events.md"
                 },
                 {
                   "id": "unityeditor-experimental",
                   "title": "UnityEditor.Experimental",
-                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/experimental.md",
-                  "placeholder": "Không gian chứa các API Editor đang thử nghiệm của Unity, có thể thay đổi trong các phiên bản tương lai."
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/experimental.md"
                 }
               ]
             },
@@ -925,20 +890,17 @@
                 {
                   "id": "unity-android",
                   "title": "Unity.Android",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/android.md",
-                  "placeholder": "Cung cấp các API hỗ trợ các dịch vụ đặc thù của hệ điều hành Android."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/android.md"
                 },
                 {
                   "id": "unity-burst",
                   "title": "Unity.Burst",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/burst.md",
-                  "placeholder": "API tương tác với trình biên dịch Burst Compiler, tối ưu hóa sâu mã C# IL sang mã máy hiệu năng cao."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/burst.md"
                 },
                 {
                   "id": "unity-codeeditor",
                   "title": "Unity.CodeEditor",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/code-editor.md",
-                  "placeholder": "API kết nối và cấu hình tích hợp với các trình soạn thảo mã nguồn bên ngoài (như Visual Studio, VS Code, Rider)."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/code-editor.md"
                 },
                 {
                   "id": "unity-collections",
@@ -948,44 +910,37 @@
                 {
                   "id": "unity-content",
                   "title": "Unity.Content",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/content.md",
-                  "placeholder": "API quản lý hệ thống lưu trữ, phân phối tài nguyên game tải thêm (Addressables / Asset Bundles)."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/content.md"
                 },
                 {
                   "id": "unity-graphtoolkit",
                   "title": "Unity.GraphToolkit",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/graph-toolkit.md",
-                  "placeholder": "Bộ thư viện thiết kế biểu đồ đồ họa node tùy biến (Graph Editors) trong Editor."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/graph-toolkit.md"
                 },
                 {
                   "id": "unity-hierarchy",
                   "title": "Unity.Hierarchy",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/hierarchy.md",
-                  "placeholder": "API tùy biến cách hiển thị, phân cấp và sắp xếp thứ tự đối tượng trong cửa sổ Hierarchy."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/hierarchy.md"
                 },
                 {
                   "id": "unity-integertime",
                   "title": "Unity.IntegerTime",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/integer-time.md",
-                  "placeholder": "Đo đạc và quản lý thời gian bằng số nguyên độ chính xác cao để đồng bộ hóa hoạt ảnh và vật lý."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/integer-time.md"
                 },
                 {
                   "id": "unity-io",
                   "title": "Unity.IO",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/io.md",
-                  "placeholder": "API thực hiện các tác vụ đọc ghi file bất đồng bộ tốc độ cao lên ổ đĩa."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/io.md"
                 },
                 {
                   "id": "unity-jobs",
                   "title": "Unity.Jobs",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/jobs.md",
-                  "placeholder": "API điều khiển C# Job System, lập trình các Jobs tính toán đa luồng an toàn chạy song song trên CPU."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/jobs.md"
                 },
                 {
                   "id": "unity-loading",
                   "title": "Unity.Loading",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/loading.md",
-                  "placeholder": "API điều khiển luồng nạp và giải nén dữ liệu trong bộ nhớ RAM lúc runtime."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/loading.md"
                 },
                 {
                   "id": "unity-math",
@@ -995,14 +950,12 @@
                 {
                   "id": "unity-multiplayer",
                   "title": "Unity.Multiplayer",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/multiplayer.md",
-                  "placeholder": "Giao diện lập trình mạng thế hệ mới của Unity hỗ trợ kết nối đồng bộ đa người chơi."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/multiplayer.md"
                 },
                 {
                   "id": "unity-playmode",
                   "title": "Unity.PlayMode",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/play-mode.md",
-                  "placeholder": "API điều khiển trạng thái PlayMode (Start, Stop, Pause) trong Editor qua code."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/play-mode.md"
                 },
                 {
                   "id": "unity-profiling",
@@ -1012,20 +965,17 @@
                 {
                   "id": "unity-projectauditor",
                   "title": "Unity.ProjectAuditor",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/project-auditor.md",
-                  "placeholder": "API tương tác với công cụ quét dự án tự động để tìm lỗi hiệu năng hoặc rò rỉ RAM tiềm ẩn."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/project-auditor.md"
                 },
                 {
                   "id": "unity-properties",
                   "title": "Unity.Properties",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/properties.md",
-                  "placeholder": "Cơ chế quản lý thuộc tính nâng cao của đối tượng hỗ trợ Serialize dữ liệu."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/properties.md"
                 },
                 {
                   "id": "unity-vectorgraphics",
                   "title": "Unity.VectorGraphics",
-                  "path": "03-Unity/02-ScriptingAPI/03-Unity/vector-graphics.md",
-                  "placeholder": "API điều khiển hiển thị hình ảnh SVG vector sắc nét không vỡ hình lúc runtime."
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/vector-graphics.md"
                 },
                 {
                   "id": "unity-assemblies",
@@ -1042,20 +992,17 @@
                 {
                   "id": "other-classes",
                   "title": "Classes",
-                  "path": "03-Unity/02-ScriptingAPI/04-Other/classes.md",
-                  "placeholder": "Danh mục tổng hợp và tra cứu tất cả các Class hệ thống của Unity dùng để xây dựng game."
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/classes.md"
                 },
                 {
                   "id": "other-structs",
                   "title": "Structs",
-                  "path": "03-Unity/02-ScriptingAPI/04-Other/structs.md",
-                  "placeholder": "Danh mục tổng hợp và tra cứu các cấu trúc kiểu giá trị (Structs) toán học và hệ thống."
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/structs.md"
                 },
                 {
                   "id": "other-enumerations",
                   "title": "Enumerations",
-                  "path": "03-Unity/02-ScriptingAPI/04-Other/enumerations.md",
-                  "placeholder": "Danh mục tổng hợp tất cả các hằng số liệt kê (Enums) thiết lập trong lập trình Unity."
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/enumerations.md"
                 },
                 {
                   "id": "other-visualscripting",
