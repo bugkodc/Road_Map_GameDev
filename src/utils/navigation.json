@@ -621,26 +621,22 @@
             {
               "id": "unity-scripting-core",
               "title": "UnityEngine Core API",
-              "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/00-core-api.md",
-              "placeholder": "Tham chiếu lập trình các class cốt lõi của UnityEngine: GameObject, Component, Transform, Vector3, Quaternion."
+              "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/00-core-api.md"
             },
             {
               "id": "unity-scripting-lifecycle",
               "title": "MonoBehaviour Lifecycle",
-              "path": "03-Unity/02-ScriptingAPI/02-Lifecycle/00-monobehaviour-lifecycle.md",
-              "placeholder": "Giải nghĩa sâu sắc vòng đời của MonoBehaviour: Awake, Start, Update, FixedUpdate, LateUpdate, OnEnable, OnDisable, OnDestroy."
+              "path": "03-Unity/02-ScriptingAPI/02-Lifecycle/00-monobehaviour-lifecycle.md"
             },
             {
               "id": "unity-scripting-inputsystem",
               "title": "UnityEngine.InputSystem API",
-              "path": "03-Unity/02-ScriptingAPI/03-InputSystem/00-inputsystem-api.md",
-              "placeholder": "Hướng dẫn lập trình tương tác với hệ thống New Input System: InputAction, InputSystem, PlayerInput qua mã C#."
+              "path": "03-Unity/02-ScriptingAPI/03-InputSystem/00-inputsystem-api.md"
             },
             {
               "id": "unity-scripting-ui",
               "title": "UI Toolkit & UGUI API",
-              "path": "03-Unity/02-ScriptingAPI/04-UI/00-ui-api.md",
-              "placeholder": "Lập trình giao diện người dùng sử dụng UI Toolkit (mới) và UnityEngine.UI (UGUI truyền thống)."
+              "path": "03-Unity/02-ScriptingAPI/04-UI/00-ui-api.md"
             }
           ]
         }
