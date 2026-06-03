@@ -27,3 +27,7 @@ playwright-report
 
 # Public directory junctions / symlinks
 public/Doc
+
+# Playwright Tests folder
+tests/
+
