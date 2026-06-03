@@ -619,24 +619,132 @@
           "isHeader": true,
           "children": [
             {
-              "id": "unity-scripting-core",
-              "title": "UnityEngine Core API",
-              "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/00-core-api.md"
+              "id": "scripting-unityengine",
+              "title": "■ UnityEngine",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "unityengine-core",
+                  "title": "UnityEngine Core API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/01-core-api.md"
+                },
+                {
+                  "id": "unityengine-lifecycle",
+                  "title": "MonoBehaviour Lifecycle",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/02-monobehaviour-lifecycle.md"
+                },
+                {
+                  "id": "unityengine-inputsystem",
+                  "title": "UnityEngine.InputSystem API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/03-inputsystem-api.md"
+                },
+                {
+                  "id": "unityengine-physics",
+                  "title": "Physics & Physics2D API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/04-physics-api.md"
+                },
+                {
+                  "id": "unityengine-scene",
+                  "title": "SceneManagement API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/05-scene-management-api.md"
+                },
+                {
+                  "id": "unityengine-events",
+                  "title": "Events & Actions API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/06-events-api.md"
+                },
+                {
+                  "id": "unityengine-audio",
+                  "title": "Audio System API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/07-audio-api.md"
+                },
+                {
+                  "id": "unityengine-ai",
+                  "title": "AI & Navigation API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/08-ai-api.md"
+                },
+                {
+                  "id": "unityengine-animations",
+                  "title": "Animations API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/09-animations-api.md"
+                },
+                {
+                  "id": "unityengine-rendering",
+                  "title": "Rendering & Materials API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/10-rendering-api.md"
+                },
+                {
+                  "id": "unityengine-ui",
+                  "title": "UI Toolkit & UGUI API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/11-ui-api.md"
+                },
+                {
+                  "id": "unityengine-device",
+                  "title": "Device & Platforms API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/12-device-platforms-api.md"
+                }
+              ]
             },
             {
-              "id": "unity-scripting-lifecycle",
-              "title": "MonoBehaviour Lifecycle",
-              "path": "03-Unity/02-ScriptingAPI/02-Lifecycle/00-monobehaviour-lifecycle.md"
+              "id": "scripting-unityeditor",
+              "title": "■ UnityEditor",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "unityeditor-core",
+                  "title": "UnityEditor Core API",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/01-editor-core.md"
+                },
+                {
+                  "id": "unityeditor-scene",
+                  "title": "Editor Scene Management",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/02-editor-scene-management.md"
+                },
+                {
+                  "id": "unityeditor-assetdatabase",
+                  "title": "AssetDatabase & Importer",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/03-asset-database.md"
+                }
+              ]
             },
             {
-              "id": "unity-scripting-inputsystem",
-              "title": "UnityEngine.InputSystem API",
-              "path": "03-Unity/02-ScriptingAPI/03-InputSystem/00-inputsystem-api.md"
+              "id": "scripting-unity",
+              "title": "■ Unity (Performance)",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "unity-math",
+                  "title": "Unity.Mathematics API",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/01-mathematics.md"
+                },
+                {
+                  "id": "unity-collections",
+                  "title": "Unity.Collections API",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/02-collections.md"
+                },
+                {
+                  "id": "unity-profiling",
+                  "title": "Unity.Profiling API",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/03-profiling.md"
+                }
+              ]
             },
             {
-              "id": "unity-scripting-ui",
-              "title": "UI Toolkit & UGUI API",
-              "path": "03-Unity/02-ScriptingAPI/04-UI/00-ui-api.md"
+              "id": "scripting-other",
+              "title": "■ Other",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "other-visualscripting",
+                  "title": "Unity.VisualScripting API",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/01-visual-scripting.md"
+                },
+                {
+                  "id": "other-assemblies",
+                  "title": "Assembly & Scoped Packages",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/02-assemblies-packages.md"
+                }
+              ]
             }
           ]
         }
