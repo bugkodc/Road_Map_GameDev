@@ -209,4 +209,4 @@ public class SpaceShipController : MonoBehaviour
 | Hướng | Liên kết |
 |-------|----------|
 | ← Quay lại | [Tổng quan Unity Lộ trình](../../00-unity-overview.md) |
-| → Tiếp theo | [MonoBehaviour Lifecycle (Vòng đời)](../../02-Lifecycle/00-monobehaviour-lifecycle.md) |
+| → Tiếp theo | [MonoBehaviour Lifecycle (Vòng đời)](./02-monobehaviour-lifecycle.md) |

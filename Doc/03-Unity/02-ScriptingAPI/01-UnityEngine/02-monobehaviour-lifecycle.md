@@ -189,5 +189,5 @@ public class PlayerLifecycleDemo : MonoBehaviour
 
 | Hướng | Liên kết |
 |-------|----------|
-| ← Quay lại | [UnityEngine Core API (Lập trình cốt lõi)](../../01-UnityEngine/00-core-api.md) |
-| → Tiếp theo | [UnityEngine.InputSystem API (Input mới)](../../03-InputSystem/00-inputsystem-api.md) |
+| ← Quay lại | [UnityEngine Core API (Lập trình cốt lõi)](./01-core-api.md) |
+| → Tiếp theo | [UnityEngine.InputSystem API (Input mới)](./03-inputsystem-api.md) |

@@ -213,5 +213,5 @@ public class UiToolkitDemoController : MonoBehaviour
 
 | Hướng | Liên kết |
 |-------|----------|
-| ← Quay lại | [UnityEngine.InputSystem API (Input mới)](../../03-InputSystem/00-inputsystem-api.md) |
-| → Tiếp theo | [Quay lại Tổng quan Lộ trình](../../00-unity-overview.md) |
+| ← Quay lại | [Rendering & Materials API (Đồ họa)](./10-rendering-api.md) |
+| → Tiếp theo | [Device & Platforms API (Thiết bị & Nền tảng)](./12-device-platforms-api.md) |

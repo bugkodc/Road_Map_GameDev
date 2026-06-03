@@ -223,5 +223,5 @@ public class PlayerInputController : MonoBehaviour
 
 | Hướng | Liên kết |
 |-------|----------|
-| ← Quay lại | [MonoBehaviour Lifecycle (Vòng đời)](../../02-Lifecycle/00-monobehaviour-lifecycle.md) |
-| → Tiếp theo | [UI Toolkit & UGUI API (Hệ thống giao diện)](../../04-UI/00-ui-api.md) |
+| ← Quay lại | [MonoBehaviour Lifecycle (Vòng đời)](./02-monobehaviour-lifecycle.md) |
+| → Tiếp theo | [Physics & Physics2D API (Vật lý)](./04-physics-api.md) |
