@@ -200,14 +200,19 @@ const ContentReader = ({ path, placeholder }) => {
     if (isUnityDoc) {
       fetchUnityDoc(unityDocPath, { force: unityRefreshToken > 0 })
         .then((payload) => {
-          const parsed = parseUnityDocHtml(payload);
+          const parsed = parseUnityDocHtml(payload, {
+            cacheHit: t('unityDocsCacheHit'),
+            freshFetch: t('unityDocsFreshFetch'),
+            updatedAt: t('unityDocsUpdatedAt'),
+            openSource: t('unityDocsOpenSource')
+          });
           setContent(parsed.html);
           setLoading(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         })
         .catch(err => {
           console.error(err);
-          setError(`${err.message} Bạn vẫn có thể mở nguồn gốc Unity hoặc thử cập nhật lại cache.`);
+          setError(t('unityDocsLoadError', err.message));
           setLoading(false);
         });
       return;
@@ -299,7 +304,7 @@ const ContentReader = ({ path, placeholder }) => {
       {unityDocTarget && (
         <div className="unity-doc-toolbar">
           <div>
-            <span className="unity-doc-kicker">Live Unity Docs</span>
+            <span className="unity-doc-kicker">{t('unityDocsLive')}</span>
             <strong>{unityDocTarget.title}</strong>
           </div>
           <button
@@ -309,7 +314,7 @@ const ContentReader = ({ path, placeholder }) => {
               setUnityRefreshToken((value) => value + 1);
             }}
           >
-            Cập nhật từ Unity
+            {t('unityDocsRefresh')}
           </button>
         </div>
       )}

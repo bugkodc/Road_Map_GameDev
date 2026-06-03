@@ -54,7 +54,7 @@ export const getUnityDocTarget = (path, currentItem) => {
   }
 
   if (/^(UnityEngine|UnityEditor|Unity)\./.test(title)) {
-    return { title, docPath: `${title}.html`, sourceKind: 'namespace' };
+    return { title, docPath: 'index.html', sourceKind: 'namespace', query: title };
   }
 
   const folder = path.includes('/01-UnityEngine/')
@@ -65,9 +65,9 @@ export const getUnityDocTarget = (path, currentItem) => {
         ? 'Unity'
         : '';
   const slug = fileName?.replace(/\.md$/, '') || '';
-  const docPath = folder ? `${folder}.${toPascalSegment(slug)}.html` : 'index.html';
+  const docPath = folder && slug ? 'index.html' : 'index.html';
 
-  return { title, docPath, sourceKind: 'generated' };
+  return { title, docPath, sourceKind: 'generated', query: folder ? `${folder}.${toPascalSegment(slug)}` : title };
 };
 
 const getCacheKey = (docPath) => `${UNITY_CACHE_PREFIX}${docPath}`;
@@ -133,7 +133,13 @@ const rewriteUnityLinks = (root) => {
   });
 };
 
-export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }) => {
+export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }, labels = {}) => {
+  const safeLabels = {
+    cacheHit: labels.cacheHit || 'Using local cache',
+    freshFetch: labels.freshFetch || 'Updated from Unity',
+    updatedAt: labels.updatedAt || 'Updated',
+    openSource: labels.openSource || 'Open source page'
+  };
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   const title = doc.querySelector('h1.heading')?.textContent?.trim()
@@ -146,8 +152,31 @@ export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }) => 
     || doc.body;
 
   const working = mainSection.cloneNode(true);
-  working.querySelectorAll('script, style, iframe, nav, form, input, button, .feedback, .nextprev').forEach((node) => {
+  working.querySelectorAll([
+    'script',
+    'style',
+    'iframe',
+    'nav',
+    'form',
+    'input',
+    'button',
+    'textarea',
+    '.feedback',
+    '.nextprev',
+    '.scrollToFeedback',
+    '.suggest',
+    '.suggest-wrap',
+    '.suggest-form',
+    '.suggest-success',
+    '.suggest-failed'
+  ].join(', ')).forEach((node) => {
     node.remove();
+  });
+  working.querySelectorAll('a').forEach((anchor) => {
+    const text = anchor.textContent?.trim().toLowerCase();
+    if (text === 'leave feedback' || text === 'suggest a change' || text === 'submit suggestion') {
+      anchor.remove();
+    }
   });
   rewriteUnityLinks(working);
 
@@ -158,9 +187,9 @@ export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }) => 
   const sourceBadge = `
 <div class="unity-doc-meta">
   <span>Unity Scripting API ${UNITY_DOC_VERSION}</span>
-  <span>${fromCache ? 'Đang dùng cache local' : 'Vừa cập nhật từ Unity'}</span>
-  ${fetchedDate ? `<span>Cập nhật: ${fetchedDate}</span>` : ''}
-  <a href="${sourceUrl}" target="_blank" rel="noreferrer">Mở trang gốc</a>
+  <span>${fromCache ? safeLabels.cacheHit : safeLabels.freshFetch}</span>
+  ${fetchedDate ? `<span>${safeLabels.updatedAt}: ${fetchedDate}</span>` : ''}
+  <a href="${sourceUrl}" target="_blank" rel="noreferrer">${safeLabels.openSource}</a>
 </div>`;
 
   return {
