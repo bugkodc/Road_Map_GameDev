@@ -5,6 +5,13 @@ import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import navData from '../utils/navigation.json';
 import { Link } from '../App';
+import {
+  fetchUnityDoc,
+  getUnityDocTarget,
+  isUnityScriptingPath,
+  parseUnityDocHtml,
+  clearUnityDocCache
+} from '../utils/unityDocs';
 
 // Custom Markdown preprocessor to handle GitHub-style alert boxes and image paths
 const preprocessMarkdown = (markdown, currentPath, t) => {
@@ -128,10 +135,26 @@ const ContentReader = ({ path, placeholder }) => {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [unityRefreshToken, setUnityRefreshToken] = useState(0);
   
   const { isArticleCompleted, toggleArticleCompleted } = useProgress();
   const { t, navTitle } = useLanguage();
   const { prev, next, currentItem } = getPagination(path);
+  const isDirectUnityDoc = path.startsWith('unity-doc:');
+  const isUnityDoc = isDirectUnityDoc || isUnityScriptingPath(path);
+  const unityDocTarget = isUnityDoc
+    ? isDirectUnityDoc
+      ? (() => {
+          const docPath = decodeURIComponent(path.replace('unity-doc:', ''));
+          return {
+            title: docPath.replace(/\.html$/i, ''),
+            docPath,
+            sourceKind: 'direct'
+          };
+        })()
+      : getUnityDocTarget(path, currentItem)
+    : null;
+  const unityDocPath = unityDocTarget?.docPath;
 
   // Initialize Mermaid once on mount
   useEffect(() => {
@@ -174,6 +197,22 @@ const ContentReader = ({ path, placeholder }) => {
       setError(null);
     });
 
+    if (isUnityDoc) {
+      fetchUnityDoc(unityDocPath, { force: unityRefreshToken > 0 })
+        .then((payload) => {
+          const parsed = parseUnityDocHtml(payload);
+          setContent(parsed.html);
+          setLoading(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(err => {
+          console.error(err);
+          setError(`${err.message} Bạn vẫn có thể mở nguồn gốc Unity hoặc thử cập nhật lại cache.`);
+          setLoading(false);
+        });
+      return;
+    }
+
     // Fetch the markdown file from our public directory junction
     fetch(`./Doc/${path}`)
       .then(res => {
@@ -209,7 +248,7 @@ const ContentReader = ({ path, placeholder }) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [path, placeholder, t]);
+  }, [path, placeholder, t, isUnityDoc, unityDocPath, unityRefreshToken]);
 
   if (placeholder) {
     return (
@@ -257,6 +296,24 @@ const ContentReader = ({ path, placeholder }) => {
 
   return (
     <article className="reading-pane">
+      {unityDocTarget && (
+        <div className="unity-doc-toolbar">
+          <div>
+            <span className="unity-doc-kicker">Live Unity Docs</span>
+            <strong>{unityDocTarget.title}</strong>
+          </div>
+          <button
+            className="btn-secondary unity-doc-refresh"
+            onClick={() => {
+              clearUnityDocCache(unityDocTarget.docPath);
+              setUnityRefreshToken((value) => value + 1);
+            }}
+          >
+            Cập nhật từ Unity
+          </button>
+        </div>
+      )}
+
       {/* Article HTML Content */}
       <div 
         className="markdown-body" 
