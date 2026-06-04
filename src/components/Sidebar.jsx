@@ -7,6 +7,12 @@ import { Link } from '../App';
 const Sidebar = ({ currentPath, isOpen, onClose }) => {
   const { isArticleCompleted } = useProgress();
   const { t, navTitle } = useLanguage();
+  const [expandedCategories, setExpandedCategories] = useState({
+    refactoring: false,
+    'design-patterns': false,
+    unity: false,
+    unreal: false
+  });
   const [expandedGroups, setExpandedGroups] = useState({
     'what-is-refactoring': true,
     'code-smells': true,
@@ -18,6 +24,42 @@ const Sidebar = ({ currentPath, isOpen, onClose }) => {
     'couplers': false,
     'composing-methods': false
   });
+
+  const containsPath = (items, path) => items.some((item) => (
+    item.path === path || (item.children && containsPath(item.children, path))
+  ));
+
+  const findAncestorGroupIds = (items, path, ancestors = []) => {
+    for (const item of items) {
+      const nextAncestors = item.isHeader || item.isGroup ? [...ancestors, item.id] : ancestors;
+
+      if (item.path === path) {
+        return ancestors;
+      }
+
+      if (item.children) {
+        const found = findAncestorGroupIds(item.children, path, nextAncestors);
+        if (found.length) return found;
+      }
+    }
+
+    return [];
+  };
+
+  const countArticles = (items) => items.reduce((count, item) => {
+    const ownCount = item.path && !item.placeholder ? 1 : 0;
+    return count + ownCount + (item.children ? countArticles(item.children) : 0);
+  }, 0);
+
+  const activeCategory = navData.categories.find((category) => containsPath(category.items, currentPath));
+  const activeAncestorGroupIds = activeCategory ? findAncestorGroupIds(activeCategory.items, currentPath) : [];
+
+  const toggleCategory = (id) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   const toggleGroup = (id) => {
     setExpandedGroups(prev => ({
@@ -31,7 +73,7 @@ const Sidebar = ({ currentPath, isOpen, onClose }) => {
       <ul className="sidebar-list">
         {items.map(item => {
           if (item.isHeader) {
-            const isExpanded = expandedGroups[item.id];
+            const isExpanded = expandedGroups[item.id] || activeAncestorGroupIds.includes(item.id);
             return (
               <li key={item.id} className={`sidebar-header-node ${isExpanded ? 'expanded' : ''}`}>
                 <div className="sidebar-group-title" onClick={() => toggleGroup(item.id)}>
@@ -44,7 +86,7 @@ const Sidebar = ({ currentPath, isOpen, onClose }) => {
           }
 
           if (item.isGroup) {
-            const isExpanded = expandedGroups[item.id];
+            const isExpanded = expandedGroups[item.id] || activeAncestorGroupIds.includes(item.id);
             return (
               <li key={item.id} className={`sidebar-group-node ${isExpanded ? 'expanded' : ''}`}>
                 <div className="sidebar-subgroup-title" onClick={() => toggleGroup(item.id)}>
@@ -114,12 +156,32 @@ const Sidebar = ({ currentPath, isOpen, onClose }) => {
             </Link>
           </div>
 
-          {navData.categories.map(category => (
-            <div key={category.id} className="sidebar-category-group">
-              <h4 className="sidebar-category-title">{navTitle(category)}</h4>
-              {renderNavList(category.items)}
+          {navData.categories.map(category => {
+            const isActive = activeCategory?.id === category.id;
+            const isExpanded = expandedCategories[category.id] || isActive;
+
+            return (
+            <div key={category.id} className={`sidebar-category-group ${isExpanded ? 'expanded' : ''} ${isActive ? 'active' : ''}`}>
+              <button
+                type="button"
+                className="sidebar-category-title"
+                onClick={() => toggleCategory(category.id)}
+                aria-expanded={isExpanded}
+              >
+                <span>{navTitle(category)}</span>
+                <span className="sidebar-category-meta">
+                  <span className="sidebar-category-count">{countArticles(category.items)}</span>
+                  <span className="arrow">{isExpanded ? '▼' : '▶'}</span>
+                </span>
+              </button>
+              {isExpanded && (
+                <div className="sidebar-category-content">
+                  {renderNavList(category.items)}
+                </div>
+              )}
             </div>
-          ))}
+            );
+          })}
         </nav>
       </aside>
     </>

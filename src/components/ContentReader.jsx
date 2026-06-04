@@ -167,20 +167,53 @@ const ContentReader = ({ path, placeholder }) => {
   const { language, t, navTitle } = useLanguage();
   const { prev, next, currentItem } = getPagination(path);
   const isDirectUnityDoc = path.startsWith('unity-doc:');
-  const shouldUseLiveUnityDoc = isDirectUnityDoc || (language === 'en' && isUnityScriptingPath(path));
+  const isUnityManualPath = (p) => p.startsWith('03-Unity/01-Manual/');
+  const shouldUseLiveUnityDoc = isDirectUnityDoc || (language === 'en' && (isUnityScriptingPath(path) || isUnityManualPath(path)));
   const unityDocTarget = shouldUseLiveUnityDoc
     ? isDirectUnityDoc
       ? (() => {
-          const docPath = decodeURIComponent(path.replace('unity-doc:', ''));
+          const rawUrl = path.replace('unity-doc:', '');
+          const [docPathEncoded, queryStr = ''] = rawUrl.split('?');
+          const docPath = decodeURIComponent(docPathEncoded);
+          const isManualLink = queryStr.includes('isManual=true');
           return {
             title: docPath.replace(/\.html$/i, ''),
             docPath,
-            sourceKind: 'direct'
+            sourceKind: 'direct',
+            isManual: isManualLink
           };
         })()
-      : getUnityDocTarget(path, currentItem)
+      : (() => {
+          if (isUnityManualPath(path)) {
+            // Map local manual pages to live Unity manual html files.
+            // E.g., '03-Unity/01-Manual/01-Get-Started/00-get-started-overview.md' -> 'GettingStarted.html'
+            const fileName = path.split('/').pop();
+            const manualMapping = {
+              '00-get-started-overview.md': 'get-started.html',
+              '00-editor-interface-overview.md': 'unity-editor.html',
+              '00-packages-management-overview.md': 'Packages.html',
+              '00-assets-media-overview.md': 'AssetWorkflow.html',
+              '00-2d-game-dev-overview.md': 'Unity2D.html',
+              '00-ai-overview.md': 'com.unity.ai.navigation.html',
+              '00-xr-overview.md': 'XR.html',
+              '00-multiplayer-overview.md': 'multiplayer.html',
+              '00-platform-dev-overview.md': 'PlatformSpecific.html',
+              '00-gameobjects-overview.md': 'GameObjects.html',
+              '00-scenes-overview.md': 'CreatingScenes.html',
+              '00-cameras-overview.md': 'CamerasOverview.html',
+              '00-world-building-overview.md': 'CreatingEnvironments.html',
+              '00-physics-overview.md': 'PhysicsSection.html',
+              '01-introduction-to-input.md': 'Input.html'
+            };
+            const docPath = manualMapping[fileName] || 'index.html';
+            const title = currentItem?.title || 'Unity Manual';
+            return { title, docPath, sourceKind: 'manual', isManual: true };
+          }
+          return getUnityDocTarget(path, currentItem);
+        })()
     : null;
   const unityDocPath = unityDocTarget?.docPath;
+  const unityDocIsManual = Boolean(unityDocTarget?.isManual);
 
   // Initialize Mermaid once on mount
   useEffect(() => {
@@ -224,14 +257,14 @@ const ContentReader = ({ path, placeholder }) => {
     });
 
     if (shouldUseLiveUnityDoc) {
-      fetchUnityDoc(unityDocPath, { force: unityRefreshToken > 0 })
+      fetchUnityDoc(unityDocPath, { force: unityRefreshToken > 0, isManual: unityDocIsManual })
         .then((payload) => {
           const parsed = parseUnityDocHtml(payload, {
             cacheHit: t('unityDocsCacheHit'),
             freshFetch: t('unityDocsFreshFetch'),
             updatedAt: t('unityDocsUpdatedAt'),
             openSource: t('unityDocsOpenSource')
-          });
+          }, { isManual: unityDocIsManual });
           setContent(parsed.html);
           setLoading(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -283,7 +316,7 @@ const ContentReader = ({ path, placeholder }) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [path, placeholder, t, language, shouldUseLiveUnityDoc, unityDocPath, unityRefreshToken]);
+  }, [path, placeholder, t, language, shouldUseLiveUnityDoc, unityDocPath, unityDocIsManual, unityRefreshToken]);
 
   if (placeholder) {
     return (
@@ -340,7 +373,7 @@ const ContentReader = ({ path, placeholder }) => {
           <button
             className="btn-secondary unity-doc-refresh"
             onClick={() => {
-              clearUnityDocCache(unityDocTarget.docPath);
+              clearUnityDocCache(unityDocTarget.docPath, unityDocIsManual);
               setUnityRefreshToken((value) => value + 1);
             }}
           >

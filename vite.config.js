@@ -17,7 +17,10 @@ const handleUnityDocsRequest = async (req, res) => {
       return
     }
 
-    const sourceUrl = `${UNITY_DOC_ORIGIN}/${version}/Documentation/ScriptReference/${docPath}`
+    const isManual = requestUrl.searchParams.get('isManual') === 'true'
+    
+    const docFolder = isManual ? 'Manual' : 'ScriptReference'
+    const sourceUrl = `${UNITY_DOC_ORIGIN}/${version}/Documentation/${docFolder}/${docPath}`
     const upstream = await fetch(sourceUrl, {
       headers: {
         'User-Agent': 'Road-Map-GameDev UnityDocsAdapter/1.0'
@@ -28,7 +31,7 @@ const handleUnityDocsRequest = async (req, res) => {
       res.statusCode = upstream.status
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify({
-        message: `Unity docs trả về ${upstream.status} cho ${docPath}.`,
+        message: `Unity ${isManual ? 'Manual' : 'ScriptReference'} trả về ${upstream.status} cho ${docPath}.`,
         sourceUrl
       }))
       return

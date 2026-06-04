@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --config tests/playwright.config.js",
     "preview": "vite preview"
   },
   "dependencies": {

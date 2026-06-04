@@ -70,45 +70,50 @@ export const getUnityDocTarget = (path, currentItem) => {
   return { title, docPath, sourceKind: 'generated', query: folder ? `${folder}.${toPascalSegment(slug)}` : title };
 };
 
-const getCacheKey = (docPath) => `${UNITY_CACHE_PREFIX}${docPath}`;
+const getCacheKey = (docPath, isManual = false) =>
+  `${UNITY_CACHE_PREFIX}${isManual ? 'manual' : 'script'}:${docPath}`;
 
-export const clearUnityDocCache = (docPath) => {
+export const clearUnityDocCache = (docPath, isManual = false) => {
   if (!docPath) return;
-  localStorage.removeItem(getCacheKey(docPath));
+  localStorage.removeItem(getCacheKey(docPath, isManual));
 };
 
-const readCachedUnityDoc = (docPath) => {
+const readCachedUnityDoc = (docPath, isManual = false) => {
   try {
-    const cached = localStorage.getItem(getCacheKey(docPath));
+    const cached = localStorage.getItem(getCacheKey(docPath, isManual));
     return cached ? JSON.parse(cached) : null;
   } catch {
     return null;
   }
 };
 
-const writeCachedUnityDoc = (docPath, payload) => {
+const writeCachedUnityDoc = (docPath, payload, isManual = false) => {
   try {
-    localStorage.setItem(getCacheKey(docPath), JSON.stringify(payload));
+    localStorage.setItem(getCacheKey(docPath, isManual), JSON.stringify(payload));
   } catch {
     // Cache is best-effort. Private browsing or full storage should not break reading.
   }
 };
 
-export const fetchUnityDoc = async (docPath, { force = false } = {}) => {
+export const fetchUnityDoc = async (docPath, { force = false, isManual = false } = {}) => {
   if (!force) {
-    const cached = readCachedUnityDoc(docPath);
+    const cached = readCachedUnityDoc(docPath, isManual);
     if (cached?.html) return { ...cached, fromCache: true };
   }
 
-  const params = new URLSearchParams({ path: docPath, version: UNITY_DOC_VERSION });
+  const params = new URLSearchParams({ 
+    path: docPath, 
+    version: UNITY_DOC_VERSION,
+    isManual: isManual ? 'true' : 'false'
+  });
   const response = await fetch(`/api/unity-docs?${params.toString()}`);
   const payload = await response.json();
 
   if (!response.ok) {
-    throw new Error(payload?.message || 'Không tải được Unity Scripting API.');
+    throw new Error(payload?.message || 'Không tải được tài nguyên Unity.');
   }
 
-  writeCachedUnityDoc(docPath, payload);
+  writeCachedUnityDoc(docPath, payload, isManual);
   return { ...payload, fromCache: false };
 };
 
@@ -122,9 +127,18 @@ const rewriteUnityLinks = (root) => {
       return;
     }
 
-    if (href.endsWith('.html') && !href.startsWith('../Manual/')) {
+    // Rewrite ScriptReference links
+    if (href.endsWith('.html') && !href.includes('/Manual/') && !href.startsWith('../Manual/')) {
       const docPath = href.split('/').pop();
       anchor.setAttribute('href', `#unity-doc:${encodeURIComponent(docPath)}`);
+      return;
+    }
+
+    // Rewrite relative manual links inside Unity docs
+    if (href.includes('/Manual/') || href.startsWith('../Manual/')) {
+      const docPath = href.split('/').pop();
+      // Route it to unity-doc as well, flagged as a direct manual link
+      anchor.setAttribute('href', `#unity-doc:${encodeURIComponent(docPath)}?isManual=true`);
       return;
     }
 
@@ -133,7 +147,7 @@ const rewriteUnityLinks = (root) => {
   });
 };
 
-export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }, labels = {}) => {
+export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }, labels = {}, { isManual = false } = {}) => {
   const safeLabels = {
     cacheHit: labels.cacheHit || 'Using local cache',
     freshFetch: labels.freshFetch || 'Updated from Unity',
@@ -144,10 +158,10 @@ export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }, lab
   const doc = parser.parseFromString(html, 'text/html');
   const title = doc.querySelector('h1.heading')?.textContent?.trim()
     || doc.querySelector('h1')?.textContent?.trim()
-    || doc.title.replace(/^Unity\s*-\s*Scripting API:\s*/i, '').trim()
-    || 'Unity Scripting API';
+    || doc.title.replace(/^Unity\s*-\s*(Scripting API|Manual):\s*/i, '').trim()
+    || (isManual ? 'Unity Manual' : 'Unity Scripting API');
   const mainSection = [...doc.querySelectorAll('div.section')]
-    .find((section) => section.querySelector('h1.heading'))
+    .find((section) => section.querySelector('h1.heading') || section.querySelector('h1'))
     || doc.querySelector('main')
     || doc.body;
 
@@ -184,9 +198,10 @@ export const parseUnityDocHtml = ({ html, sourceUrl, fetchedAt, fromCache }, lab
     ADD_ATTR: ['target']
   });
   const fetchedDate = fetchedAt ? new Date(fetchedAt).toLocaleString('vi-VN') : '';
+  const docTypeName = isManual ? 'Unity Manual' : 'Unity Scripting API';
   const sourceBadge = `
 <div class="unity-doc-meta">
-  <span>Unity Scripting API ${UNITY_DOC_VERSION}</span>
+  <span>${docTypeName} ${UNITY_DOC_VERSION}</span>
   <span>${fromCache ? safeLabels.cacheHit : safeLabels.freshFetch}</span>
   ${fetchedDate ? `<span>${safeLabels.updatedAt}: ${fetchedDate}</span>` : ''}
   <a href="${sourceUrl}" target="_blank" rel="noreferrer">${safeLabels.openSource}</a>
