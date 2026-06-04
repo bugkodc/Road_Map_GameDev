@@ -1,40 +1,40 @@
-# Abstract Factory (Nhà máy Trừu tượng)
+﻿# Abstract Factory (NhÃ  mÃ¡y Trá»«u tÆ°á»£ng)
 
-> 📖 **Nguồn:** [Refactoring.Guru — Abstract Factory](https://refactoring.guru/design-patterns/abstract-factory) | Tác giả: Alexander Shvets
-
----
-
-## 🎯 Ý định (Intent)
-
-**Abstract Factory** là một mẫu thiết kế thuộc nhóm khởi tạo (creational), cung cấp cơ chế khởi tạo một **họ (family) các đối tượng có liên quan hoặc phụ thuộc lẫn nhau** mà không cần chỉ định rõ ràng các concrete class cụ thể của chúng.
+> ðŸ“– **Nguá»“n:** [Refactoring.Guru â€” Abstract Factory](https://refactoring.guru/design-patterns/abstract-factory) | TÃ¡c giáº£: Alexander Shvets
 
 ---
 
-## ❌ Vấn đề (Problem)
+## ðŸŽ¯ Ã Ä‘á»‹nh (Intent)
 
-Hãy tưởng tượng bạn đang viết một tựa game thế giới mở (Sandbox) có nhiều vùng đất sinh thái khác nhau (**Biomes**):
-- Vùng đất **Rừng rậm (Forest Biome)** có: *Cây Sồi (Oak Tree)*, *Đá Rêu (Mossy Rock)* và *Thảm Cỏ xanh (Grass)*.
-- Vùng đất **Sa mạc (Desert Biome)** có: *Cây Xương Rồng (Cactus)*, *Đá Cát (Sandstone)* và *Đất Cát (Sand)*.
-- Bạn cần một hệ thống tạo bản đồ (Map Generator) tự động sinh ngẫu nhiên thực vật và đất đá khi người chơi di chuyển.
-- **Vấn đề xảy ra:** Nếu bạn viết code gán thủ công từng class:
+**Abstract Factory** lÃ  má»™t máº«u thiáº¿t káº¿ thuá»™c nhÃ³m khá»Ÿi táº¡o (creational), cung cáº¥p cÆ¡ cháº¿ khá»Ÿi táº¡o má»™t **há» (family) cÃ¡c Ä‘á»‘i tÆ°á»£ng cÃ³ liÃªn quan hoáº·c phá»¥ thuá»™c láº«n nhau** mÃ  khÃ´ng cáº§n chá»‰ Ä‘á»‹nh rÃµ rÃ ng cÃ¡c concrete class cá»¥ thá»ƒ cá»§a chÃºng.
+
+---
+
+## âŒ Váº¥n Ä‘á» (Problem)
+
+HÃ£y tÆ°á»Ÿng tÆ°á»£ng báº¡n Ä‘ang viáº¿t má»™t tá»±a game tháº¿ giá»›i má»Ÿ (Sandbox) cÃ³ nhiá»u vÃ¹ng Ä‘áº¥t sinh thÃ¡i khÃ¡c nhau (**Biomes**):
+- VÃ¹ng Ä‘áº¥t **Rá»«ng ráº­m (Forest Biome)** cÃ³: *CÃ¢y Sá»“i (Oak Tree)*, *ÄÃ¡ RÃªu (Mossy Rock)* vÃ  *Tháº£m Cá» xanh (Grass)*.
+- VÃ¹ng Ä‘áº¥t **Sa máº¡c (Desert Biome)** cÃ³: *CÃ¢y XÆ°Æ¡ng Rá»“ng (Cactus)*, *ÄÃ¡ CÃ¡t (Sandstone)* vÃ  *Äáº¥t CÃ¡t (Sand)*.
+- Báº¡n cáº§n má»™t há»‡ thá»‘ng táº¡o báº£n Ä‘á»“ (Map Generator) tá»± Ä‘á»™ng sinh ngáº«u nhiÃªn thá»±c váº­t vÃ  Ä‘áº¥t Ä‘Ã¡ khi ngÆ°á»i chÆ¡i di chuyá»ƒn.
+- **Váº¥n Ä‘á» xáº£y ra:** Náº¿u báº¡n viáº¿t code gÃ¡n thá»§ cÃ´ng tá»«ng class:
   ```csharp
   if (currentBiome == BiomeType.Forest) {
       Instantiate(oakTreePrefab);
       Instantiate(mossyRockPrefab);
   }
   ```
-  Code của bạn sẽ nhanh chóng trở nên chằng chịt các câu lệnh rẽ nhánh khổng lồ. 
-- Hơn thế nữa, sẽ rất dễ xảy ra lỗi "lệch theme" (ví dụ: Map Generator vô tình sinh ra một cây Xương Rồng Sa Mạc nằm giữa Thảm Cỏ Xanh của Rừng Rậm) do thiếu tính đồng bộ của họ sản phẩm. Khi thêm một Biome mới (ví dụ: Băng Tuyết), bạn phải lật tung toàn bộ code Map Generator ra để sửa.
+  Code cá»§a báº¡n sáº½ nhanh chÃ³ng trá»Ÿ nÃªn cháº±ng chá»‹t cÃ¡c cÃ¢u lá»‡nh ráº½ nhÃ¡nh khá»•ng lá»“. 
+- HÆ¡n tháº¿ ná»¯a, sáº½ ráº¥t dá»… xáº£y ra lá»—i "lá»‡ch theme" (vÃ­ dá»¥: Map Generator vÃ´ tÃ¬nh sinh ra má»™t cÃ¢y XÆ°Æ¡ng Rá»“ng Sa Máº¡c náº±m giá»¯a Tháº£m Cá» Xanh cá»§a Rá»«ng Ráº­m) do thiáº¿u tÃ­nh Ä‘á»“ng bá»™ cá»§a há» sáº£n pháº©m. Khi thÃªm má»™t Biome má»›i (vÃ­ dá»¥: BÄƒng Tuyáº¿t), báº¡n pháº£i láº­t tung toÃ n bá»™ code Map Generator ra Ä‘á»ƒ sá»­a.
 
 ---
 
-## ✅ Giải pháp (Solution)
+## âœ… Giáº£i phÃ¡p (Solution)
 
-Mẫu **Abstract Factory** đề xuất:
+Máº«u **Abstract Factory** Ä‘á» xuáº¥t:
 
-1.  Định nghĩa các interface riêng biệt cho từng loại thực thể trong hệ thống: `ITree` (Cây), `IRock` (Đá), `IGround` (Đất).
-2.  Tất cả các biến thể cụ thể sẽ thực thi các interface này (ví dụ: `OakTree` và `Cactus` đều thực thi `ITree`).
-3.  Tạo ra interface **Abstract Factory** là `IBiomeFactory` khai báo các phương thức tạo lập cho từng sản phẩm trong họ:
+1.  Äá»‹nh nghÄ©a cÃ¡c interface riÃªng biá»‡t cho tá»«ng loáº¡i thá»±c thá»ƒ trong há»‡ thá»‘ng: `ITree` (CÃ¢y), `IRock` (ÄÃ¡), `IGround` (Äáº¥t).
+2.  Táº¥t cáº£ cÃ¡c biáº¿n thá»ƒ cá»¥ thá»ƒ sáº½ thá»±c thi cÃ¡c interface nÃ y (vÃ­ dá»¥: `OakTree` vÃ  `Cactus` Ä‘á»u thá»±c thi `ITree`).
+3.  Táº¡o ra interface **Abstract Factory** lÃ  `IBiomeFactory` khai bÃ¡o cÃ¡c phÆ°Æ¡ng thá»©c táº¡o láº­p cho tá»«ng sáº£n pháº©m trong há»:
     ```csharp
     interface IBiomeFactory {
         ITree CreateTree();
@@ -42,19 +42,19 @@ Mẫu **Abstract Factory** đề xuất:
         IGround CreateGround();
     }
     ```
-4.  Tạo các concrete factory chuyên biệt cho từng Biome:
-    - `ForestBiomeFactory` chỉ tạo ra `OakTree`, `MossyRock`, `Grass`.
-    - `DesertBiomeFactory` chỉ tạo ra `Cactus`, `Sandstone`, `Sand`.
+4.  Táº¡o cÃ¡c concrete factory chuyÃªn biá»‡t cho tá»«ng Biome:
+    - `ForestBiomeFactory` chá»‰ táº¡o ra `OakTree`, `MossyRock`, `Grass`.
+    - `DesertBiomeFactory` chá»‰ táº¡o ra `Cactus`, `Sandstone`, `Sand`.
 
-Bây giờ, class Map Generator chỉ cần giữ một tham chiếu đến interface `IBiomeFactory` chung. Khi người chơi bước vào vùng Forest, Map Generator được gắn `ForestBiomeFactory` và tự động sinh ra đúng họ thực vật Rừng rậm một cách hoàn hảo, không bao giờ lo lệch theme!
+BÃ¢y giá», class Map Generator chá»‰ cáº§n giá»¯ má»™t tham chiáº¿u Ä‘áº¿n interface `IBiomeFactory` chung. Khi ngÆ°á»i chÆ¡i bÆ°á»›c vÃ o vÃ¹ng Forest, Map Generator Ä‘Æ°á»£c gáº¯n `ForestBiomeFactory` vÃ  tá»± Ä‘á»™ng sinh ra Ä‘Ãºng há» thá»±c váº­t Rá»«ng ráº­m má»™t cÃ¡ch hoÃ n háº£o, khÃ´ng bao giá» lo lá»‡ch theme!
 
 ---
 
-## 🎨 Cấu trúc (Structure)
+## ðŸŽ¨ Cáº¥u trÃºc (Structure)
 
-Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 lớp: **ý tưởng nhanh → luồng chạy thực tế → UML rút gọn**.
+Thay vÃ¬ Ä‘á»c má»™t UML lá»›n ngay tá»« Ä‘áº§u, hÃ£y Ä‘á»c pattern theo 3 lá»›p: **Ã½ tÆ°á»Ÿng nhanh â†’ luá»“ng cháº¡y thá»±c táº¿ â†’ UML rÃºt gá»n**.
 
-### 1. Ý tưởng nhanh
+### 1. Ã tÆ°á»Ÿng nhanh
 
 ```mermaid
 flowchart TB
@@ -65,24 +65,24 @@ flowchart TB
   Desert --> DFamily["Cactus + Sandstone + Sand"]
 ```
 
-### 2. Luồng chạy thực tế
+### 2. Luá»“ng cháº¡y thá»±c táº¿
 
 ```mermaid
-flowchart LR
-  A["Chọn biome"] --> B["Inject factory phù hợp"]
+flowchart TD
+  A["Chá»n biome"] --> B["Inject factory phÃ¹ há»£p"]
   B --> C["createTree()"]
   B --> D["createRock()"]
   B --> E["createGround()"]
-  C --> F["Tree cùng family"]
-  D --> G["Rock cùng family"]
-  E --> H["Ground cùng family"]
+  C --> F["Tree cÃ¹ng family"]
+  D --> G["Rock cÃ¹ng family"]
+  E --> H["Ground cÃ¹ng family"]
 ```
 
-### 3. UML rút gọn
+### 3. UML rÃºt gá»n
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class AbstractFactory {
     <<interface>>
     +CreateProductA() ProductA
@@ -104,41 +104,41 @@ classDiagram
   ConcreteFactory2 ..> ProductB : creates B2
 ```
 
-### Cách đọc sơ đồ
+### CÃ¡ch Ä‘á»c sÆ¡ Ä‘á»“
 
-| Thành phần | Ý nghĩa |
+| ThÃ nh pháº§n | Ã nghÄ©a |
 |---|---|
-| Nhìn nhanh | Mỗi factory tạo nguyên một family object đồng bộ. |
-| Luồng chính | Client chọn factory một lần, sau đó gọi các hàm tạo qua interface. |
-| Trong game | Forest biome không bao giờ lẫn cactus/sand của Desert biome. |
-| Mũi tên nét liền | Object đang giữ tham chiếu hoặc gọi trực tiếp object khác. |
-| Mũi tên tam giác / nét đứt trong UML | Kế thừa hoặc thực thi interface. |
+| NhÃ¬n nhanh | Má»—i factory táº¡o nguyÃªn má»™t family object Ä‘á»“ng bá»™. |
+| Luá»“ng chÃ­nh | Client chá»n factory má»™t láº§n, sau Ä‘Ã³ gá»i cÃ¡c hÃ m táº¡o qua interface. |
+| Trong game | Forest biome khÃ´ng bao giá» láº«n cactus/sand cá»§a Desert biome. |
+| MÅ©i tÃªn nÃ©t liá»n | Object Ä‘ang giá»¯ tham chiáº¿u hoáº·c gá»i trá»±c tiáº¿p object khÃ¡c. |
+| MÅ©i tÃªn tam giÃ¡c / nÃ©t Ä‘á»©t trong UML | Káº¿ thá»«a hoáº·c thá»±c thi interface. |
 
-> Mẹo đọc nhanh: trước hết hãy tìm **Client/Context**, sau đó đi theo mũi tên đến interface chính. Các class cụ thể chỉ là biến thể được thay vào khi chạy.
+> Máº¹o Ä‘á»c nhanh: trÆ°á»›c háº¿t hÃ£y tÃ¬m **Client/Context**, sau Ä‘Ã³ Ä‘i theo mÅ©i tÃªn Ä‘áº¿n interface chÃ­nh. CÃ¡c class cá»¥ thá»ƒ chá»‰ lÃ  biáº¿n thá»ƒ Ä‘Æ°á»£c thay vÃ o khi cháº¡y.
 
 ---
 
-## 💻 Mã giả (Pseudocode)
+## ðŸ’» MÃ£ giáº£ (Pseudocode)
 
 ```csharp
-// Dòng sản phẩm A
+// DÃ²ng sáº£n pháº©m A
 interface IAbstractProductA { string UsefulFunctionA(); }
-class ConcreteProductA1 : IAbstractProductA { public string UsefulFunctionA() => "Sản phẩm A1"; }
-class ConcreteProductA2 : IAbstractProductA { public string UsefulFunctionA() => "Sản phẩm A2"; }
+class ConcreteProductA1 : IAbstractProductA { public string UsefulFunctionA() => "Sáº£n pháº©m A1"; }
+class ConcreteProductA2 : IAbstractProductA { public string UsefulFunctionA() => "Sáº£n pháº©m A2"; }
 
-// Dòng sản phẩm B
+// DÃ²ng sáº£n pháº©m B
 interface IAbstractProductB { string UsefulFunctionB(); }
-class ConcreteProductB1 : IAbstractProductB { public string UsefulFunctionB() => "Sản phẩm B1"; }
-class ConcreteProductB2 : IAbstractProductB { public string UsefulFunctionB() => "Sản phẩm B2"; }
+class ConcreteProductB1 : IAbstractProductB { public string UsefulFunctionB() => "Sáº£n pháº©m B1"; }
+class ConcreteProductB2 : IAbstractProductB { public string UsefulFunctionB() => "Sáº£n pháº©m B2"; }
 
-// Abstract Factory định nghĩa các hàm tạo họ sản phẩm
+// Abstract Factory Ä‘á»‹nh nghÄ©a cÃ¡c hÃ m táº¡o há» sáº£n pháº©m
 interface IAbstractFactory
 {
     IAbstractProductA CreateProductA();
     IAbstractProductB CreateProductB();
 }
 
-// Các Concrete Factory tạo họ sản phẩm tương thích
+// CÃ¡c Concrete Factory táº¡o há» sáº£n pháº©m tÆ°Æ¡ng thÃ­ch
 class ConcreteFactory1 : IAbstractFactory
 {
     public IAbstractProductA CreateProductA() => new ConcreteProductA1();
@@ -154,87 +154,87 @@ class ConcreteFactory2 : IAbstractFactory
 
 ---
 
-## ⚙️ Khả năng áp dụng (Applicability)
+## âš™ï¸ Kháº£ nÄƒng Ã¡p dá»¥ng (Applicability)
 
-Dùng Abstract Factory khi:
-- Code của bạn cần làm việc với nhiều họ sản phẩm liên quan khác nhau, nhưng bạn không muốn code phụ thuộc trực tiếp vào các concrete class cụ thể của chúng để dễ mở rộng trong tương lai.
-- Hệ thống cần đảm bảo tính tương thích và đồng bộ tuyệt đối giữa các đối tượng trong cùng một nhóm (ví dụ: cùng một theme UI, cùng một vùng sinh thái).
-
----
-
-## 📝 Các bước thực hiện (How to Implement)
-
-1.  Xây dựng ma trận phân loại sản phẩm: Cột dọc là loại sản phẩm (Tree, Rock, Ground), hàng ngang là các biến thể theme (Forest, Desert, Snow).
-2.  Khai báo interface chung cho tất cả các loại sản phẩm.
-3.  Khai báo interface Abstract Factory với tập hợp các phương thức tạo lập cho tất cả các loại sản phẩm trừu tượng.
-4.  Hiện thực các Concrete Factory tương ứng cho từng biến thể ở hàng ngang, ghi đè các hàm tạo để trả về đúng concrete class của biến thể đó.
-5.  Trong client code, inject concrete factory tương ứng vào để sử dụng thông qua interface Abstract Factory.
+DÃ¹ng Abstract Factory khi:
+- Code cá»§a báº¡n cáº§n lÃ m viá»‡c vá»›i nhiá»u há» sáº£n pháº©m liÃªn quan khÃ¡c nhau, nhÆ°ng báº¡n khÃ´ng muá»‘n code phá»¥ thuá»™c trá»±c tiáº¿p vÃ o cÃ¡c concrete class cá»¥ thá»ƒ cá»§a chÃºng Ä‘á»ƒ dá»… má»Ÿ rá»™ng trong tÆ°Æ¡ng lai.
+- Há»‡ thá»‘ng cáº§n Ä‘áº£m báº£o tÃ­nh tÆ°Æ¡ng thÃ­ch vÃ  Ä‘á»“ng bá»™ tuyá»‡t Ä‘á»‘i giá»¯a cÃ¡c Ä‘á»‘i tÆ°á»£ng trong cÃ¹ng má»™t nhÃ³m (vÃ­ dá»¥: cÃ¹ng má»™t theme UI, cÃ¹ng má»™t vÃ¹ng sinh thÃ¡i).
 
 ---
 
-## ⚖️ Ưu & Nhược điểm (Pros and Cons)
+## ðŸ“ CÃ¡c bÆ°á»›c thá»±c hiá»‡n (How to Implement)
 
-*   **👍 Ưu điểm:**
-    *   *Tính đồng bộ tuyệt đối:* Bảo đảm các sản phẩm tạo ra từ cùng một factory luôn tương thích và khớp theme 100% với nhau.
-    *   *Tránh Coupling:* Client code hoàn toàn độc lập với các concrete class cụ thể của sản phẩm.
-    *   *Open/Closed Principle:* Dễ dàng bổ sung một họ sản phẩm mới (ví dụ: SnowBiome) mà không cần chỉnh sửa code lõi của Map Generator.
-*   **👎 Nhược điểm:**
-    *   Kiến trúc code trở nên khá cồng kềnh, phức tạp do phát sinh quá nhiều interface và class mới cho từng loại thực thể.
+1.  XÃ¢y dá»±ng ma tráº­n phÃ¢n loáº¡i sáº£n pháº©m: Cá»™t dá»c lÃ  loáº¡i sáº£n pháº©m (Tree, Rock, Ground), hÃ ng ngang lÃ  cÃ¡c biáº¿n thá»ƒ theme (Forest, Desert, Snow).
+2.  Khai bÃ¡o interface chung cho táº¥t cáº£ cÃ¡c loáº¡i sáº£n pháº©m.
+3.  Khai bÃ¡o interface Abstract Factory vá»›i táº­p há»£p cÃ¡c phÆ°Æ¡ng thá»©c táº¡o láº­p cho táº¥t cáº£ cÃ¡c loáº¡i sáº£n pháº©m trá»«u tÆ°á»£ng.
+4.  Hiá»‡n thá»±c cÃ¡c Concrete Factory tÆ°Æ¡ng á»©ng cho tá»«ng biáº¿n thá»ƒ á»Ÿ hÃ ng ngang, ghi Ä‘Ã¨ cÃ¡c hÃ m táº¡o Ä‘á»ƒ tráº£ vá» Ä‘Ãºng concrete class cá»§a biáº¿n thá»ƒ Ä‘Ã³.
+5.  Trong client code, inject concrete factory tÆ°Æ¡ng á»©ng vÃ o Ä‘á»ƒ sá»­ dá»¥ng thÃ´ng qua interface Abstract Factory.
 
 ---
 
-## 🎮 Trong Game Dev: C# Code Example (Unity)
+## âš–ï¸ Æ¯u & NhÆ°á»£c Ä‘iá»ƒm (Pros and Cons)
 
-Hiện thực hệ thống **Biome Asset Spawner** trong thế giới mở:
+*   **ðŸ‘ Æ¯u Ä‘iá»ƒm:**
+    *   *TÃ­nh Ä‘á»“ng bá»™ tuyá»‡t Ä‘á»‘i:* Báº£o Ä‘áº£m cÃ¡c sáº£n pháº©m táº¡o ra tá»« cÃ¹ng má»™t factory luÃ´n tÆ°Æ¡ng thÃ­ch vÃ  khá»›p theme 100% vá»›i nhau.
+    *   *TrÃ¡nh Coupling:* Client code hoÃ n toÃ n Ä‘á»™c láº­p vá»›i cÃ¡c concrete class cá»¥ thá»ƒ cá»§a sáº£n pháº©m.
+    *   *Open/Closed Principle:* Dá»… dÃ ng bá»• sung má»™t há» sáº£n pháº©m má»›i (vÃ­ dá»¥: SnowBiome) mÃ  khÃ´ng cáº§n chá»‰nh sá»­a code lÃµi cá»§a Map Generator.
+*   **ðŸ‘Ž NhÆ°á»£c Ä‘iá»ƒm:**
+    *   Kiáº¿n trÃºc code trá»Ÿ nÃªn khÃ¡ cá»“ng ká»nh, phá»©c táº¡p do phÃ¡t sinh quÃ¡ nhiá»u interface vÃ  class má»›i cho tá»«ng loáº¡i thá»±c thá»ƒ.
 
-### 1. Khai báo các dòng sản phẩm trừu tượng và cụ thể
+---
+
+## ðŸŽ® Trong Game Dev: C# Code Example (Unity)
+
+Hiá»‡n thá»±c há»‡ thá»‘ng **Biome Asset Spawner** trong tháº¿ giá»›i má»Ÿ:
+
+### 1. Khai bÃ¡o cÃ¡c dÃ²ng sáº£n pháº©m trá»«u tÆ°á»£ng vÃ  cá»¥ thá»ƒ
 ```csharp
 using UnityEngine;
 
-// 1. Dòng sản phẩm Cây (Tree)
+// 1. DÃ²ng sáº£n pháº©m CÃ¢y (Tree)
 public interface ITree { void Grow(); }
 
 public class OakTree : ITree
 {
-    public void Grow() => Debug.Log("Cây sồi Rừng rậm mọc lên um tùm!");
+    public void Grow() => Debug.Log("CÃ¢y sá»“i Rá»«ng ráº­m má»c lÃªn um tÃ¹m!");
 }
 
 public class Cactus : ITree
 {
-    public void Grow() => Debug.Log("Cây xương rồng Sa mạc gai góc mọc lên!");
+    public void Grow() => Debug.Log("CÃ¢y xÆ°Æ¡ng rá»“ng Sa máº¡c gai gÃ³c má»c lÃªn!");
 }
 
-// 2. Dòng sản phẩm Đá (Rock)
+// 2. DÃ²ng sáº£n pháº©m ÄÃ¡ (Rock)
 public interface IRock { void Spawn(); }
 
 public class MossyRock : IRock
 {
-    public void Spawn() => Debug.Log("Đá phủ rêu xanh xuất hiện!");
+    public void Spawn() => Debug.Log("ÄÃ¡ phá»§ rÃªu xanh xuáº¥t hiá»‡n!");
 }
 
 public class Sandstone : IRock
 {
-    public void Spawn() => Debug.Log("Đá cát sa mạc màu vàng xuất hiện!");
+    public void Spawn() => Debug.Log("ÄÃ¡ cÃ¡t sa máº¡c mÃ u vÃ ng xuáº¥t hiá»‡n!");
 }
 ```
 
-### 2. Định nghĩa Abstract Factory và các Concrete Factory
+### 2. Äá»‹nh nghÄ©a Abstract Factory vÃ  cÃ¡c Concrete Factory
 ```csharp
-// Interface Abstract Factory chung cho các Biomes
+// Interface Abstract Factory chung cho cÃ¡c Biomes
 public interface IBiomeFactory
 {
     ITree CreateTree();
     IRock CreateRock();
 }
 
-// Factory chuyên biệt cho Rừng Rậm
+// Factory chuyÃªn biá»‡t cho Rá»«ng Ráº­m
 public class ForestBiomeFactory : IBiomeFactory
 {
     public ITree CreateTree() => new OakTree();
     public IRock CreateRock() => new MossyRock();
 }
 
-// Factory chuyên biệt cho Sa Mạc
+// Factory chuyÃªn biá»‡t cho Sa Máº¡c
 public class DesertBiomeFactory : IBiomeFactory
 {
     public ITree CreateTree() => new Cactus();
@@ -242,19 +242,19 @@ public class DesertBiomeFactory : IBiomeFactory
 }
 ```
 
-### 3. Client Code sử dụng Abstract Factory
+### 3. Client Code sá»­ dá»¥ng Abstract Factory
 ```csharp
 public class MapGenerator : MonoBehaviour
 {
     private IBiomeFactory biomeFactory;
 
-    // Thay đổi Biome Factory linh hoạt trong runtime
+    // Thay Ä‘á»•i Biome Factory linh hoáº¡t trong runtime
     public void SetBiome(IBiomeFactory newBiomeFactory)
     {
         biomeFactory = newBiomeFactory;
     }
 
-    // Sinh ngẫu nhiên thực vật và địa hình đồng bộ
+    // Sinh ngáº«u nhiÃªn thá»±c váº­t vÃ  Ä‘á»‹a hÃ¬nh Ä‘á»“ng bá»™
     public void GenerateZone()
     {
         if (biomeFactory == null) return;
@@ -262,7 +262,7 @@ public class MapGenerator : MonoBehaviour
         ITree tree = biomeFactory.CreateTree();
         IRock rock = biomeFactory.CreateRock();
 
-        // Chạy logic
+        // Cháº¡y logic
         tree.Grow();
         rock.Spawn();
     }
@@ -271,9 +271,9 @@ public class MapGenerator : MonoBehaviour
 
 ---
 
-> 📚 **Nguồn gốc:** Nội dung tham khảo từ [Refactoring.Guru](https://refactoring.guru/) — Tác giả: Alexander Shvets, Minh họa: Dmitry Zhart
+> ðŸ“š **Nguá»“n gá»‘c:** Ná»™i dung tham kháº£o tá»« [Refactoring.Guru](https://refactoring.guru/) â€” TÃ¡c giáº£: Alexander Shvets, Minh há»a: Dmitry Zhart
 
-| Hướng | Liên kết |
+| HÆ°á»›ng | LiÃªn káº¿t |
 |-------|----------|
-| ← Quay lại | [Factory Method](./01-factory-method.md) |
-| → Tiếp theo | [Builder](./03-builder.md) |
+| â† Quay láº¡i | [Factory Method](./01-factory-method.md) |
+| â†’ Tiáº¿p theo | [Builder](./03-builder.md) |

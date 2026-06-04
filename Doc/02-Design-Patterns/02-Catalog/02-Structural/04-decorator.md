@@ -1,74 +1,74 @@
-# Decorator (Trang trí)
+﻿# Decorator (Trang trÃ­)
 
-> 📖 **Nguồn:** [Refactoring.Guru — Decorator](https://refactoring.guru/design-patterns/decorator) | Tác giả: Alexander Shvets
-
----
-
-## 🎯 Ý định (Intent)
-
-**Decorator** là một mẫu thiết kế cấu trúc cho phép bạn gắn thêm các hành vi, tính năng mới vào một đối tượng một cách động (at runtime) bằng cách đặt đối tượng này bên trong các đối tượng "bao bọc" (wrapper) đặc biệt chứa các hành vi đó.
+> ðŸ“– **Nguá»“n:** [Refactoring.Guru â€” Decorator](https://refactoring.guru/design-patterns/decorator) | TÃ¡c giáº£: Alexander Shvets
 
 ---
 
-## ❌ Vấn đề (Problem)
+## ðŸŽ¯ Ã Ä‘á»‹nh (Intent)
 
-Hãy tưởng tượng bạn đang viết mã cho một hệ thống Vũ khí trong game bắn súng sinh tồn (Shooter) hoặc game RPG.
-- Bạn có một lớp vũ khí cơ bản là `SimpleWeapon` (Súng trường tiêu chuẩn) gây ra 20 sát thương.
-- Người chơi có thể nhặt được các phụ kiện nâng cấp (attachments) hoặc bùa phép (enchantments) để gắn lên vũ khí như:
-  *   `Silencer` (Ống giảm thanh): Giảm tiếng ồn, giảm nhẹ 2 sát thương cơ bản nhưng tăng độ chí mạng.
-  *   `FireAmmo` (Đạn lửa): Thêm hiệu ứng thiêu đốt, cộng thêm 5 sát thương lửa.
-  *   `PoisonAmmo` (Đạn độc): Thêm hiệu ứng độc rút máu, cộng thêm 3 sát thương độc.
-- Nếu dùng phương pháp kế thừa, bạn sẽ phải tạo ra hàng loạt class để phục vụ tất cả các tổ hợp lắp ghép có thể: `SilencedWeapon`, `FireWeapon`, `PoisonWeapon`, `SilencedFireWeapon`, `SilencedPoisonWeapon`, `FirePoisonWeapon`, `SilencedFirePoisonWeapon`...
-- Việc này dẫn đến sự bùng nổ số lượng lớp con (subclass explosion) không thể kiểm soát. Đồng thời, bạn không thể dễ dàng tháo lắp phụ kiện hoặc thay đổi hiệu ứng vũ khí ngay trong trận đấu khi người chơi nhấn nút tháo phụ kiện.
+**Decorator** lÃ  má»™t máº«u thiáº¿t káº¿ cáº¥u trÃºc cho phÃ©p báº¡n gáº¯n thÃªm cÃ¡c hÃ nh vi, tÃ­nh nÄƒng má»›i vÃ o má»™t Ä‘á»‘i tÆ°á»£ng má»™t cÃ¡ch Ä‘á»™ng (at runtime) báº±ng cÃ¡ch Ä‘áº·t Ä‘á»‘i tÆ°á»£ng nÃ y bÃªn trong cÃ¡c Ä‘á»‘i tÆ°á»£ng "bao bá»c" (wrapper) Ä‘áº·c biá»‡t chá»©a cÃ¡c hÃ nh vi Ä‘Ã³.
 
 ---
 
-## ✅ Giải pháp (Solution)
+## âŒ Váº¥n Ä‘á» (Problem)
 
-Mẫu **Decorator** đề xuất thay thế việc kế thừa trực tiếp bằng cách sử dụng **Bao bọc (Wrapping)**.
-
-1.  **Component (`IWeapon`):** Định nghĩa một interface chung cho cả vũ khí cơ bản và các phụ kiện trang trí.
-2.  **Concrete Component (`SimpleWeapon`):** Vũ khí thô, cơ bản ban đầu thực thi `IWeapon`.
-3.  **Base Decorator (`WeaponDecorator`):** Thực thi interface `IWeapon` và chứa một tham chiếu đến đối tượng `IWeapon` khác. Lớp này đóng vai trò chuyển tiếp mọi cuộc gọi hàm (như tính sát thương, lấy mô tả) đến đối tượng được bao bọc bên trong.
-4.  **Concrete Decorators (`FireEnchantment`, `SilencerDecorator`):** Ghi đè các hàm của Decorator cha để cộng thêm logic riêng (ví dụ: lấy sát thương của súng bên trong rồi cộng thêm sát thương nguyên tố lửa).
-
-Khi chạy game, ta có thể lắp ráp vũ khí như những lớp vỏ hành tây lồng vào nhau:
-*   Bắt đầu với: `IWeapon myWeapon = new SimpleWeapon();` (Sát thương: 20)
-*   Gắn thêm giảm thanh: `myWeapon = new SilencerDecorator(myWeapon);` (Sát thương: 20 - 2 = 18)
-*   Gắn thêm đạn lửa: `myWeapon = new FireEnchantment(myWeapon);` (Sát thương: 18 + 5 = 23)
-
-Mỗi khi ta gọi hàm `myWeapon.GetDamage()`, cuộc gọi sẽ chạy xuyên suốt qua tất cả các lớp Decorator để tính ra kết quả cuối cùng.
+HÃ£y tÆ°á»Ÿng tÆ°á»£ng báº¡n Ä‘ang viáº¿t mÃ£ cho má»™t há»‡ thá»‘ng VÅ© khÃ­ trong game báº¯n sÃºng sinh tá»“n (Shooter) hoáº·c game RPG.
+- Báº¡n cÃ³ má»™t lá»›p vÅ© khÃ­ cÆ¡ báº£n lÃ  `SimpleWeapon` (SÃºng trÆ°á»ng tiÃªu chuáº©n) gÃ¢y ra 20 sÃ¡t thÆ°Æ¡ng.
+- NgÆ°á»i chÆ¡i cÃ³ thá»ƒ nháº·t Ä‘Æ°á»£c cÃ¡c phá»¥ kiá»‡n nÃ¢ng cáº¥p (attachments) hoáº·c bÃ¹a phÃ©p (enchantments) Ä‘á»ƒ gáº¯n lÃªn vÅ© khÃ­ nhÆ°:
+  *   `Silencer` (á»ng giáº£m thanh): Giáº£m tiáº¿ng á»“n, giáº£m nháº¹ 2 sÃ¡t thÆ°Æ¡ng cÆ¡ báº£n nhÆ°ng tÄƒng Ä‘á»™ chÃ­ máº¡ng.
+  *   `FireAmmo` (Äáº¡n lá»­a): ThÃªm hiá»‡u á»©ng thiÃªu Ä‘á»‘t, cá»™ng thÃªm 5 sÃ¡t thÆ°Æ¡ng lá»­a.
+  *   `PoisonAmmo` (Äáº¡n Ä‘á»™c): ThÃªm hiá»‡u á»©ng Ä‘á»™c rÃºt mÃ¡u, cá»™ng thÃªm 3 sÃ¡t thÆ°Æ¡ng Ä‘á»™c.
+- Náº¿u dÃ¹ng phÆ°Æ¡ng phÃ¡p káº¿ thá»«a, báº¡n sáº½ pháº£i táº¡o ra hÃ ng loáº¡t class Ä‘á»ƒ phá»¥c vá»¥ táº¥t cáº£ cÃ¡c tá»• há»£p láº¯p ghÃ©p cÃ³ thá»ƒ: `SilencedWeapon`, `FireWeapon`, `PoisonWeapon`, `SilencedFireWeapon`, `SilencedPoisonWeapon`, `FirePoisonWeapon`, `SilencedFirePoisonWeapon`...
+- Viá»‡c nÃ y dáº«n Ä‘áº¿n sá»± bÃ¹ng ná»• sá»‘ lÆ°á»£ng lá»›p con (subclass explosion) khÃ´ng thá»ƒ kiá»ƒm soÃ¡t. Äá»“ng thá»i, báº¡n khÃ´ng thá»ƒ dá»… dÃ ng thÃ¡o láº¯p phá»¥ kiá»‡n hoáº·c thay Ä‘á»•i hiá»‡u á»©ng vÅ© khÃ­ ngay trong tráº­n Ä‘áº¥u khi ngÆ°á»i chÆ¡i nháº¥n nÃºt thÃ¡o phá»¥ kiá»‡n.
 
 ---
 
-## 🎨 Cấu trúc (Structure)
+## âœ… Giáº£i phÃ¡p (Solution)
 
-Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 lớp: **ý tưởng nhanh → luồng chạy thực tế → UML rút gọn**.
+Máº«u **Decorator** Ä‘á» xuáº¥t thay tháº¿ viá»‡c káº¿ thá»«a trá»±c tiáº¿p báº±ng cÃ¡ch sá»­ dá»¥ng **Bao bá»c (Wrapping)**.
 
-### 1. Ý tưởng nhanh
+1.  **Component (`IWeapon`):** Äá»‹nh nghÄ©a má»™t interface chung cho cáº£ vÅ© khÃ­ cÆ¡ báº£n vÃ  cÃ¡c phá»¥ kiá»‡n trang trÃ­.
+2.  **Concrete Component (`SimpleWeapon`):** VÅ© khÃ­ thÃ´, cÆ¡ báº£n ban Ä‘áº§u thá»±c thi `IWeapon`.
+3.  **Base Decorator (`WeaponDecorator`):** Thá»±c thi interface `IWeapon` vÃ  chá»©a má»™t tham chiáº¿u Ä‘áº¿n Ä‘á»‘i tÆ°á»£ng `IWeapon` khÃ¡c. Lá»›p nÃ y Ä‘Ã³ng vai trÃ² chuyá»ƒn tiáº¿p má»i cuá»™c gá»i hÃ m (nhÆ° tÃ­nh sÃ¡t thÆ°Æ¡ng, láº¥y mÃ´ táº£) Ä‘áº¿n Ä‘á»‘i tÆ°á»£ng Ä‘Æ°á»£c bao bá»c bÃªn trong.
+4.  **Concrete Decorators (`FireEnchantment`, `SilencerDecorator`):** Ghi Ä‘Ã¨ cÃ¡c hÃ m cá»§a Decorator cha Ä‘á»ƒ cá»™ng thÃªm logic riÃªng (vÃ­ dá»¥: láº¥y sÃ¡t thÆ°Æ¡ng cá»§a sÃºng bÃªn trong rá»“i cá»™ng thÃªm sÃ¡t thÆ°Æ¡ng nguyÃªn tá»‘ lá»­a).
+
+Khi cháº¡y game, ta cÃ³ thá»ƒ láº¯p rÃ¡p vÅ© khÃ­ nhÆ° nhá»¯ng lá»›p vá» hÃ nh tÃ¢y lá»“ng vÃ o nhau:
+*   Báº¯t Ä‘áº§u vá»›i: `IWeapon myWeapon = new SimpleWeapon();` (SÃ¡t thÆ°Æ¡ng: 20)
+*   Gáº¯n thÃªm giáº£m thanh: `myWeapon = new SilencerDecorator(myWeapon);` (SÃ¡t thÆ°Æ¡ng: 20 - 2 = 18)
+*   Gáº¯n thÃªm Ä‘áº¡n lá»­a: `myWeapon = new FireEnchantment(myWeapon);` (SÃ¡t thÆ°Æ¡ng: 18 + 5 = 23)
+
+Má»—i khi ta gá»i hÃ m `myWeapon.GetDamage()`, cuá»™c gá»i sáº½ cháº¡y xuyÃªn suá»‘t qua táº¥t cáº£ cÃ¡c lá»›p Decorator Ä‘á»ƒ tÃ­nh ra káº¿t quáº£ cuá»‘i cÃ¹ng.
+
+---
+
+## ðŸŽ¨ Cáº¥u trÃºc (Structure)
+
+Thay vÃ¬ Ä‘á»c má»™t UML lá»›n ngay tá»« Ä‘áº§u, hÃ£y Ä‘á»c pattern theo 3 lá»›p: **Ã½ tÆ°á»Ÿng nhanh â†’ luá»“ng cháº¡y thá»±c táº¿ â†’ UML rÃºt gá»n**.
+
+### 1. Ã tÆ°á»Ÿng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Weapon["Base weapon"] --> Silencer["Silencer decorator"]
   Silencer --> Fire["Fire decorator"]
-  Fire --> Result["Weapon có nhiều hiệu ứng"]
+  Fire --> Result["Weapon cÃ³ nhiá»u hiá»‡u á»©ng"]
 ```
 
-### 2. Luồng chạy thực tế
+### 2. Luá»“ng cháº¡y thá»±c táº¿
 
 ```mermaid
-flowchart LR
-  Client["Client gọi GetDamage()"] --> Outer["Decorator ngoài cùng"]
-  Outer --> Inner["Chuỗi wrappee"]
+flowchart TD
+  Client["Client gá»i GetDamage()"] --> Outer["Decorator ngoÃ i cÃ¹ng"]
+  Outer --> Inner["Chuá»—i wrappee"]
   Inner --> Base["Base weapon"]
-  Base --> Result["Damage gốc + hiệu ứng"]
+  Base --> Result["Damage gá»‘c + hiá»‡u á»©ng"]
 ```
 
-### 3. UML rút gọn
+### 3. UML rÃºt gá»n
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Component {
     <<interface>>
     +Operation()
@@ -87,36 +87,36 @@ classDiagram
   BaseDecorator <|-- ConcreteDecoratorB
 ```
 
-### Cách đọc sơ đồ
+### CÃ¡ch Ä‘á»c sÆ¡ Ä‘á»“
 
-| Thành phần | Ý nghĩa |
+| ThÃ nh pháº§n | Ã nghÄ©a |
 |---|---|
-| Nhìn nhanh | Decorator bọc object để thêm behavior runtime. |
-| Luồng chính | Call đi từ lớp bọc ngoài vào trong rồi cộng logic khi trả ra. |
+| NhÃ¬n nhanh | Decorator bá»c object Ä‘á»ƒ thÃªm behavior runtime. |
+| Luá»“ng chÃ­nh | Call Ä‘i tá»« lá»›p bá»c ngoÃ i vÃ o trong rá»“i cá»™ng logic khi tráº£ ra. |
 | Trong game | Power-up, buff/debuff, weapon attachment. |
-| Mũi tên nét liền | Object đang giữ tham chiếu hoặc gọi trực tiếp object khác. |
-| Mũi tên tam giác / nét đứt trong UML | Kế thừa hoặc thực thi interface. |
+| MÅ©i tÃªn nÃ©t liá»n | Object Ä‘ang giá»¯ tham chiáº¿u hoáº·c gá»i trá»±c tiáº¿p object khÃ¡c. |
+| MÅ©i tÃªn tam giÃ¡c / nÃ©t Ä‘á»©t trong UML | Káº¿ thá»«a hoáº·c thá»±c thi interface. |
 
-> Mẹo đọc nhanh: trước hết hãy tìm **Client/Context**, sau đó đi theo mũi tên đến interface chính. Các class cụ thể chỉ là biến thể được thay vào khi chạy.
+> Máº¹o Ä‘á»c nhanh: trÆ°á»›c háº¿t hÃ£y tÃ¬m **Client/Context**, sau Ä‘Ã³ Ä‘i theo mÅ©i tÃªn Ä‘áº¿n interface chÃ­nh. CÃ¡c class cá»¥ thá»ƒ chá»‰ lÃ  biáº¿n thá»ƒ Ä‘Æ°á»£c thay vÃ o khi cháº¡y.
 
 ---
 
-## 💻 Mã giả (Pseudocode)
+## ðŸ’» MÃ£ giáº£ (Pseudocode)
 
 ```csharp
-// Giao diện Component
+// Giao diá»‡n Component
 interface IComponent
 {
     string Operation();
 }
 
-// Lớp đối tượng gốc
+// Lá»›p Ä‘á»‘i tÆ°á»£ng gá»‘c
 class ConcreteComponent : IComponent
 {
-    public string Operation() => "Gốc";
+    public string Operation() => "Gá»‘c";
 }
 
-// Decorator cơ bản
+// Decorator cÆ¡ báº£n
 abstract class Decorator : IComponent
 {
     protected IComponent _component;
@@ -129,68 +129,68 @@ abstract class Decorator : IComponent
     public virtual string Operation() => _component.Operation();
 }
 
-// Bộ trang trí cụ thể A
+// Bá»™ trang trÃ­ cá»¥ thá»ƒ A
 class ConcreteDecoratorA : Decorator
 {
     public ConcreteDecoratorA(IComponent comp) : base(comp) {}
 
     public override string Operation()
     {
-        return $"Trang trí A({base.Operation()})";
+        return $"Trang trÃ­ A({base.Operation()})";
     }
 }
 ```
 
 ---
 
-## ⚙️ Khả năng áp dụng (Applicability)
+## âš™ï¸ Kháº£ nÄƒng Ã¡p dá»¥ng (Applicability)
 
-Dùng Decorator khi:
-- Bạn muốn thêm các thuộc tính hoặc hành vi mới cho các đối tượng một cách động mà không làm ảnh hưởng đến các đối tượng khác.
-- Bạn cần một giải pháp thay thế linh hoạt cho cơ chế kế thừa vốn đang gặp tình trạng bùng nổ số lượng lớp con quá mức.
-- Điển hình trong game: Hệ thống trang trí bùa phép vũ khí, hệ thống Buff/Debuff của nhân vật (mỗi buff là một decorator bao bọc chỉ số nhân vật), hệ thống nâng cấp chỉ số trang bị.
-
----
-
-## 📝 Các bước thực hiện (How to Implement)
-
-1.  Định nghĩa interface chung (Component) đại diện cho thực thể cốt lõi và các bộ trang trí.
-2.  Tạo lớp cụ thể (Concrete Component) thực thi interface này để làm đối tượng nền tảng.
-3.  Tạo lớp Base Decorator thực thi interface Component và chứa một trường tham chiếu đến kiểu Component đó.
-4.  Ủy quyền tất cả các phương thức của Component sang đối tượng được wrap bên trong.
-5.  Tạo các Concrete Decorator kế thừa từ Base Decorator. Ở mỗi phương thức cần trang trí, hãy gọi phương thức tương tự của lớp cha (hoặc đối tượng bên trong) rồi thực hiện cộng dồn/bổ sung logic mới.
+DÃ¹ng Decorator khi:
+- Báº¡n muá»‘n thÃªm cÃ¡c thuá»™c tÃ­nh hoáº·c hÃ nh vi má»›i cho cÃ¡c Ä‘á»‘i tÆ°á»£ng má»™t cÃ¡ch Ä‘á»™ng mÃ  khÃ´ng lÃ m áº£nh hÆ°á»Ÿng Ä‘áº¿n cÃ¡c Ä‘á»‘i tÆ°á»£ng khÃ¡c.
+- Báº¡n cáº§n má»™t giáº£i phÃ¡p thay tháº¿ linh hoáº¡t cho cÆ¡ cháº¿ káº¿ thá»«a vá»‘n Ä‘ang gáº·p tÃ¬nh tráº¡ng bÃ¹ng ná»• sá»‘ lÆ°á»£ng lá»›p con quÃ¡ má»©c.
+- Äiá»ƒn hÃ¬nh trong game: Há»‡ thá»‘ng trang trÃ­ bÃ¹a phÃ©p vÅ© khÃ­, há»‡ thá»‘ng Buff/Debuff cá»§a nhÃ¢n váº­t (má»—i buff lÃ  má»™t decorator bao bá»c chá»‰ sá»‘ nhÃ¢n váº­t), há»‡ thá»‘ng nÃ¢ng cáº¥p chá»‰ sá»‘ trang bá»‹.
 
 ---
 
-## ⚖️ Ưu & Nhược điểm (Pros and Cons)
+## ðŸ“ CÃ¡c bÆ°á»›c thá»±c hiá»‡n (How to Implement)
 
-*   **👍 Ưu điểm:**
-    *   *Linh hoạt vượt trội:* Có thể kết hợp nhiều hiệu ứng/phụ kiện khác nhau cùng một lúc tại runtime (ví dụ: súng vừa giảm thanh vừa bắn đạn độc).
-    *   *Single Responsibility Principle:* Chia nhỏ các hiệu ứng (lửa, độc, giảm thanh) ra thành các class riêng biệt.
-    *   *Tránh kế thừa tĩnh:* Cắt giảm tối đa số lượng class con cần duy trì.
-*   **👎 Nhược điểm:**
-    *   Khó gỡ bỏ một Decorator cụ thể ở giữa chuỗi bao bọc (ví dụ: muốn tháo ống giảm thanh nhưng giữ nguyên đạn lửa và đạn độc).
-    *   Thứ tự lồng ghép Decorator có thể ảnh hưởng đến logic (ví dụ: nhân sát thương trước hay cộng sát thương trước).
-    *   Mã nguồn có thể khó debug ban đầu vì đối tượng cuối cùng thực tế là một chuỗi lồng ghép sâu.
+1.  Äá»‹nh nghÄ©a interface chung (Component) Ä‘áº¡i diá»‡n cho thá»±c thá»ƒ cá»‘t lÃµi vÃ  cÃ¡c bá»™ trang trÃ­.
+2.  Táº¡o lá»›p cá»¥ thá»ƒ (Concrete Component) thá»±c thi interface nÃ y Ä‘á»ƒ lÃ m Ä‘á»‘i tÆ°á»£ng ná»n táº£ng.
+3.  Táº¡o lá»›p Base Decorator thá»±c thi interface Component vÃ  chá»©a má»™t trÆ°á»ng tham chiáº¿u Ä‘áº¿n kiá»ƒu Component Ä‘Ã³.
+4.  á»¦y quyá»n táº¥t cáº£ cÃ¡c phÆ°Æ¡ng thá»©c cá»§a Component sang Ä‘á»‘i tÆ°á»£ng Ä‘Æ°á»£c wrap bÃªn trong.
+5.  Táº¡o cÃ¡c Concrete Decorator káº¿ thá»«a tá»« Base Decorator. á»ž má»—i phÆ°Æ¡ng thá»©c cáº§n trang trÃ­, hÃ£y gá»i phÆ°Æ¡ng thá»©c tÆ°Æ¡ng tá»± cá»§a lá»›p cha (hoáº·c Ä‘á»‘i tÆ°á»£ng bÃªn trong) rá»“i thá»±c hiá»‡n cá»™ng dá»“n/bá»• sung logic má»›i.
 
 ---
 
-## 🎮 Trong Game Dev: C# Code Example (Unity)
+## âš–ï¸ Æ¯u & NhÆ°á»£c Ä‘iá»ƒm (Pros and Cons)
 
-Dưới đây là cách xây dựng hệ thống Trang trí Vũ khí với hiệu ứng Đạn lửa và Ống giảm thanh trong Unity:
+*   **ðŸ‘ Æ¯u Ä‘iá»ƒm:**
+    *   *Linh hoáº¡t vÆ°á»£t trá»™i:* CÃ³ thá»ƒ káº¿t há»£p nhiá»u hiá»‡u á»©ng/phá»¥ kiá»‡n khÃ¡c nhau cÃ¹ng má»™t lÃºc táº¡i runtime (vÃ­ dá»¥: sÃºng vá»«a giáº£m thanh vá»«a báº¯n Ä‘áº¡n Ä‘á»™c).
+    *   *Single Responsibility Principle:* Chia nhá» cÃ¡c hiá»‡u á»©ng (lá»­a, Ä‘á»™c, giáº£m thanh) ra thÃ nh cÃ¡c class riÃªng biá»‡t.
+    *   *TrÃ¡nh káº¿ thá»«a tÄ©nh:* Cáº¯t giáº£m tá»‘i Ä‘a sá»‘ lÆ°á»£ng class con cáº§n duy trÃ¬.
+*   **ðŸ‘Ž NhÆ°á»£c Ä‘iá»ƒm:**
+    *   KhÃ³ gá»¡ bá» má»™t Decorator cá»¥ thá»ƒ á»Ÿ giá»¯a chuá»—i bao bá»c (vÃ­ dá»¥: muá»‘n thÃ¡o á»‘ng giáº£m thanh nhÆ°ng giá»¯ nguyÃªn Ä‘áº¡n lá»­a vÃ  Ä‘áº¡n Ä‘á»™c).
+    *   Thá»© tá»± lá»“ng ghÃ©p Decorator cÃ³ thá»ƒ áº£nh hÆ°á»Ÿng Ä‘áº¿n logic (vÃ­ dá»¥: nhÃ¢n sÃ¡t thÆ°Æ¡ng trÆ°á»›c hay cá»™ng sÃ¡t thÆ°Æ¡ng trÆ°á»›c).
+    *   MÃ£ nguá»“n cÃ³ thá»ƒ khÃ³ debug ban Ä‘áº§u vÃ¬ Ä‘á»‘i tÆ°á»£ng cuá»‘i cÃ¹ng thá»±c táº¿ lÃ  má»™t chuá»—i lá»“ng ghÃ©p sÃ¢u.
 
-### 1. Interface Component và Concrete Component
+---
+
+## ðŸŽ® Trong Game Dev: C# Code Example (Unity)
+
+DÆ°á»›i Ä‘Ã¢y lÃ  cÃ¡ch xÃ¢y dá»±ng há»‡ thá»‘ng Trang trÃ­ VÅ© khÃ­ vá»›i hiá»‡u á»©ng Äáº¡n lá»­a vÃ  á»ng giáº£m thanh trong Unity:
+
+### 1. Interface Component vÃ  Concrete Component
 ```csharp
 namespace DesignPatterns.Decorator
 {
-    // Interface chung cho tất cả các loại vũ khí và phụ kiện nâng cấp
+    // Interface chung cho táº¥t cáº£ cÃ¡c loáº¡i vÅ© khÃ­ vÃ  phá»¥ kiá»‡n nÃ¢ng cáº¥p
     public interface IWeapon
     {
         string GetDescription();
         float GetDamage();
     }
 
-    // Vũ khí cơ bản ban đầu
+    // VÅ© khÃ­ cÆ¡ báº£n ban Ä‘áº§u
     public class SimpleWeapon : IWeapon
     {
         private string weaponName;
@@ -212,7 +212,7 @@ namespace DesignPatterns.Decorator
 ```csharp
 namespace DesignPatterns.Decorator
 {
-    // Lớp cơ sở cho mọi phụ kiện trang trí vũ khí
+    // Lá»›p cÆ¡ sá»Ÿ cho má»i phá»¥ kiá»‡n trang trÃ­ vÅ© khÃ­
     public abstract class WeaponDecorator : IWeapon
     {
         protected IWeapon wrappedWeapon;
@@ -222,7 +222,7 @@ namespace DesignPatterns.Decorator
             this.wrappedWeapon = weapon;
         }
 
-        // Chuyển tiếp cuộc gọi đến vũ khí được bao bọc bên trong
+        // Chuyá»ƒn tiáº¿p cuá»™c gá»i Ä‘áº¿n vÅ© khÃ­ Ä‘Æ°á»£c bao bá»c bÃªn trong
         public virtual string GetDescription()
         {
             return wrappedWeapon.GetDescription();
@@ -236,40 +236,40 @@ namespace DesignPatterns.Decorator
 }
 ```
 
-### 3. Concrete Decorators (Các phụ kiện cụ thể)
+### 3. Concrete Decorators (CÃ¡c phá»¥ kiá»‡n cá»¥ thá»ƒ)
 ```csharp
 namespace DesignPatterns.Decorator
 {
-    // Phụ kiện: Ống giảm thanh (Silencer)
+    // Phá»¥ kiá»‡n: á»ng giáº£m thanh (Silencer)
     public class SilencerDecorator : WeaponDecorator
     {
         public SilencerDecorator(IWeapon weapon) : base(weapon) { }
 
         public override string GetDescription()
         {
-            return base.GetDescription() + " + Ống Giảm Thanh (Silencer)";
+            return base.GetDescription() + " + á»ng Giáº£m Thanh (Silencer)";
         }
 
         public override float GetDamage()
         {
-            // Giảm thanh làm giảm nhẹ sát thương cơ bản đi 2 đơn vị
+            // Giáº£m thanh lÃ m giáº£m nháº¹ sÃ¡t thÆ°Æ¡ng cÆ¡ báº£n Ä‘i 2 Ä‘Æ¡n vá»‹
             return base.GetDamage() - 2f;
         }
     }
 
-    // Nâng cấp: Đạn Lửa (Fire Enchantment)
+    // NÃ¢ng cáº¥p: Äáº¡n Lá»­a (Fire Enchantment)
     public class FireEnchantment : WeaponDecorator
     {
         public FireEnchantment(IWeapon weapon) : base(weapon) { }
 
         public override string GetDescription()
         {
-            return base.GetDescription() + " & Đạn Lửa (Fire)";
+            return base.GetDescription() + " & Äáº¡n Lá»­a (Fire)";
         }
 
         public override float GetDamage()
         {
-            // Cộng thêm 5 sát thương lửa
+            // Cá»™ng thÃªm 5 sÃ¡t thÆ°Æ¡ng lá»­a
             return base.GetDamage() + 5f;
         }
     }
@@ -286,30 +286,30 @@ namespace DesignPatterns.Decorator
     {
         private void Start()
         {
-            // 1. Tạo khẩu súng trường M4A1 cơ bản
-            IWeapon myRifle = new SimpleWeapon("Súng trường M4A1", 20f);
+            // 1. Táº¡o kháº©u sÃºng trÆ°á»ng M4A1 cÆ¡ báº£n
+            IWeapon myRifle = new SimpleWeapon("SÃºng trÆ°á»ng M4A1", 20f);
             PrintWeaponInfo(myRifle);
 
-            // 2. Gắn thêm ống giảm thanh (Silencer) vào khẩu M4A1
-            Debug.Log("\n--- Người chơi gắn thêm Ống giảm thanh ---");
+            // 2. Gáº¯n thÃªm á»‘ng giáº£m thanh (Silencer) vÃ o kháº©u M4A1
+            Debug.Log("\n--- NgÆ°á»i chÆ¡i gáº¯n thÃªm á»ng giáº£m thanh ---");
             myRifle = new SilencerDecorator(myRifle);
             PrintWeaponInfo(myRifle);
 
-            // 3. Phù phép thêm Đạn lửa (Fire Enchantment) lên khẩu M4A1 đang có giảm thanh
-            Debug.Log("\n--- Người chơi nạp thêm Đạn lửa ---");
+            // 3. PhÃ¹ phÃ©p thÃªm Äáº¡n lá»­a (Fire Enchantment) lÃªn kháº©u M4A1 Ä‘ang cÃ³ giáº£m thanh
+            Debug.Log("\n--- NgÆ°á»i chÆ¡i náº¡p thÃªm Äáº¡n lá»­a ---");
             myRifle = new FireEnchantment(myRifle);
             PrintWeaponInfo(myRifle);
 
-            // 4. Có thể lồng ghép thêm một lớp đạn lửa nữa nếu game cho phép stack hiệu ứng
-            Debug.Log("\n--- Người chơi stack thêm một lớp Đạn lửa nữa ---");
+            // 4. CÃ³ thá»ƒ lá»“ng ghÃ©p thÃªm má»™t lá»›p Ä‘áº¡n lá»­a ná»¯a náº¿u game cho phÃ©p stack hiá»‡u á»©ng
+            Debug.Log("\n--- NgÆ°á»i chÆ¡i stack thÃªm má»™t lá»›p Äáº¡n lá»­a ná»¯a ---");
             myRifle = new FireEnchantment(myRifle);
             PrintWeaponInfo(myRifle);
         }
 
         private void PrintWeaponInfo(IWeapon weapon)
         {
-            Debug.Log($"Vũ khí: {weapon.GetDescription()}");
-            Debug.Log($"Tổng sát thương: {weapon.GetDamage()} DPS");
+            Debug.Log($"VÅ© khÃ­: {weapon.GetDescription()}");
+            Debug.Log($"Tá»•ng sÃ¡t thÆ°Æ¡ng: {weapon.GetDamage()} DPS");
         }
     }
 }
@@ -317,9 +317,9 @@ namespace DesignPatterns.Decorator
 
 ---
 
-> 📚 **Nguồn gốc:** Nội dung tham khảo từ [Refactoring.Guru](https://refactoring.guru/) — Tác giả: Alexander Shvets, Minh họa: Dmitry Zhart
+> ðŸ“š **Nguá»“n gá»‘c:** Ná»™i dung tham kháº£o tá»« [Refactoring.Guru](https://refactoring.guru/) â€” TÃ¡c giáº£: Alexander Shvets, Minh há»a: Dmitry Zhart
 
-| Hướng | Liên kết |
+| HÆ°á»›ng | LiÃªn káº¿t |
 |-------|----------|
-| ← Quay lại | [Composite](./03-composite.md) |
-| → Tiếp theo | [Facade](./05-facade.md) |
+| â† Quay láº¡i | [Composite](./03-composite.md) |
+| â†’ Tiáº¿p theo | [Facade](./05-facade.md) |

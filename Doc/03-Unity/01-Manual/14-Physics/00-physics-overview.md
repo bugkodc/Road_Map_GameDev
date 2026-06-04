@@ -62,18 +62,18 @@ Vòng lặp vật lý:   [FixedUpdate] (0.02s cố định) ──> [PhysX Simul
 Luồng xử lý sự kiện trong vòng lặp vật lý của Unity:
 
 ```mermaid
-graph TD
-    A[Bắt đầu chu kỳ FixedUpdate] --> B[Script thực thi logic vật lý: AddForce/Velocity]
-    B --> C[PhysX thực hiện bước mô phỏng: Internal Physics Update]
-    C --> D[Cập nhật tọa độ mới cho Rigidbody]
-    D --> E{Kiểm tra va chạm?}
-    
-    E -->|Có va chạm vật lý| F[Phát sự kiện OnCollisionEnter/Stay/Exit]
-    E -->|Có giao nhau qua Trigger| G[Phát sự kiện OnTriggerEnter/Stay/Exit]
-    
-    F --> H[Update đồ họa màn hình: Render]
-    G --> H
-    H --> A
+flowchart TD
+  A["Bắt đầu chu kỳ FixedUpdate"] --> B["Script thực thi logic vật lý<br/>AddForce / Velocity"]
+  B --> C["PhysX chạy bước mô phỏng<br/>Internal Physics Update"]
+  C --> D["Cập nhật tọa độ mới cho Rigidbody"]
+  D --> E{"Kiểm tra va chạm?"}
+
+  E -- "Va chạm vật lý" --> F["OnCollisionEnter<br/>OnCollisionStay<br/>OnCollisionExit"]
+  E -- "Trigger overlap" --> G["OnTriggerEnter<br/>OnTriggerStay<br/>OnTriggerExit"]
+
+  F --> H["Render khung hình"]
+  G --> H
+  H --> A
 ```
 
 ---

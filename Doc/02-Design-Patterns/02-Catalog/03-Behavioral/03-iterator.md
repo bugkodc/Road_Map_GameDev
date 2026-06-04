@@ -39,7 +39,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Client["Client"] --> Iterator["Iterator"]
   Iterator --> Collection["Collection"]
   Iterator --> Item["Next item"]
@@ -48,7 +48,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Client lấy iterator"] --> B{"HasNext()?"}
   B -- "Có" --> C["Next() trả item"]
   C --> D["Client xử lý item"]
@@ -60,7 +60,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Iterator {
     <<interface>>
     +HasNext()

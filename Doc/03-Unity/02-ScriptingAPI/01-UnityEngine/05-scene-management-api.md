@@ -14,23 +14,14 @@ Phân hệ **UnityEngine.SceneManagement** quản lý trạng thái của các C
 
 Có hai phương pháp chính để nạp một Scene trong Unity:
 
-```
-              ┌─────────────────────────────────────┐
-              │          Cơ chế nạp Cảnh (Load)     │
-              └──────────────────┬──────────────────┘
-                                 │
-          ┌──────────────────────┴──────────────────────┐
-          v                                             v
-┌─────────────────────────┐                           ┌─────────────────────────┐
-│     Synchronous Load    │                           │    Asynchronous Load    │
-│  (Tải đồng bộ - Khóa)   │                           │  (Tải bất đồng bộ - Mở) │
-└─────────┬───────────────┘                           └─────────┬───────────────┘
-          │                                                     │
-          v                                                     v
-   SceneManager.LoadScene                                SceneManager.LoadSceneAsync
-   - Đóng băng khung hình.                                - Chạy ngầm đa luồng.
-   - Thích hợp màn chơi nhẹ.                              - Hiển thị thanh tiến trình.
-   - Gây giật hình với Scene nặng.                       - Không gây đơ game.
+```mermaid
+flowchart TD
+  Load["Cơ chế nạp Scene"]
+  Load --> Sync["Synchronous Load<br/>SceneManager.LoadScene"]
+  Load --> Async["Asynchronous Load<br/>SceneManager.LoadSceneAsync"]
+
+  Sync --> SyncCost["Khóa main thread<br/>Phù hợp scene nhẹ<br/>Dễ gây freeze với scene nặng"]
+  Async --> AsyncBenefit["Chạy nền qua AsyncOperation<br/>Theo dõi progress<br/>Không làm đơ game"]
 ```
 
 ### So sánh chi tiết:

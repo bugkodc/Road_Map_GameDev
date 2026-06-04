@@ -45,20 +45,18 @@ Mỗi bước refactoring nhỏ, bạn cần đảm bảo **tất cả test vẫ
 
 Quy trình refactoring an toàn theo từng bước:
 
-```
-1️⃣  Nhận diện Code Smell
-    ↓
-2️⃣  Viết/kiểm tra test cho code hiện tại
-    ↓
-3️⃣  Thực hiện thay đổi NHỎ
-    ↓
-4️⃣  Chạy test → Tất cả pass?
-    ├── ✅ Pass → Commit & tiếp tục bước 3
-    └── ❌ Fail → Revert & thử cách khác
-    ↓
-5️⃣  Review toàn bộ → Code sạch hơn trước?
-    ├── ✅ Có → Hoàn thành! 🎉
-    └── ❌ Chưa → Lặp lại từ bước 1
+```mermaid
+flowchart TD
+  A["1. Nhận diện Code Smell"] --> B["2. Viết hoặc kiểm tra test hiện tại"]
+  B --> C["3. Thực hiện một thay đổi nhỏ"]
+  C --> D{"4. Tất cả test pass?"}
+  D -- "Pass" --> E["Commit và tiếp tục bước 3"]
+  E --> C
+  D -- "Fail" --> F["Revert và thử cách khác"]
+  F --> C
+  D -- "Đã ổn" --> G{"5. Code sạch hơn trước?"}
+  G -- "Có" --> H["Hoàn thành"]
+  G -- "Chưa" --> A
 ```
 
 ### Chi tiết từng bước:
