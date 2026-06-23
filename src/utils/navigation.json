@@ -525,6 +525,48 @@
           "path": "03-Unity/00-unity-overview.md"
         },
         {
+          "id": "unity-career-header",
+          "title": "🚀 Lộ trình theo cấp bậc",
+          "isHeader": true,
+          "children": [
+            {
+              "id": "unity-career-overview",
+              "title": "Tổng quan cấp bậc",
+              "path": "03-Unity/00-Career-Path/00-career-overview.md"
+            },
+            {
+              "id": "unity-career-intern",
+              "title": "Intern (Thực tập sinh)",
+              "path": "03-Unity/00-Career-Path/01-intern.md"
+            },
+            {
+              "id": "unity-career-fresher",
+              "title": "Fresher",
+              "path": "03-Unity/00-Career-Path/02-fresher.md"
+            },
+            {
+              "id": "unity-career-junior",
+              "title": "Junior",
+              "path": "03-Unity/00-Career-Path/03-junior.md"
+            },
+            {
+              "id": "unity-career-middle",
+              "title": "Middle",
+              "path": "03-Unity/00-Career-Path/04-middle.md"
+            },
+            {
+              "id": "unity-career-senior",
+              "title": "Senior",
+              "path": "03-Unity/00-Career-Path/05-senior.md"
+            },
+            {
+              "id": "unity-career-lead",
+              "title": "Technical Lead",
+              "path": "03-Unity/00-Career-Path/06-lead.md"
+            }
+          ]
+        },
+        {
           "id": "unity-manual-header",
           "title": "📖 Unity Manual",
           "isHeader": true,
