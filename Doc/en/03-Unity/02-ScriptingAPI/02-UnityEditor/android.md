@@ -35,15 +35,15 @@ public class AndroidBuildSetup
 {
     public static void SetAndroidKeystore()
     {
-        // Tự động gán thông tin chứng chỉ ký tệp cho Android Build
+        // Automatically assign the file-signing certificate info for the Android build
         PlayerSettings.Android.useCustomKeystore = true;
         PlayerSettings.Android.keystoreName = "mygame.keystore";
         PlayerSettings.Android.keyaliasName = "mykey";
         
-        // Cấu hình build định dạng AAB thay vì APK thông thường
+        // Configure the build to use the AAB format instead of a standard APK
         EditorUserBuildSettings.buildAppBundle = true;
         
-        Debug.Log("[Android.Editor] Đã cấu hình xong Keystore & AAB cho build Android.");
+        Debug.Log("[Android.Editor] Finished configuring the Keystore & AAB for the Android build.");
     }
 }
 #endif

@@ -30,8 +30,8 @@ The physics system clearly separates dynamics behavior from collision geometry:
 A classic mistake of new developers is applying physics forces inside the `Update()` function.
 
 ```
-Vòng lặp đồ họa:   [Update] (Thời gian không đều) ──> [Render Khung hình] ──> [Hiển thị]
-Vòng lặp vật lý:   [FixedUpdate] (0.02s cố định) ──> [PhysX Simulation Step] ──> [Collision Events]
+Graphics loop:   [Update] (Variable timestep)  ──> [Render Frame]          ──> [Display]
+Physics loop:    [FixedUpdate] (Fixed 0.02s)   ──> [PhysX Simulation Step] ──> [Collision Events]
 ```
 
 *   **`Update()`:** Runs once per frame. The frame rate varies continuously depending on the scene's graphics load and the machine's configuration. The interval between two frames (`Time.deltaTime`) is completely unstable.
@@ -63,15 +63,15 @@ The event-processing flow within Unity's physics loop:
 
 ```mermaid
 flowchart TD
-  A["Bắt đầu chu kỳ FixedUpdate"] --> B["Script thực thi logic vật lý<br/>AddForce / Velocity"]
-  B --> C["PhysX chạy bước mô phỏng<br/>Internal Physics Update"]
-  C --> D["Cập nhật tọa độ mới cho Rigidbody"]
-  D --> E{"Kiểm tra va chạm?"}
+  A["Start of the FixedUpdate cycle"] --> B["Script runs physics logic<br/>AddForce / Velocity"]
+  B --> C["PhysX runs the simulation step<br/>Internal Physics Update"]
+  C --> D["Update the new coordinates for the Rigidbody"]
+  D --> E{"Check for collisions?"}
 
-  E -- "Va chạm vật lý" --> F["OnCollisionEnter<br/>OnCollisionStay<br/>OnCollisionExit"]
+  E -- "Physical collision" --> F["OnCollisionEnter<br/>OnCollisionStay<br/>OnCollisionExit"]
   E -- "Trigger overlap" --> G["OnTriggerEnter<br/>OnTriggerStay<br/>OnTriggerExit"]
 
-  F --> H["Render khung hình"]
+  F --> H["Render the frame"]
   G --> H
   H --> A
 ```
@@ -91,20 +91,20 @@ public class RaycastShooter : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float fireRate = 0.15f;
     [SerializeField] private float weaponRange = 100f;
-    [SerializeField] private float hitForce = 15f; // Xung lực truyền vào đối tượng bị bắn trúng
+    [SerializeField] private float hitForce = 15f; // Impulse transferred to the object that is hit
 
     [Header("Raycast Targeting")]
-    [SerializeField] private LayerMask shootableLayers; // Layer lọc chỉ bắn trúng kẻ địch/môi trường
+    [SerializeField] private LayerMask shootableLayers; // Layer filter to hit only enemies/environment
 
     [Header("Visual Effects")]
-    [SerializeField] private GameObject impactDecalPrefab; // Prefab lỗ đạn/hiệu ứng nổ nhỏ
+    [SerializeField] private GameObject impactDecalPrefab; // Prefab for the bullet hole / small impact effect
     [SerializeField] private float decalDestroyTime = 3.0f;
 
     private float nextFireTime;
 
     private void Update()
     {
-        // Nhận nút bấm bắn trong Update để tránh mất sự kiện nhấn chuột nhanh
+        // Read the fire button in Update to avoid missing fast mouse-click events
         if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
         {
             nextFireTime = Time.time + fireRate;
@@ -113,7 +113,7 @@ public class RaycastShooter : MonoBehaviour
     }
 
     /// <summary>
-    /// Thực hiện cơ chế bắn súng bằng Raycast và truyền tương tác vật lý.
+    /// Performs the gun-firing mechanism using a Raycast and transmits the physics interaction.
     /// </summary>
     private void ShootWeapon()
     {
@@ -123,42 +123,42 @@ public class RaycastShooter : MonoBehaviour
             return;
         }
 
-        // 1. Xác định tâm màn hình để phóng tia
+        // 1. Determine the screen center to cast the ray
         Vector3 rayOrigin = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
         Vector3 rayDirection = playerCamera.transform.forward;
 
-        // 2. Thực hiện Raycast dò va chạm
+        // 2. Perform the collision-detecting Raycast
         RaycastHit hit;
 
-        // Phóng tia dò va chạm chỉ tập trung vào shootableLayers
+        // Cast a collision-detecting ray that targets only shootableLayers
         if (Physics.Raycast(rayOrigin, rayDirection, out hit, weaponRange, shootableLayers))
         {
             Debug.Log($"[Shooter] Hit: {hit.collider.name} at location {hit.point}");
 
-            // 3. Tương tác vật lý: Áp dụng lực va chạm tại điểm tiếp xúc (Hit Point)
-            // Lấy Rigidbody của vật bị trúng đạn (nếu có)
+            // 3. Physics interaction: Apply the impact force at the contact point (Hit Point)
+            // Get the Rigidbody of the object that was hit (if any)
             if (hit.collider.TryGetComponent<Rigidbody>(out Rigidbody rb))
             {
-                // Tính toán hướng lực đẩy: Theo hướng của tia bắn
+                // Compute the push direction: along the direction of the fired ray
                 Vector3 forceDirection = rayDirection * hitForce;
 
-                // Áp lực tại điểm bắn trúng (ForceMode.Impulse: Truyền lực tức thì dạng va chạm)
+                // Apply force at the hit point (ForceMode.Impulse: instant impact-style force)
                 rb.AddForceAtPosition(forceDirection, hit.point, ForceMode.Impulse);
             }
 
-            // 4. Sinh sản hiệu ứng hình ảnh va chạm (Decal)
+            // 4. Spawn the impact visual effect (Decal)
             if (impactDecalPrefab != null)
             {
-                // Tạo decal ngay tại điểm chạm hit.point
-                // Hướng của decal được xoay để đối diện ngược lại với vector pháp tuyến bề mặt (hit.normal)
+                // Create the decal right at the contact point hit.point
+                // The decal's orientation is rotated to face opposite to the surface normal vector (hit.normal)
                 Quaternion decalRotation = Quaternion.LookRotation(hit.normal);
 
                 GameObject decalInstance = Instantiate(impactDecalPrefab, hit.point + (hit.normal * 0.001f), decalRotation);
                 
-                // Gắn decal làm con của vật thể bị bắn trúng để nó di chuyển theo vật thể đó (ví dụ: hòm gỗ di động)
+                // Parent the decal to the object that was hit so it moves along with that object (for example, a moving wooden crate)
                 decalInstance.transform.SetParent(hit.collider.transform);
 
-                // Tự động hủy decal sau vài giây để giải phóng bộ nhớ
+                // Automatically destroy the decal after a few seconds to free memory
                 Destroy(decalInstance, decalDestroyTime);
             }
         }
@@ -168,7 +168,7 @@ public class RaycastShooter : MonoBehaviour
         }
     }
 
-    // Vẽ tia Debug đỏ trong giao diện Scene để dễ lập trình phát triển
+    // Draw a red Debug ray in the Scene view to make development easier
     private void OnDrawGizmos()
     {
         if (playerCamera != null)

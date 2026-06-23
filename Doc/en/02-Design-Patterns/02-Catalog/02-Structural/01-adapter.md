@@ -39,19 +39,19 @@ Instead of reading one big UML diagram from the start, read the pattern in 3 lay
 
 ```mermaid
 flowchart TD
-  Client["Client cần ITarget"] --> Target["ITarget"]
+  Client["Client needs ITarget"] --> Target["ITarget"]
   Target --> Adapter["Adapter"]
-  Adapter --> Adaptee["API cũ / plugin ngoài"]
+  Adapter --> Adaptee["Legacy API / external plugin"]
 ```
 
 ### 2. Real Execution Flow
 
 ```mermaid
 flowchart TD
-  A["Client gọi Target.Request()"] --> B["Adapter nhận request chuẩn"]
-  B --> C["Chuyển đổi tham số / format"]
-  C --> D["Gọi Adaptee.SpecificRequest()"]
-  D --> E["Trả kết quả về Client"]
+  A["Client calls Target.Request()"] --> B["Adapter receives the standard request"]
+  B --> C["Convert parameters / format"]
+  C --> D["Call Adaptee.SpecificRequest()"]
+  D --> E["Return the result to the Client"]
 ```
 
 ### 3. Simplified UML
@@ -93,22 +93,22 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Giao diện Target mà Client mong đợi
+// The Target interface that the Client expects
 interface ITarget
 {
     void Request();
 }
 
-// Lớp Adaptee chứa các hàm hữu ích nhưng không tương thích interface
+// The Adaptee class contains useful methods but is interface-incompatible
 class Adaptee
 {
     public void SpecificRequest()
     {
-        Print("Yêu cầu đặc thù của hệ thống cũ.");
+        Print("Specific request of the legacy system.");
     }
 }
 
-// Lớp Adapter kết nối Target và Adaptee
+// The Adapter class connects Target and Adaptee
 class Adapter : ITarget
 {
     private Adaptee _adaptee;
@@ -120,7 +120,7 @@ class Adapter : ITarget
 
     public void Request()
     {
-        // Chuyển đổi cuộc gọi sang định dạng của Adaptee
+        // Convert the call into the Adaptee's format
         this._adaptee.SpecificRequest();
     }
 }
@@ -168,17 +168,17 @@ using UnityEngine;
 
 namespace DesignPatterns.Adapter
 {
-    // Lớp cũ, không thể chỉnh sửa trực tiếp vì lý do bảo trì hoặc nguồn đóng
+    // Legacy class that cannot be edited directly for maintenance or closed-source reasons
     public class LegacyAchievementSystem
     {
         public void RecordScore(string id, int points)
         {
-            Debug.Log($"[Legacy System] Ghi nhận thành tích '{id}' đạt {points} điểm.");
+            Debug.Log($"[Legacy System] Recorded achievement '{id}' with {points} points.");
         }
 
         public void UnlockBadge(string badgeName)
         {
-            Debug.Log($"[Legacy System] Đã mở khóa huy hiệu: '{badgeName}'!");
+            Debug.Log($"[Legacy System] Unlocked badge: '{badgeName}'!");
         }
     }
 }
@@ -188,14 +188,14 @@ namespace DesignPatterns.Adapter
 ```csharp
 namespace DesignPatterns.Adapter
 {
-    // Interface chuẩn mực mới mà Gameplay và UI đang sử dụng
+    // The new standard interface that Gameplay and UI are using
     public interface IAchievementsManager
     {
         void TrackProgress(string achievementId, float progressPercent);
         void CompleteAchievement(string achievementId);
     }
 
-    // Lớp Adapter thực hiện cầu nối chuyển đổi dữ liệu
+    // The Adapter class bridges and converts the data
     public class LegacyAchievementAdapter : IAchievementsManager
     {
         private readonly LegacyAchievementSystem _legacySystem;
@@ -208,16 +208,16 @@ namespace DesignPatterns.Adapter
 
         public void TrackProgress(string achievementId, float progressPercent)
         {
-            // Chuyển đổi phần trăm (0.0f -> 1.0f) sang điểm số cũ (0 -> 100)
+            // Convert the percentage (0.0f -> 1.0f) into the old score scale (0 -> 100)
             int points = Mathf.RoundToInt(Mathf.Clamp01(progressPercent) * MAX_POINTS);
             
-            // Gọi hàm của hệ thống cũ
+            // Call the legacy system's method
             _legacySystem.RecordScore(achievementId, points);
         }
 
         public void CompleteAchievement(string achievementId)
         {
-            // Hoàn thành thành tích đồng nghĩa với mở khóa Badge hệ thống cũ
+            // Completing an achievement is equivalent to unlocking a badge in the legacy system
             _legacySystem.UnlockBadge(achievementId);
         }
     }
@@ -236,19 +236,19 @@ namespace DesignPatterns.Adapter
 
         private void Start()
         {
-            // 1. Khởi tạo hệ thống cũ
+            // 1. Initialize the legacy system
             LegacyAchievementSystem legacySystem = new LegacyAchievementSystem();
 
-            // 2. Wrap hệ thống cũ qua bộ chuyển đổi Adapter
+            // 2. Wrap the legacy system with the Adapter converter
             _achievementsManager = new LegacyAchievementAdapter(legacySystem);
 
-            // 3. Gameplay mới sử dụng interface mới mượt mà
-            Debug.Log("--- Gameplay bắt đầu tiêu diệt quái vật ---");
+            // 3. The new gameplay uses the new interface seamlessly
+            Debug.Log("--- Gameplay starts slaying monsters ---");
             
-            // Người chơi tiêu diệt được 50% số lượng quái yêu cầu
+            // The player has slain 50% of the required number of monsters
             _achievementsManager.TrackProgress("MONSTER_SLAYER", 0.5f);
 
-            // Người chơi hoàn thành thử thách
+            // The player completes the challenge
             _achievementsManager.CompleteAchievement("MONSTER_SLAYER");
         }
     }

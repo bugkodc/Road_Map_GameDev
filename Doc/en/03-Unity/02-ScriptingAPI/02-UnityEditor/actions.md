@@ -44,12 +44,12 @@ public class EditorActionAutomation
         float startX = selected[0].position.x;
         for (int i = 1; i < selected.Length; i++)
         {
-            // Căn thẳng hàng các vật phẩm được chọn theo trục X của vật thể đầu tiên
+            // Align the selected objects along the X axis of the first object
             Vector3 pos = selected[i].position;
             pos.x = startX;
             selected[i].position = pos;
         }
-        Debug.Log($"[Editor.Actions] Đã căn thẳng hàng {selected.Length} vật thể.");
+        Debug.Log($"[Editor.Actions] Aligned {selected.Length} objects.");
     }
 }
 #endif

@@ -17,22 +17,22 @@ The goal of this chapter is to help you understand the underlying **architectura
 To understand why the Input system works the way it does, look at the journey of a button press from the player's finger to the screen:
 
 ```
-[Phần cứng: Phím Space] 
-       │ (Nhấn nút)
+[Hardware: Space key] 
+       │ (Press button)
        v
-[Hệ điều hành: Windows/OS] -> Tạo Sự kiện Input (OS Event Loop: Win32 Message, Cocoa Event)
-       │ (Gửi sự kiện đến Window của Game)
+[Operating System: Windows/OS] -> Create Input Event (OS Event Loop: Win32 Message, Cocoa Event)
+       │ (Send the event to the Game's Window)
        v
-[Unity Engine Runtime (C++)] -> Đọc sự kiện ở luồng Native (Native Input Event Queue)
-       │ (Buffer sự kiện và đưa vào vòng lặp game)
+[Unity Engine Runtime (C++)] -> Read the event on the Native thread (Native Input Event Queue)
+       │ (Buffer the event and feed it into the game loop)
        v
-[Unity Player Loop] -> Input System Update (Đầu khung hình)
-       │ (Phân phối dữ liệu sang Scripting Layer C#)
+[Unity Player Loop] -> Input System Update (Start of frame)
+       │ (Distribute the data to the C# Scripting Layer)
        v
-[C# Scripting API] -> Đọc trạng thái qua Input class hoặc gọi Callback Event
-       │ (Thay đổi vận tốc Rigidbody)
+[C# Scripting API] -> Read the state via the Input class or call a Callback Event
+       │ (Change the Rigidbody's velocity)
        v
-[Physics & Rendering Engine] -> Vẽ hình nhân vật nhảy lên màn hình
+[Physics & Rendering Engine] -> Draw the character jumping on screen
 ```
 
 If a game engine does not design this reception layer well, the game will suffer serious problems:
@@ -66,8 +66,8 @@ classDiagram
   }
   class Keyboard
   class Gamepad
-  InputDevice <|-- Keyboard : Kế thừa
-  InputDevice <|-- Gamepad : Kế thừa
+  InputDevice <|-- Keyboard : Inherits
+  InputDevice <|-- Gamepad : Inherits
 
   class InputBinding {
     +path String (e.g. Keyboard/space)
@@ -90,16 +90,16 @@ classDiagram
     +Disable()
   }
 
-  InputDevice --> InputBinding : Cung cấp tín hiệu
-  InputBinding --> InputAction : Liên kết phím
-  InputAction --* InputActionMap : Thuộc về
+  InputDevice --> InputBinding : Provides signal
+  InputBinding --> InputAction : Binds key
+  InputAction --* InputActionMap : Belongs to
   
   class PlayerInput {
     <<component>>
     -actions InputActionAsset
     +onActionTriggered event
   }
-  PlayerInput --> InputActionMap : Quản lý
+  PlayerInput --> InputActionMap : Manages
 ```
 
 ### Explanation of the components:
@@ -127,14 +127,14 @@ public class LegacyInputExample : MonoBehaviour
 
     void Update()
     {
-        // Polling (truy vấn liên tục) ở mỗi khung hình Update
-        float moveHorizontal = Input.GetAxis("Horizontal"); // Trả về giá trị từ -1.0f đến 1.0f
+        // Polling (continuous querying) every Update frame
+        float moveHorizontal = Input.GetAxis("Horizontal"); // Returns a value from -1.0f to 1.0f
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         transform.Translate(movement * speed * Time.deltaTime);
 
-        // Kiểm tra nút nhấn đơn lẻ
+        // Check a single button press
         if (Input.GetButtonDown("Jump"))
         {
             PerformJump();
@@ -143,7 +143,7 @@ public class LegacyInputExample : MonoBehaviour
 
     private void PerformJump()
     {
-        Debug.Log("Nhảy lên sử dụng Legacy Input!");
+        Debug.Log("Jump using Legacy Input!");
     }
 }
 ```
@@ -153,7 +153,7 @@ The New Input System also supports reading hardware state directly without going
 
 ```csharp
 using UnityEngine;
-using UnityEngine.InputSystem; // Bắt buộc import namespace mới
+using UnityEngine.InputSystem; // Must import the new namespace
 
 public class DirectNewInputExample : MonoBehaviour
 {
@@ -161,10 +161,10 @@ public class DirectNewInputExample : MonoBehaviour
 
     void Update()
     {
-        // Kiểm tra thiết bị có đang hoạt động không
+        // Check whether the device is active
         if (Keyboard.current == null) return;
 
-        // Đọc giá trị trực tiếp từ phím cứng
+        // Read values directly from the physical keys
         Vector2 moveInput = Vector2.zero;
         if (Keyboard.current.wKey.isPressed) moveInput.y = 1;
         if (Keyboard.current.sKey.isPressed) moveInput.y = -1;
@@ -174,7 +174,7 @@ public class DirectNewInputExample : MonoBehaviour
         Vector3 movement = new Vector3(moveInput.x, 0.0f, moveInput.y);
         transform.Translate(movement * speed * Time.deltaTime);
 
-        // Kiểm tra phím vừa nhấn xuống trong khung hình hiện tại
+        // Check the key that was just pressed down in the current frame
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             PerformJump();
@@ -183,7 +183,7 @@ public class DirectNewInputExample : MonoBehaviour
 
     private void PerformJump()
     {
-        Debug.Log("Nhảy lên sử dụng New Input (Đọc trực tiếp thiết bị)!");
+        Debug.Log("Jump using New Input (reading the device directly)!");
     }
 }
 ```
@@ -201,17 +201,17 @@ using UnityEngine.InputSystem;
 
 public class EventNewInputExample : MonoBehaviour
 {
-    private GameControls controls; // Class tự sinh ra từ Action Asset
+    private GameControls controls; // Class auto-generated from the Action Asset
     private Vector2 moveInput;
 
     private void Awake()
     {
         controls = new GameControls();
 
-        // Đăng ký callback events
-        // started: Nút vừa nhấn xuống
-        // performed: Nhấn giữ hoặc giá trị thay đổi (cho cần analog)
-        // canceled: Thả nút ra
+        // Register callback events
+        // started: The button was just pressed down
+        // performed: Held down or the value changed (for analog sticks)
+        // canceled: The button was released
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
@@ -220,17 +220,17 @@ public class EventNewInputExample : MonoBehaviour
 
     private void OnEnable()
     {
-        controls.Player.Enable(); // Bật Action Map "Player"
+        controls.Player.Enable(); // Enable the "Player" Action Map
     }
 
     private void OnDisable()
     {
-        controls.Player.Disable(); // Tắt Action Map để tránh rò rỉ bộ nhớ
+        controls.Player.Disable(); // Disable the Action Map to avoid memory leaks
     }
 
     private void OnDestroy()
     {
-        // Hủy đăng ký sự kiện khi GameObject bị phá hủy
+        // Unsubscribe from the event when the GameObject is destroyed
         controls.Player.Jump.started -= OnJumpTriggered;
     }
 
@@ -242,7 +242,7 @@ public class EventNewInputExample : MonoBehaviour
 
     private void OnJumpTriggered(InputAction.CallbackContext context)
     {
-        Debug.Log("Nhảy lên qua Event-driven C# Actions!");
+        Debug.Log("Jump via Event-driven C# Actions!");
     }
 }
 ```
@@ -258,16 +258,16 @@ public class DesignerInputExample : MonoBehaviour
 {
     private Vector2 moveInput;
 
-    // Hàm này sẽ được kéo thả gán vào sự kiện OnMove của Component PlayerInput trên Inspector
+    // This function is drag-and-drop assigned to the OnMove event of the PlayerInput Component in the Inspector
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
     }
 
-    // Hàm này gán vào OnJump trên Inspector
+    // This function is assigned to OnJump in the Inspector
     public void OnJump()
     {
-        Debug.Log("Nhảy lên qua PlayerInput UnityEvent!");
+        Debug.Log("Jump via PlayerInput UnityEvent!");
     }
 
     void Update()
@@ -322,7 +322,7 @@ public class PhysicsJumpSolver : MonoBehaviour
     private Rigidbody rb;
     private GameControls controls;
     
-    // Cờ hiệu lưu trạng thái input
+    // Flag that stores the input state
     private bool isJumpPending = false;
 
     private void Awake()
@@ -330,7 +330,7 @@ public class PhysicsJumpSolver : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         controls = new GameControls();
         
-        // Đăng ký sự kiện: bấm nút là đặt cờ hiệu thành true
+        // Register the event: pressing the button sets the flag to true
         controls.Player.Jump.started += ctx => isJumpPending = true;
     }
 
@@ -339,20 +339,20 @@ public class PhysicsJumpSolver : MonoBehaviour
 
     void Update()
     {
-        // Nếu dùng Legacy Input, bạn viết thế này:
+        // If using Legacy Input, you would write it like this:
         // if (Input.GetButtonDown("Jump")) { isJumpPending = true; }
     }
 
-    // FixedUpdate chạy đồng bộ với chu kỳ vật lý
+    // FixedUpdate runs in sync with the physics cycle
     void FixedUpdate()
     {
-        // Nếu có cờ hiệu nhảy đang chờ xử lý
+        // If there is a pending jump flag waiting to be processed
         if (isJumpPending)
         {
-            // Thực thi lực nhảy vật lý
+            // Execute the physics jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             
-            // TIÊU THỤ CỜ HIỆU: Reset ngay lập tức về false để tránh trùng lực khung hình tiếp theo
+            // CONSUME THE FLAG: Reset to false immediately to avoid duplicate force on the next frame
             isJumpPending = false;
         }
     }

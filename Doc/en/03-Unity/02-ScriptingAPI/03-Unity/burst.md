@@ -44,11 +44,11 @@ public class BurstCompilationTest : MonoBehaviour
         JobHandle handle = job.Schedule();
         handle.Complete();
         
-        Debug.Log($"[Burst] Tính toán thành công. Phần tử đầu tiên: {numbers[0]}");
+        Debug.Log($"[Burst] Computation succeeded. First element: {numbers[0]}");
         numbers.Dispose();
     }
 
-    // Gán nhãn để Burst Compiler tối ưu hóa cấu trúc này sang mã máy siêu nhanh
+    // Annotate so the Burst Compiler optimizes this struct into ultra-fast machine code
     [BurstCompile]
     struct CalculateJob : IJob
     {

@@ -35,9 +35,9 @@ public class AppleTVBuildSetup
 {
     public static void ConfigureAppleTV()
     {
-        // Chuyển đổi nền tảng mục tiêu sang Apple TV
+        // Switch the active build target to Apple TV
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.tvOS, BuildTarget.tvOS);
-        Debug.Log("[AppleTV.Editor] Đã chuyển đổi mục tiêu build sang Apple TV.");
+        Debug.Log("[AppleTV.Editor] Switched the build target to Apple TV.");
     }
 }
 #endif

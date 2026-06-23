@@ -48,15 +48,15 @@ In modern Unity versions, writing camera movement code manually is suboptimal. *
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│                   Cinemachine Brain                    │ (Gắn trên Main Camera vật lý)
+│                   Cinemachine Brain                    │ (Attached to the physical Main Camera)
 └──────────────────────────┬─────────────────────────────┘
-                           │ Đọc dữ liệu biến đổi
+                           │ Reads transform data
                            v
 ┌────────────────────────────────────────────────────────┐
-│              Active Cinemachine Camera                 │ (Ảo - Không render trực tiếp)
-│ - Cấu hình Ống kính (Lens)                             │
-│ - Mục tiêu Theo dõi (Follow) và Nhìn vào (LookAt)      │
-│ - Mức độ ưu tiên (Priority)                            │
+│              Active Cinemachine Camera                 │ (Virtual - Does not render directly)
+│ - Lens configuration (Lens)                            │
+│ - Follow target (Follow) and LookAt target (LookAt)    │
+│ - Priority level (Priority)                            │
 └────────────────────────────────────────────────────────┘
 ```
 
@@ -72,19 +72,19 @@ The interaction-flow model between the Cinemachine Brain and the Cinemachine Cam
 
 ```mermaid
 graph TD
-    A[Main Camera vật lý] --> B[Cinemachine Brain]
-    B -->|Đọc các thông số| C{Chọn Camera có Priority cao nhất}
+    A[Physical Main Camera] --> B[Cinemachine Brain]
+    B -->|Reads the parameters| C{Select the Camera with the highest Priority}
     
-    subgraph Cinemachine Cameras Ảo
-        C -->|Priority: 15| D[Aim Camera - Camera ngắm bắn]
-        C -->|Priority: 10| E[Follow Camera - Camera đi theo người chơi]
-        C -->|Priority: 5| F[Overview Camera - Camera toàn cảnh]
+    subgraph Virtual Cinemachine Cameras
+        C -->|Priority: 15| D[Aim Camera - Aiming camera]
+        C -->|Priority: 10| E[Follow Camera - Follows the player]
+        C -->|Priority: 5| F[Overview Camera - Wide panoramic camera]
     end
     
     D -->|Follow & LookAt| G[Player Target]
     E -->|Follow| G
     
-    B -->|Thực hiện Blend / Nội suy mịn| A
+    B -->|Performs a Blend / smooth interpolation| A
 ```
 
 ---
@@ -95,7 +95,7 @@ The code below (`CameraStateController.cs`) uses the official **Cinemachine v3**
 
 ```csharp
 using UnityEngine;
-using Unity.Cinemachine; // Namespace chính thức của Cinemachine v3 trong Unity 6
+using Unity.Cinemachine; // The official Cinemachine v3 namespace in Unity 6
 
 public enum CameraState
 {
@@ -123,7 +123,7 @@ public class CameraStateController : MonoBehaviour
     }
 
     /// <summary>
-    /// Thiết lập ban đầu cho các camera ảo.
+    /// Initial setup for the virtual cameras.
     /// </summary>
     private void InitializeCameras()
     {
@@ -133,7 +133,7 @@ public class CameraStateController : MonoBehaviour
             return;
         }
 
-        // Thiết lập theo dõi mục tiêu động thông qua mã nguồn
+        // Set up dynamic target tracking through code
         followCamera.Follow = playerTransform;
         followCamera.LookAt = playerTransform;
 
@@ -141,19 +141,19 @@ public class CameraStateController : MonoBehaviour
         aimCamera.LookAt = playerTransform;
 
         bossFocusCamera.Follow = playerTransform;
-        bossFocusCamera.LookAt = bossTransform; // Camera nhìn vào Boss nhưng đi theo Player
+        bossFocusCamera.LookAt = bossTransform; // Camera looks at the Boss but follows the Player
 
-        // Khởi động với trạng thái mặc định
+        // Start in the default state
         SwitchCameraState(CameraState.DefaultFollow);
     }
 
     /// <summary>
-    /// Thay đổi trạng thái camera bằng cách điều chỉnh trọng số Priority.
-    /// Cinemachine Brain sẽ tự động chuyển đổi mượt mà đến camera có độ ưu tiên cao nhất.
+    /// Changes the camera state by adjusting the Priority weights.
+    /// The Cinemachine Brain automatically blends smoothly to the camera with the highest priority.
     /// </summary>
     public void SwitchCameraState(CameraState newState)
     {
-        // Đặt lại tất cả camera về mức ưu tiên thấp mặc định (ví dụ: 10)
+        // Reset all cameras to the default low priority (for example: 10)
         followCamera.Priority = 10;
         aimCamera.Priority = 10;
         bossFocusCamera.Priority = 10;
@@ -161,19 +161,19 @@ public class CameraStateController : MonoBehaviour
         switch (newState)
         {
             case CameraState.DefaultFollow:
-                followCamera.Priority = 20; // Độ ưu tiên cao nhất sẽ được chọn làm Active Camera
+                followCamera.Priority = 20; // The highest priority is chosen as the Active Camera
                 activeCamera = followCamera;
                 Debug.Log("[CameraController] Switched to Default Follow Camera.");
                 break;
 
             case CameraState.Aiming:
-                aimCamera.Priority = 25; // Nâng mức ưu tiên cao hơn
+                aimCamera.Priority = 25; // Raise to a higher priority
                 activeCamera = aimCamera;
                 Debug.Log("[CameraController] Switched to Aiming Camera (Close-up / Over-the-shoulder).");
                 break;
 
             case CameraState.BossCutscene:
-                bossFocusCamera.Priority = 30; // Cắt cảnh hoặc tập trung Boss có độ ưu tiên cao tuyệt đối
+                bossFocusCamera.Priority = 30; // A cutscene or Boss focus has absolute top priority
                 activeCamera = bossFocusCamera;
                 Debug.Log("[CameraController] Switched to Boss Focus Camera.");
                 break;
@@ -181,7 +181,7 @@ public class CameraStateController : MonoBehaviour
     }
 
     /// <summary>
-    /// API động để thay đổi mục tiêu theo dõi của camera hiện tại (ví dụ khi đổi nhân vật điều khiển).
+    /// Dynamic API to change the follow target of the current camera (for example, when switching the controlled character).
     /// </summary>
     public void ChangeActiveCameraTarget(Transform newTarget)
     {
@@ -193,7 +193,7 @@ public class CameraStateController : MonoBehaviour
         }
     }
 
-    // Thử nghiệm nhanh chuyển đổi bằng phím bấm mẫu
+    // Quick test of switching using sample key presses
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))

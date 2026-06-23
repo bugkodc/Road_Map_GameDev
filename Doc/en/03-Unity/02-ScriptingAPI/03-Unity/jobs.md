@@ -65,7 +65,7 @@ public class JobSystemTest : MonoBehaviour
         // Wait for the Job to complete at the end of the frame
         handle.Complete();
 
-        Debug.Log($"[Jobs] Đã nhân đôi tốc độ cho 1000 thực thể. Kết quả phần tử 0: {playerSpeeds[0]}");
+        Debug.Log($"[Jobs] Doubled the speed for 1000 entities. Result of element 0: {playerSpeeds[0]}");
         
         // You must release the native memory
         playerSpeeds.Dispose();

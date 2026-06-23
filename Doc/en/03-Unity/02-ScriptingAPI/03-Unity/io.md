@@ -46,7 +46,7 @@ public class SaveLoadSystem : MonoBehaviour
         using (StreamWriter writer = new StreamWriter(savePath, false))
         {
             await writer.WriteAsync(jsonContent);
-            Debug.Log($"[Unity.IO] Đã lưu dữ liệu bất đồng bộ thành công tại: {savePath}");
+            Debug.Log($"[Unity.IO] Data saved asynchronously and successfully at: {savePath}");
         }
     }
 }

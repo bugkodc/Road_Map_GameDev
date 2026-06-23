@@ -34,8 +34,8 @@ When building a game in Unity, your C# code does not run directly on the device'
 *   **Disadvantages:** Very slow build times because it must go through many complex cross-compilation steps via C++.
 
 ```
-Biên dịch Mono:   [C# Code] ──Roslyn──> [IL (.dll)] ──Mono VM (Runtime)──> [Machine Code]
-Biên dịch IL2CPP: [C# Code] ──Roslyn──> [IL] ──IL2CPP──> [C++ Code] ──Native Compiler──> [Machine Code]
+Mono compilation:   [C# Code] ──Roslyn──> [IL (.dll)] ──Mono VM (Runtime)──> [Machine Code]
+IL2CPP compilation: [C# Code] ──Roslyn──> [IL] ──IL2CPP──> [C++ Code] ──Native Compiler──> [Machine Code]
 ```
 
 ---
@@ -56,9 +56,9 @@ When writing cross-platform code, distinguishing how the compiler handles these 
 *   **Platform-Conditional Compilation (Preprocessor Directives):**
     ```csharp
     #if UNITY_ANDROID
-        // Đoạn code này CHỈ được biên dịch khi mục tiêu là Android.
-        // Trên các nền tảng khác (như iOS, PC), trình biên dịch hoàn toàn BỎ QUA đoạn này.
-        // File Assembly build ra không chứa bất kỳ byte code nào của đoạn này.
+        // This code block is ONLY compiled when the target is Android.
+        // On other platforms (such as iOS, PC), the compiler completely SKIPS this block.
+        // The resulting Assembly build contains no byte code from this block at all.
     #endif
     ```
     *Nature:* Happens at compile time. Very safe when using libraries or APIs specific to one operating system (for example, `UnityEngine.Android`), with no risk of build errors from missing libraries on another operating system.
@@ -67,8 +67,8 @@ When writing cross-platform code, distinguishing how the compiler handles these 
     ```csharp
     if (Application.platform == RuntimePlatform.Android)
     {
-        // Toàn bộ đoạn code này VẪN được biên dịch vào file game cuối cùng ở MỌI nền tảng.
-        // Khi game chạy, CPU mới thực hiện kiểm tra biểu thức điều kiện if.
+        // This entire code block IS STILL compiled into the final game file on ALL platforms.
+        // Only when the game runs does the CPU evaluate the if condition expression.
     }
     ```
     *Nature:* Happens at runtime. If the block calls Android-exclusive APIs, the game will immediately produce a **Compilation Error** the moment you switch the Target Build to iOS/Windows, because the compiler on iOS cannot find the definition of that Android library.
@@ -81,23 +81,23 @@ Below is a detailed compilation-flow diagram of a Unity project depending on whe
 
 ```mermaid
 graph TD
-    A[C# Scripts trong thư mục Assets] --> B[Roslyn C# Compiler]
+    A[C# Scripts in the Assets folder] --> B[Roslyn C# Compiler]
     B --> C[Common Intermediate Language - CIL / IL Assembly .dll]
     
     subgraph Mono Backend
-        C --> D[Đóng gói vào Build]
-        D --> E[Thiết bị chạy Game]
-        E --> F[Mono VM biên dịch JIT từng phần]
-        F --> G[Machine Code thực thi trên CPU]
+        C --> D[Packaged into Build]
+        D --> E[Device runs the Game]
+        E --> F[Mono VM JIT-compiles on demand]
+        F --> G[Machine Code executed on CPU]
     end
 
     subgraph IL2CPP Backend
-        C --> H[Managed Code Stripping loại bỏ code thừa]
+        C --> H[Managed Code Stripping removes unused code]
         H --> I[IL2CPP Engine]
-        I --> J[Source Code C++]
+        I --> J[C++ Source Code]
         J --> K[Native Platform Compiler: MSVC/Clang/Xcode]
-        K --> L[Machine Code tối ưu hóa cực cao]
-        L --> M[Đóng gói vào Native Binary]
+        K --> L[Highly optimized Machine Code]
+        L --> M[Packaged into Native Binary]
     end
 ```
 
@@ -111,9 +111,9 @@ Below is a real-world platform management script (`PlatformManager.cs`) that dem
 using UnityEngine;
 
 #if UNITY_IOS
-using UnityEngine.iOS; // Namespace chỉ tồn tại trên môi trường build iOS
+using UnityEngine.iOS; // Namespace exists only in the iOS build environment
 #elif UNITY_ANDROID
-using UnityEngine.Android; // Namespace chỉ tồn tại trên môi trường build Android
+using UnityEngine.Android; // Namespace exists only in the Android build environment
 #endif
 
 public class PlatformManager : MonoBehaviour
@@ -129,52 +129,52 @@ public class PlatformManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Cấu hình các thiết lập hệ thống đặc thù cho từng nền tảng khi khởi động game.
+    /// Configures platform-specific system settings when the game starts up.
     /// </summary>
     private void ConfigurePlatformSettings()
     {
-        // 1. Cấu hình tốc độ khung hình (Frame Rate)
+        // 1. Configure the Frame Rate
         #if UNITY_IOS || UNITY_ANDROID
-            // Trên thiết bị di động, khóa FPS ở mức 60 để tránh hao pin và nóng máy
+            // On mobile devices, cap the FPS at 60 to avoid draining the battery and overheating
             Application.targetFrameRate = 60;
             Debug.Log("[PlatformManager] Mobile Platform detected. Framerate capped to 60 FPS.");
         #elif UNITY_STANDALONE
-            // Trên PC, không giới hạn FPS (hoặc chạy theo tần số quét màn hình)
+            // On PC, do not limit the FPS (or run at the display's refresh rate)
             Application.targetFrameRate = -1;
             Debug.Log("[PlatformManager] Standalone PC Platform detected. Uncapped Framerate.");
         #elif UNITY_WEBGL
-            // WebGL dựa vào cơ chế VSync của trình duyệt
+            // WebGL relies on the browser's VSync mechanism
             Application.targetFrameRate = 30;
             Debug.Log("[PlatformManager] WebGL Platform detected. Framerate managed by browser.");
         #endif
 
-        // 2. Yêu cầu quyền truy cập đặc thù
+        // 2. Request platform-specific permissions
         #if UNITY_ANDROID
-            // Ví dụ: Kiểm tra và yêu cầu quyền chụp ảnh bằng Camera trên Android
+            // Example: Check and request the Camera capture permission on Android
             if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
             {
                 Permission.RequestUserPermission(Permission.Camera);
             }
         #elif UNITY_IOS
-            // Trên iOS, bạn có thể thiết lập các tính năng như không cho phép backup iCloud cho một số tệp tin tạm
+            // On iOS, you can configure features such as disabling iCloud backup for certain temporary files
             Device.SetNoBackupFlag(Application.persistentDataPath);
         #endif
     }
 
     /// <summary>
-    /// Xử lý các phím bấm vật lý hoặc sự kiện hệ thống đặc thù khi game đang chạy.
+    /// Handles platform-specific physical key presses or system events while the game is running.
     /// </summary>
     private void HandlePlatformInputs()
     {
         #if UNITY_ANDROID
-            // Trên Android, phím Escape (hoặc nút Back trên thanh điều hướng) hoạt động như nút quay lại menu/thoát game
+            // On Android, the Escape key (or the Back button on the navigation bar) acts as a back-to-menu / quit-game button
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Debug.Log("[PlatformManager] Android Escape/Back button pressed.");
                 TriggerExitConfirmation();
             }
         #elif UNITY_STANDALONE
-            // Trên PC, thoát game nhanh bằng tổ hợp Alt + F4 hoặc nút Escape
+            // On PC, quit the game quickly with Alt + F4 or the Escape key
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 QuitGameGracefully();
@@ -183,51 +183,51 @@ public class PlatformManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Thực hiện việc hiển thị hộp thoại xác nhận thoát game (Đặc thù Mobile).
+    /// Displays the quit-game confirmation dialog (Mobile-specific).
     /// </summary>
     private void TriggerExitConfirmation()
     {
-        // Ở đây bạn có thể hiển thị UI xác nhận thoát.
-        // Nếu người chơi nhấn "Đồng ý", ta gọi hàm thoát:
+        // Here you can show a quit-confirmation UI.
+        // If the player presses "Confirm", we call the quit function:
         QuitGameGracefully();
     }
 
     /// <summary>
-    /// Hàm thoát game được thiết kế an toàn cho từng nền tảng để tránh bị từ chối phát hành (Rejection).
+    /// A quit-game function designed safely for each platform to avoid publication rejection.
     /// </summary>
     public void QuitGameGracefully()
     {
         Debug.Log("[PlatformManager] Attempting to quit application...");
 
         #if UNITY_EDITOR
-            // Trong Editor, chỉ cần dừng chế độ Play Mode
+            // In the Editor, simply stop Play Mode
             UnityEditor.EditorApplication.isPlaying = false;
         #elif UNITY_ANDROID
-            // Trên Android, cho phép gọi hàm thoát trực tiếp
+            // On Android, calling the quit function directly is allowed
             Application.Quit();
         #elif UNITY_IOS
-            // CẢNH BÁO CỰC KỲ QUAN TRỌNG:
-            // Apple nghiêm cấm việc lập trình thoát ứng dụng bằng code (gọi Application.Quit() trên iOS sẽ khiến game bị crash bất ngờ,
-            // Apple App Store sẽ reject game ngay lập tức vì vi phạm iOS Human Interface Guidelines).
-            // Cách xử lý đúng: Không cung cấp nút "Thoát Game" trên UI iOS, hoặc chỉ đưa ra thông báo hướng dẫn người dùng nhấn nút Home vật lý.
+            // EXTREMELY IMPORTANT WARNING:
+            // Apple strictly forbids quitting the app programmatically (calling Application.Quit() on iOS will cause the game to crash unexpectedly,
+            // and the Apple App Store will reject the game immediately for violating the iOS Human Interface Guidelines).
+            // The correct approach: Do not provide a "Quit Game" button in the iOS UI, or only show a message instructing the user to press the physical Home button.
             Debug.LogWarning("[PlatformManager] iOS does not allow programmatic quitting. Inform the player to use Home button instead.");
         #else
-            // Các nền tảng Standalone PC khác thoát bình thường
+            // Other Standalone PC platforms quit normally
             Application.Quit();
         #endif
     }
 
     /// <summary>
-    /// Gọi API yêu cầu Đánh giá Game (App Rating) chuẩn mực.
+    /// Calls the proper App Rating request API.
     /// </summary>
     public void RequestAppRating()
     {
         #if UNITY_IOS
-            // Gọi API native của Apple Store Rating
+            // Call Apple's native Store Rating API
             Device.RequestStoreReview();
             Debug.Log("[PlatformManager] Requested iOS Store Review Dialog.");
         #elif UNITY_ANDROID
-            // Trên Android, yêu cầu sử dụng Google Play In-App Review API thông qua Package bổ sung
+            // On Android, this requires using the Google Play In-App Review API via an additional Package
             Debug.Log("[PlatformManager] Google Play Review requires Google Play Core Library integration.");
         #else
             Debug.Log("[PlatformManager] App rating is not supported on this platform.");

@@ -37,10 +37,10 @@ public class NavMeshAutomator
     [MenuItem("Tools/Re-Bake Game NavMesh")]
     public static void Bake()
     {
-        Debug.Log("[AI.Editor] Đang dọn dẹp NavMesh cũ...");
+        Debug.Log("[AI.Editor] Cleaning up the old NavMesh...");
         NavMeshBuilder.ClearAllNavMeshes();
         
-        Debug.Log("[AI.Editor] Đang tính toán nướng NavMesh mới...");
+        Debug.Log("[AI.Editor] Baking the new NavMesh...");
         NavMeshBuilder.BuildNavMeshAsync();
     }
 }

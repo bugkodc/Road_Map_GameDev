@@ -31,13 +31,13 @@ using UnityEngine;
 
 public class PropertyBindingTest : MonoBehaviour
 {
-    // Khai báo cấu trúc dữ liệu sử dụng Property để giao diện UI tự bắt giá trị
+    // Declare a data structure that uses a Property so the UI can automatically pick up the value
     public int PlayerScore { get; set; }
 
     void Start()
     {
         PlayerScore = 1500;
-        Debug.Log($"[Properties] Điểm số đã thiết lập: {PlayerScore}. UI có thể tự động liên kết đọc giá trị này.");
+        Debug.Log($"[Properties] Score has been set: {PlayerScore}. The UI can automatically bind to and read this value.");
     }
 }
 ```

@@ -37,17 +37,17 @@ public class AnimatorGenerator
     [MenuItem("Tools/Create Custom Animator")]
     public static void CreateAnimator()
     {
-        // Tạo mới file Animator Controller trên ổ đĩa
+        // Create a new Animator Controller file on disk
         var controller = AnimatorController.CreateAnimatorControllerAtPath("Assets/PlayerAnimator.controller");
         
-        // Thêm tham số điều khiển loại Float
+        // Add a Float control parameter
         controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
         
-        // Lấy State Machine gốc và thêm trạng thái "Idle"
+        // Get the root State Machine and add an "Idle" state
         var rootStateMachine = controller.layers[0].stateMachine;
         var idleState = rootStateMachine.AddState("Idle");
         
-        Debug.Log($"[Animations.Editor] Đã tạo Animator Controller tự động tại: {AssetDatabase.GetAssetPath(controller)}");
+        Debug.Log($"[Animations.Editor] Automatically created Animator Controller at: {AssetDatabase.GetAssetPath(controller)}");
     }
 }
 #endif

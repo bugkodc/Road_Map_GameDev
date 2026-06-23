@@ -37,7 +37,7 @@ public class PlayModeAutomator
     {
         if (!EditorApplication.isPlaying)
         {
-            Debug.Log("[PlayMode.Editor] Đang tự động lưu cảnh và chạy thử game...");
+            Debug.Log("[PlayMode.Editor] Auto-saving the scene and entering play mode...");
             EditorApplication.SaveCurrentSceneIfUserWantsTo();
             EditorApplication.isPlaying = true;
         }

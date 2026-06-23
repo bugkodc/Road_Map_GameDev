@@ -42,9 +42,9 @@ Below is a complete sample C# script that demonstrates how to initialize, use, a
 
 ```csharp
 using UnityEngine;
-using Unity.Collections; // Bắt buộc để dùng Native Collections
-using Unity.Jobs; // Bắt buộc để dùng Job System
-using Unity.Burst; // Bắt buộc để dùng Burst Compiler
+using Unity.Collections; // Required to use Native Collections
+using Unity.Jobs; // Required to use the Job System
+using Unity.Burst; // Required to use the Burst Compiler
 
 public class NativeCollectionsDemo : MonoBehaviour
 {
@@ -60,55 +60,55 @@ public class NativeCollectionsDemo : MonoBehaviour
     {
         int elementCount = 100000;
 
-        // 1. Cấp phát NativeArray trên vùng nhớ ngoài GC sử dụng TempJob Allocator
-        // Mảng này lưu kết quả tính toán bình phương của các số thực
+        // 1. Allocate a NativeArray in non-GC memory using the TempJob Allocator
+        // This array stores the squared results of the floating-point numbers
         NativeArray<float> numbers = new NativeArray<float>(elementCount, Allocator.TempJob);
         NativeArray<float> results = new NativeArray<float>(elementCount, Allocator.TempJob);
 
-        // Khởi tạo dữ liệu ban đầu
+        // Initialize the data
         for (int i = 0; i < elementCount; i++)
         {
             numbers[i] = i;
         }
 
-        // 2. Tạo đối tượng Job và truyền dữ liệu Native vào
+        // 2. Create the Job object and pass in the Native data
         SquareCalculationJob job = new SquareCalculationJob
         {
             inputData = numbers,
             outputData = results
         };
 
-        // 3. Lên lịch chạy Job trên các luồng phụ của CPU (Multithreading)
-        // ScheduleParallel chia nhỏ 100.000 phần tử thành các cụm (batch) chạy song song trên mọi nhân CPU
+        // 3. Schedule the Job to run on the CPU's worker threads (Multithreading)
+        // ScheduleParallel splits the 100,000 elements into batches that run in parallel across every CPU core
         JobHandle jobHandle = job.Schedule(elementCount, 64); // 64 là batch size
 
-        // 4. Đợi Job hoàn tất tính toán (Block luồng chính nếu chưa xong)
+        // 4. Wait for the Job to finish computing (blocks the main thread until done)
         jobHandle.Complete();
 
-        // Đọc thử kết quả đầu tiên sau khi tính toán đa luồng thành công
-        Debug.Log($"[NativeJob] Bình phương của 5 là: {results[5]}");
+        // Read back the first result after the multithreaded computation succeeds
+        Debug.Log($"[NativeJob] The square of 5 is: {results[5]}");
 
-        // 5. Bắt buộc: Giải phóng bộ nhớ Native sau khi sử dụng để tránh Rò rỉ RAM (Memory Leak)
+        // 5. Required: Free the Native memory after use to avoid RAM leaks (Memory Leak)
         numbers.Dispose();
         results.Dispose();
-        Debug.Log("[NativeJob] Đã giải phóng bộ nhớ Native Array thành công.");
+        Debug.Log("[NativeJob] Successfully freed the Native Array memory.");
     }
 }
 
 // =========================================================================
 // 🦾 C# JOB SYSTEM STRUCTURE
-// Định nghĩa thuật toán chạy đa luồng tối ưu bởi Burst Compiler
+// Define the multithreaded algorithm optimized by the Burst Compiler
 // =========================================================================
-[BurstCompile] // Ép Burst biên dịch sang mã máy tối ưu
+[BurstCompile] // Force Burst to compile this into optimized machine code
 public struct SquareCalculationJob : IJobParallelFor
 {
-    // Cờ ReadOnly chỉ cho phép đọc để tăng tốc độ truy cập dữ liệu
+    // The ReadOnly flag allows read-only access to speed up data access
     [ReadOnly] public NativeArray<float> inputData;
     
-    // Cờ WriteOnly dùng để ghi kết quả đầu ra
+    // The WriteOnly flag is used to write the output results
     [WriteOnly] public NativeArray<float> outputData;
 
-    // Hàm Execute chạy song song trên các luồng phụ
+    // The Execute method runs in parallel on the worker threads
     public void Execute(int index)
     {
         outputData[index] = inputData[index] * inputData[index];

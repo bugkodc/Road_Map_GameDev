@@ -35,9 +35,9 @@ public class AnalyticsSetup
 {
     public static void VerifyAnalyticsStatus()
     {
-        // Kiểm tra xem ID dự án đã được liên kết chính xác với Unity Cloud Analytics chưa
+        // Check whether the project ID is correctly linked to Unity Cloud Analytics
         string projectId = PlayerSettings.cloudProjectId;
-        Debug.Log($"[Analytics.Editor] Mã dự án đã liên kết: {projectId}");
+        Debug.Log($"[Analytics.Editor] Linked project ID: {projectId}");
     }
 }
 #endif

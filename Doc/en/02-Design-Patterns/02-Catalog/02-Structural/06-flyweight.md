@@ -50,14 +50,14 @@ flowchart TD
   Data --> Shared["Sprite + damage + speed"]
 ```
 
-### 2. Luồng chạy thực tế
+### 2. The actual execution flow
 
 ```mermaid
 flowchart TD
-  A["Spawner cần tạo nhiều object giống nhau"] --> B["Lấy shared data từ factory/cache"]
-  B --> C["Context giữ state riêng: position, direction"]
-  C --> D["Render/update bằng shared data"]
-  D --> E["Ít RAM hơn vì dữ liệu nặng được chia sẻ"]
+  A["Spawner needs to create many identical objects"] --> B["Get shared data from factory/cache"]
+  B --> C["Context keeps its own state: position, direction"]
+  C --> D["Render/update using shared data"]
+  D --> E["Less RAM because heavy data is shared"]
 ```
 
 ### 3. Condensed UML
@@ -98,24 +98,24 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Lớp Flyweight chứa trạng thái nội tại (Intrinsic State)
+// The Flyweight class holds the intrinsic state (Intrinsic State)
 class Flyweight
 {
-    private string _sharedState; // Ví dụ: Texture, âm thanh, chỉ số chung
+    private string _sharedState; // Example: Texture, audio, shared stats
     
     public Flyweight(string shared) => _sharedState = shared;
     
     public void Operation(string uniqueState)
     {
-        // Thực hiện hành động kết hợp trạng thái nội tại và ngoại tại
-        Print($"Nội tại: {_sharedState}, Ngoại tại: {uniqueState}");
+        // Perform an action combining the intrinsic and extrinsic state
+        Print($"Intrinsic: {_sharedState}, Extrinsic: {uniqueState}");
     }
 }
 
-// Lớp Context chứa trạng thái ngoại tại (Extrinsic State) và tham chiếu Flyweight
+// The Context class holds the extrinsic state (Extrinsic State) and a Flyweight reference
 class Context
 {
-    private string _uniqueState; // Trạng thái ngoại tại (Vị trí, hướng)
+    private string _uniqueState; // Extrinsic state (position, direction)
     private Flyweight _flyweight;
 
     public Context(string unique, Flyweight flyweight)
@@ -170,7 +170,7 @@ using UnityEngine;
 
 namespace DesignPatterns.Flyweight
 {
-    // Tạo menu để tạo file Asset trong Unity Editor
+    // Add a menu entry to create the Asset file in the Unity Editor
     [CreateAssetMenu(fileName = "NewBulletData", menuName = "Design Patterns/Flyweight/Bullet Data")]
     public class BulletData : ScriptableObject
     {
@@ -186,8 +186,8 @@ namespace DesignPatterns.Flyweight
         {
             if (hitSound != null)
             {
-                // Giả lập phát âm thanh tại vị trí va chạm
-                Debug.Log($"[SFX] Phát âm thanh {hitSound.name} tại {position}");
+                // Simulate playing the sound at the collision position
+                Debug.Log($"[SFX] Playing sound {hitSound.name} at {position}");
             }
         }
     }
@@ -200,14 +200,14 @@ using UnityEngine;
 
 namespace DesignPatterns.Flyweight
 {
-    // Lớp đại diện cho viên đạn thực tế bay trong game
+    // Class representing the actual bullet flying in the game
     public class Bullet : MonoBehaviour
     {
-        // Trạng thái ngoại tại (Extrinsic State - Độc lập cho mỗi viên đạn)
+        // Extrinsic state (Extrinsic State - independent for each bullet)
         private Vector3 _velocity;
         private float _currentLifetime;
 
-        // Tham chiếu đến Flyweight (Chia sẻ chung)
+        // Reference to the Flyweight (shared in common)
         private BulletData _bulletData;
         private SpriteRenderer _spriteRenderer;
 
@@ -216,22 +216,22 @@ namespace DesignPatterns.Flyweight
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        // Thiết lập trạng thái ngoại tại ban đầu và gán Flyweight
+        // Set the initial extrinsic state and assign the Flyweight
         public void Initialize(Vector3 direction, BulletData data)
         {
             _bulletData = data;
             
-            // Áp dụng dữ liệu nội tại chung để cấu hình hiển thị
+            // Apply the shared intrinsic data to configure the display
             _spriteRenderer.sprite = _bulletData.bulletSprite;
             
-            // Tính toán vận tốc dựa trên hướng đi (ngoại tại) và tốc độ bay (nội tại)
+            // Compute velocity based on direction (extrinsic) and flight speed (intrinsic)
             _velocity = direction.normalized * _bulletData.baseSpeed;
             _currentLifetime = 0f;
         }
 
         private void Update()
         {
-            // Cập nhật trạng thái ngoại tại theo thời gian thực
+            // Update the extrinsic state in real time
             transform.Translate(_velocity * Time.deltaTime);
             _currentLifetime += Time.deltaTime;
 
@@ -243,10 +243,10 @@ namespace DesignPatterns.Flyweight
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            // Xử lý va chạm
-            Debug.Log($"[Bullet] Gây ra {_bulletData.baseDamage} sát thương lên {collision.name}");
+            // Handle the collision
+            Debug.Log($"[Bullet] Dealt {_bulletData.baseDamage} damage to {collision.name}");
             
-            // Gọi hàm của Flyweight để phát âm thanh chung
+            // Call the Flyweight's method to play the shared sound
             _bulletData.PlayHitAudio(transform.position);
             
             DestroyBullet();
@@ -254,7 +254,7 @@ namespace DesignPatterns.Flyweight
 
         private void DestroyBullet()
         {
-            // Thực tế nên sử dụng Object Pooling kết hợp với Flyweight để đạt hiệu năng tối đa
+            // In practice, combine Object Pooling with Flyweight for maximum performance
             Destroy(gameObject);
         }
     }
@@ -271,19 +271,19 @@ namespace DesignPatterns.Flyweight
     {
         [SerializeField] private GameObject bulletPrefab;
         
-        // Kéo thả các file ScriptableObject BulletData vào đây từ Inspector
+        // Drag and drop the BulletData ScriptableObject files here from the Inspector
         [SerializeField] private BulletData redLaserData;
         [SerializeField] private BulletData bluePlasmaData;
 
         private void Update()
         {
-            // Nhấn phím J để bắn đạn Laser Đỏ
+            // Press the J key to fire a Red Laser bullet
             if (Input.GetKeyDown(KeyCode.J))
             {
                 SpawnBullet(Vector3.up, redLaserData);
             }
 
-            // Nhấn phím K để bắn đạn Plasma Xanh
+            // Press the K key to fire a Blue Plasma bullet
             if (Input.GetKeyDown(KeyCode.K))
             {
                 SpawnBullet(new Vector3(0.5f, 1f, 0f), bluePlasmaData);
@@ -292,14 +292,14 @@ namespace DesignPatterns.Flyweight
 
         private void SpawnBullet(Vector3 direction, BulletData data)
         {
-            // Khởi tạo GameObject
+            // Instantiate the GameObject
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
             Bullet bulletScript = bulletObj.GetComponent<Bullet>();
             
-            // Inject Flyweight ScriptableObject vào viên đạn
+            // Inject the Flyweight ScriptableObject into the bullet
             bulletScript.Initialize(direction, data);
             
-            Debug.Log($"[Spawner] Đã bắn 1 viên đạn. Đạn này dùng chung dữ liệu: {data.name} (Sát thương: {data.baseDamage})");
+            Debug.Log($"[Spawner] Fired 1 bullet. This bullet shares the data: {data.name} (Damage: {data.baseDamage})");
         }
     }
 }

@@ -42,18 +42,18 @@ public class AnimatedEditorWindow : EditorWindow
     void OnEnable()
     {
         showExtraSettings = new AnimBool(false);
-        // Vẽ lại cửa sổ mỗi khi giá trị chuyển đổi thay đổi
+        // Repaint the window whenever the transition value changes
         showExtraSettings.valueChanged.AddListener(Repaint);
     }
 
     void OnGUI()
     {
-        showExtraSettings.target = EditorGUILayout.Toggle("Hiện tùy chọn nâng cao", showExtraSettings.target);
+        showExtraSettings.target = EditorGUILayout.Toggle("Show advanced options", showExtraSettings.target);
 
-        // Hiển thị phần giao diện phụ với hiệu ứng trượt mượt mà
+        // Display the extra UI section with a smooth slide animation
         if (EditorGUILayout.BeginFadeGroup(showExtraSettings.faded))
         {
-            EditorGUILayout.LabelField("=> Cài đặt bổ sung ở đây...");
+            EditorGUILayout.LabelField("=> Additional settings go here...");
         }
         EditorGUILayout.EndFadeGroup();
     }

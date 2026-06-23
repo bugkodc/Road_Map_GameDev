@@ -35,8 +35,8 @@ public class AdsBuildSetup : MonoBehaviour
 {
     public static void ConfigureAds(string androidGameId, bool testMode)
     {
-        // Mã cấu hình phân hệ quảng cáo tự động lúc Build game
-        Debug.Log($"[Ads.Editor] Cấu hình Ads GameID: {androidGameId}, Test Mode: {testMode}");
+        // Code that automatically configures the ads module at game build time
+        Debug.Log($"[Ads.Editor] Configuring Ads GameID: {androidGameId}, Test Mode: {testMode}");
     }
 }
 #endif

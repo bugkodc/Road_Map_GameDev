@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         health = 100;
         ammo = 30;
-        Debug.Log("[Player] Đã hồi phục các chỉ số mặc định!");
+        Debug.Log("[Player] Restored default stats!");
     }
 }
 ```
@@ -55,35 +55,35 @@ public class PlayerController : MonoBehaviour
 ### Script 2: The Custom Inspector script (must be placed in the `Editor/PlayerControllerEditor.cs` folder)
 ```csharp
 using UnityEngine;
-using UnityEditor; // Namespace Editor-only
+using UnityEditor; // Editor-only namespace
 
-// Chỉ định class này là trình tùy biến hiển thị cho PlayerController
+// Declare this class as the custom inspector for PlayerController
 [CustomEditor(typeof(PlayerController))]
 public class PlayerControllerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        // 1. Vẽ giao diện mặc định ban đầu của đối tượng
+        // 1. Draw the object's original default inspector
         DrawDefaultInspector();
 
-        // Lấy tham chiếu đến đối tượng đang hiển thị ở Inspector
+        // Get a reference to the object currently shown in the Inspector
         PlayerController player = (PlayerController)target;
 
-        // Vẽ một khoảng trống phân cách
+        // Draw a separating space
         EditorGUILayout.Space();
         
-        // Vẽ tiêu đề nhóm công cụ
-        EditorGUILayout.LabelField("CÔNG CỤ EDITOR TÙY BIẾN", EditorStyles.boldLabel);
+        // Draw the tool group heading
+        EditorGUILayout.LabelField("CUSTOM EDITOR TOOLS", EditorStyles.boldLabel);
 
-        // 2. Tạo một nút bấm ở Inspector kích hoạt hàm trong Script
-        if (GUILayout.Button("Đặt lại chỉ số người chơi"))
+        // 2. Create a button in the Inspector that triggers a method in the Script
+        if (GUILayout.Button("Reset player stats"))
         {
-            // Đăng ký sự kiện với hệ thống Undo của Unity trước khi thay đổi dữ liệu
+            // Register the action with Unity's Undo system before changing the data
             Undo.RecordObject(player, "Reset Player Stats");
             
             player.ResetStats();
             
-            // Ép Unity Editor cập nhật giao diện hiển thị ngay lập tức
+            // Force the Unity Editor to refresh the displayed UI immediately
             EditorUtility.SetDirty(player);
         }
     }
@@ -97,50 +97,50 @@ using UnityEditor;
 
 public class CustomToolWindow : EditorWindow
 {
-    private string spawnName = "Kẻ địch ngẫu nhiên";
+    private string spawnName = "Random Enemy";
     private GameObject prefabToSpawn;
 
-    // Đăng ký mục MenuItem tạo phím tắt mở cửa sổ từ thanh công cụ Unity
-    [MenuItem("Tools/Bộ Tạo Vật Thể Nhanh")]
+    // Register a MenuItem that creates a shortcut to open the window from the Unity toolbar
+    [MenuItem("Tools/Quick Object Spawner")]
     public static void ShowWindow()
     {
-        // Tạo hoặc lấy cửa sổ đang có sẵn trên màn hình
-        GetWindow<CustomToolWindow>("Tạo Vật Thể");
+        // Create the window or fetch the one already on screen
+        GetWindow<CustomToolWindow>("Spawn Object");
     }
 
-    // Vẽ giao diện bên trong Window
+    // Draw the UI inside the Window
     private void OnGUI()
     {
-        GUILayout.Label("Cấu hình thiết lập tạo vật thể", EditorStyles.boldLabel);
+        GUILayout.Label("Object spawn configuration", EditorStyles.boldLabel);
 
-        spawnName = EditorGUILayout.TextField("Tên đối tượng:", spawnName);
-        prefabToSpawn = (GameObject)EditorGUILayout.ObjectField("Prefab nguồn:", prefabToSpawn, typeof(GameObject), false);
+        spawnName = EditorGUILayout.TextField("Object name:", spawnName);
+        prefabToSpawn = (GameObject)EditorGUILayout.ObjectField("Source prefab:", prefabToSpawn, typeof(GameObject), false);
 
-        if (GUILayout.Button("Tạo vật thể vào Scene"))
+        if (GUILayout.Button("Spawn object into Scene"))
         {
             if (prefabToSpawn == null)
             {
-                EditorUtility.DisplayDialog("Lỗi", "Vui lòng kéo thả Prefab trước khi tạo!", "Đóng");
+                EditorUtility.DisplayDialog("Error", "Please drag and drop a Prefab before spawning!", "Close");
                 return;
             }
 
-            // 1. Tạo đối tượng mới trong Scene
+            // 1. Create the new object in the Scene
             GameObject newObj = (GameObject)PrefabUtility.InstantiatePrefab(prefabToSpawn);
             newObj.name = spawnName;
             
-            // Cho đối tượng xuất hiện trước Camera Editor đang nhìn
+            // Make the object appear in front of the active Editor Camera view
             if (SceneView.lastActiveSceneView != null)
             {
                 newObj.transform.position = SceneView.lastActiveSceneView.pivot;
             }
 
-            // 2. Đăng ký đối tượng mới tạo vào danh sách Undo
+            // 2. Register the newly created object into the Undo list
             Undo.RegisterCreatedObjectUndo(newObj, "Spawn Object from Window");
 
-            // Tự động chọn đối tượng mới tạo ở Hierarchy
+            // Automatically select the newly created object in the Hierarchy
             Selection.activeGameObject = newObj;
             
-            Debug.Log($"[EditorTool] Đã tạo thành công đối tượng: {newObj.name}");
+            Debug.Log($"[EditorTool] Successfully spawned object: {newObj.name}");
         }
     }
 }

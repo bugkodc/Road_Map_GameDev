@@ -34,8 +34,8 @@ public class UnityAndroidOptimizer : MonoBehaviour
     void Start()
     {
         #if UNITY_ANDROID
-        // Mã tối ưu hóa xung nhịp xử lý CPU cho game Android khi vào trận đấu lớn
-        Debug.Log("[Unity.Android] Đã kích hoạt tối ưu hóa xung nhịp CPU di động.");
+        // Code to optimize CPU clock speed for Android games when entering a large match
+        Debug.Log("[Unity.Android] Mobile CPU clock-speed optimization has been enabled.");
         #endif
     }
 }

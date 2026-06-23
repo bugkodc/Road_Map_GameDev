@@ -37,10 +37,10 @@ Below are two C# scripts demonstrating how to automate the asset import workflow
 ```csharp
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewWeaponData", menuName = "Weapon/Dữ Liệu Vũ Khí")]
+[CreateAssetMenu(fileName = "NewWeaponData", menuName = "Weapon/Weapon Data")]
 public class WeaponData : ScriptableObject
 {
-    public string weaponName = "Kiếm Sắt";
+    public string weaponName = "Iron Sword";
     public int damage = 25;
     public float fireRate = 1.2f;
 }
@@ -53,40 +53,40 @@ using UnityEditor;
 
 public class WeaponAssetCreator
 {
-    [MenuItem("Tools/Vũ Khí/Tạo Vũ Khí Mặc Định")]
+    [MenuItem("Tools/Weapons/Create Default Weapon")]
     public static void CreateDefaultWeaponAsset()
     {
-        // 1. Tạo đối tượng dữ liệu trong bộ nhớ RAM
+        // 1. Create the data object in RAM
         WeaponData newWeapon = ScriptableObject.CreateInstance<WeaponData>();
-        newWeapon.weaponName = "Thần Kiếm Excalibur";
+        newWeapon.weaponName = "Excalibur Divine Sword";
         newWeapon.damage = 999;
         newWeapon.fireRate = 0.5f;
 
         string folderPath = "Assets/Data/Weapons";
         string assetPath = $"{folderPath}/Excalibur.asset";
 
-        // Tự động tạo thư mục nếu chưa tồn tại
+        // Automatically create the folder if it does not exist
         if (!AssetDatabase.IsValidFolder(folderPath))
         {
-            // Tách thư mục cha và con để tạo an toàn
+            // Split parent and child folders to create them safely
             AssetDatabase.CreateFolder("Assets", "Data");
             AssetDatabase.CreateFolder("Assets/Data", "Weapons");
         }
 
-        // 2. Lưu đối tượng dữ liệu thành tệp tin *.asset vật lý trên đĩa cứng
+        // 2. Save the data object as a physical *.asset file on disk
         AssetDatabase.CreateAsset(newWeapon, assetPath);
         
-        // 3. Khóa lưu trữ tệp tin
+        // 3. Commit the file to storage
         AssetDatabase.SaveAssets();
         
-        // Cập nhật giao diện Project Window để người chơi nhìn thấy ngay
+        // Refresh the Project Window UI so the player sees it right away
         AssetDatabase.Refresh();
 
-        // Tự động highlight file mới tạo ở Project window
+        // Automatically highlight the newly created file in the Project window
         EditorUtility.FocusProjectWindow();
         Selection.activeObject = newWeapon;
 
-        Debug.Log($"[AssetDatabase] Đã tạo thành công file cấu hình vũ khí tại: {assetPath}");
+        Debug.Log($"[AssetDatabase] Successfully created the weapon configuration file at: {assetPath}");
     }
 }
 ```
@@ -96,33 +96,33 @@ public class WeaponAssetCreator
 using UnityEditor;
 using UnityEngine;
 
-// Kế thừa AssetPostprocessor để bắt sự kiện import file trong Editor
+// Inherit from AssetPostprocessor to hook the file import event in the Editor
 public class SpriteAutoConfigurator : AssetPostprocessor
 {
-    // Hàm này chạy TỰ ĐỘNG ngay TRƯỚC KHI một file ảnh (Texture) được nạp vào dự án
+    // This method runs AUTOMATICALLY right BEFORE an image file (Texture) is loaded into the project
     private void OnPreprocessTexture()
     {
-        // Kiểm tra xem file ảnh có nằm trong thư mục Sprites 2D hay không
-        // assetPath là đường dẫn tương đối của file đang import (ví dụ: "Assets/Textures/Sprites/Player.png")
+        // Check whether the image file is inside the 2D Sprites folder
+        // assetPath is the relative path of the file being imported (for example: "Assets/Textures/Sprites/Player.png")
         if (assetPath.Contains("/Sprites/"))
         {
-            // Lấy tham chiếu đến bộ cấu hình import của file ảnh hiện tại
+            // Get a reference to the import settings of the current image file
             TextureImporter textureImporter = (TextureImporter)assetImporter;
 
-            // Tự động chuyển kiểu Texture sang Sprite 2D
+            // Automatically switch the Texture type to 2D Sprite
             textureImporter.textureType = TextureImporterType.Sprite;
             textureImporter.spriteImportMode = SpriteImportMode.Single;
             
-            // Thiết lập PPU (Pixels Per Unit) chuẩn cho 2D game là 16 pixel trên 1 Unit
+            // Set the standard PPU (Pixels Per Unit) for a 2D game to 16 pixels per Unit
             textureImporter.spritePixelsPerUnit = 16;
             
-            // Tắt sinh ảnh nhỏ dần (Generate Mip Maps) vì game 2D không cần Mipmaps
+            // Disable Generate Mip Maps because a 2D game does not need Mipmaps
             textureImporter.mipmapEnabled = false;
 
-            // Thiết lập bộ lọc sắc nét Point (No Filter) cho đồ họa Pixel Art
+            // Set the sharp Point filter (No Filter) for Pixel Art graphics
             textureImporter.filterMode = FilterMode.Point;
 
-            Debug.Log($"[AssetPostprocessor] Đã tự động cấu hình Pixel Art Sprite cho: {assetPath}");
+            Debug.Log($"[AssetPostprocessor] Automatically configured Pixel Art Sprite for: {assetPath}");
         }
     }
 }

@@ -39,8 +39,8 @@ public class VectorImageLoader : MonoBehaviour
     void Start()
     {
         #if UNITY_VECTOR_GRAPHICS
-        // Mô phỏng tải và áp dụng hình ảnh định dạng SVG sắc nét cho giao diện UI
-        Debug.Log("[VectorGraphics] Đã nạp thành công tài nguyên vector SVG.");
+        // Simulate loading and applying a crisp SVG-format image to the UI
+        Debug.Log("[VectorGraphics] Successfully loaded the SVG vector resource.");
         #endif
     }
 }

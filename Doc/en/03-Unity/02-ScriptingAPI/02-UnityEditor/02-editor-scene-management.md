@@ -32,68 +32,68 @@ Below is a complete Editor script (which must be placed in an `Editor` folder) t
 ```csharp
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement; // Namespace quản lý Scene Editor
+using UnityEditor.SceneManagement; // Namespace for managing the Scene Editor
 
 public class EditorSceneManagementDemo : MonoBehaviour
 {
-    // Đăng ký menu chạy công cụ tự động kiểm tra
-    [MenuItem("Tools/Quản lý Cảnh/Kiểm tra lỗi Scene Hiện Tại")]
+    // Register a menu entry that runs the automatic validation tool
+    [MenuItem("Tools/Scene Management/Check Current Scene Errors")]
     public static void CheckActiveSceneErrors()
     {
-        // 1. Lấy thông tin Scene hiện đang mở ở Editor
+        // 1. Get information about the Scene currently open in the Editor
         UnityEngine.SceneManagement.Scene activeScene = EditorSceneManager.GetActiveScene();
-        Debug.Log($"[SceneTool] Đang kiểm tra Scene: {activeScene.name} tại đường dẫn: {activeScene.path}");
+        Debug.Log($"[SceneTool] Checking Scene: {activeScene.name} at path: {activeScene.path}");
 
-        // 2. Tìm kiếm Camera chính
+        // 2. Search for the main Camera
         GameObject mainCamera = GameObject.FindWithTag("MainCamera");
 
         if (mainCamera == null)
         {
-            // Hiển thị hộp thoại cảnh báo người dùng và hỏi ý kiến tự sửa
+            // Show a dialog warning the user and asking for permission to auto-fix
             bool autoFix = EditorUtility.DisplayDialog(
-                "Phát hiện lỗi Scene",
-                "Scene hiện tại của bạn không có GameObject nào được gán Tag 'MainCamera'! Bạn có muốn công cụ tự động tạo mới Camera chính không?",
-                "Có, Tự Động Sửa",
-                "Không"
+                "Scene Error Detected",
+                "Your current Scene has no GameObject assigned the 'MainCamera' Tag! Do you want the tool to automatically create a new main Camera?",
+                "Yes, Auto-Fix",
+                "No"
             );
 
             if (autoFix)
             {
-                // Thực thi tạo camera mới
+                // Execute creation of the new camera
                 GameObject cameraObj = new GameObject("Main Camera");
                 Camera cam = cameraObj.AddComponent<Camera>();
                 cameraObj.tag = "MainCamera";
                 
-                // Gán vị trí mặc định cho Camera nhìn màn chơi
+                // Assign a default position for the Camera viewing the level
                 cameraObj.transform.position = new Vector3(0f, 1f, -10f);
 
-                // 3. Bắt buộc: Đăng ký Undo hành động tạo này
+                // 3. Required: Register Undo for this creation action
                 Undo.RegisterCreatedObjectUndo(cameraObj, "Auto Create Main Camera");
 
-                // 4. Bắt buộc: Đánh dấu Scene đã bị chỉnh sửa (Dirty) để kích hoạt dấu sao * cho phép lưu
+                // 4. Required: Mark the Scene as modified (Dirty) to trigger the asterisk * that allows saving
                 EditorSceneManager.MarkSceneDirty(activeScene);
                 
-                Debug.Log("[SceneTool] Đã tự động tạo mới Main Camera và đánh dấu Dirty Scene.");
+                Debug.Log("[SceneTool] Automatically created a new Main Camera and marked the Scene Dirty.");
 
-                // Hỏi người dùng xem có muốn lưu lại ngay lập tức không
+                // Ask the user whether they want to save immediately
                 bool saveImmediately = EditorUtility.DisplayDialog(
-                    "Lưu Cảnh",
-                    "Bạn có muốn lưu các thay đổi vừa thực hiện vào file Scene ngay lập tức?",
-                    "Lưu ngay",
-                    "Không"
+                    "Save Scene",
+                    "Do you want to save the changes you just made into the Scene file immediately?",
+                    "Save now",
+                    "No"
                 );
 
                 if (saveImmediately)
                 {
-                    // 5. Lưu trực tiếp cảnh đang mở
+                    // 5. Directly save the currently open scene
                     EditorSceneManager.SaveScene(activeScene);
-                    Debug.Log("[SceneTool] Đã lưu tệp cảnh thành công lên ổ cứng.");
+                    Debug.Log("[SceneTool] Successfully saved the scene file to disk.");
                 }
             }
         }
         else
         {
-            EditorUtility.DisplayDialog("Thông báo", "Cảnh của bạn hoàn toàn bình thường, có chứa Main Camera!", "Đóng");
+            EditorUtility.DisplayDialog("Notice", "Your Scene is completely fine and contains a Main Camera!", "Close");
         }
     }
 }

@@ -46,7 +46,7 @@ public class NetworkPlayerHealth : NetworkBehaviour
 
     private void OnHealthChanged(int oldVal, int newVal)
     {
-        Debug.Log($"[Network] Máu cập nhật qua mạng: {newVal}");
+        Debug.Log($"[Network] Health updated over the network: {newVal}");
     }
 }
 #endif

@@ -33,8 +33,8 @@ public class BuildAuditCheck : MonoBehaviour
 {
     public static bool PerformAudit()
     {
-        Debug.Log("[ProjectAuditor] Bắt đầu quét kiểm tra tối ưu hóa toàn bộ dự án...");
-        // Mô phỏng kiểm tra lỗi: Luôn trả về true nếu dự án đạt tiêu chuẩn chất lượng
+        Debug.Log("[ProjectAuditor] Starting an optimization scan across the entire project...");
+        // Simulate the error check: always return true if the project meets quality standards
         return true;
     }
 }

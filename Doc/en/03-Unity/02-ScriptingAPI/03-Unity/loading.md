@@ -35,7 +35,7 @@ public class LoadingSpeedAdjuster : MonoBehaviour
     {
         // Set the background data loading priority to the highest level
         Application.backgroundLoadingPriority = ThreadPriority.High;
-        Debug.Log("[Loading] Đã đặt mức ưu tiên nạp tài nguyên chạy nền sang High để rút ngắn thời gian load.");
+        Debug.Log("[Loading] Set the background resource-loading priority to High to shorten load time.");
     }
 }
 ```

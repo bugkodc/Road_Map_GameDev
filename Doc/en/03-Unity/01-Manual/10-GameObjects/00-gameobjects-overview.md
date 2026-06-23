@@ -25,13 +25,13 @@ Unlike traditional OOP models based on deep inheritance, Unity uses the **Compos
 One of the biggest secrets affecting Unity performance lies at the boundary between two managed environments:
 
 ```
-[ Lớp quản lý C# (Managed Heap) ]          [ Lớp gốc Engine C++ (Native Memory) ]
+[ C# Managed Layer (Managed Heap) ]        [ C++ Engine Native Layer (Native Memory) ]
 ┌───────────────────────────────┐          ┌───────────────────────────────────┐
 │ GameObject Wrapper (C# Object)│ ───────> │  Native GameObject (C++ Instance) │
-│ - Chỉ chứa con trỏ IntPtr ───┼──────────┼─> - Dữ liệu thực tế               │
-│ - Overridden == Operator      │          │  - Danh sách Component nhị phân   │
+│ - Holds only an IntPtr ptr ───┼──────────┼─> - Actual data                   │
+│ - Overridden == Operator      │          │  - Binary Component list          │
 └───────────────────────────────┘          └───────────────────────────────────┘
-                                Ranh giới C# / C++
+                                C# / C++ boundary
 ```
 
 *   **Nature:** The core of the Unity Engine (graphics, physics, audio, memory management) is written entirely in **C++**. When you create a GameObject or Component in C#, you actually only create a super-lightweight C# object that acts as a "shell" (**Wrapper**). Inside this shell there is only a pointer (`IntPtr`) pointing to the actual C++ object that lives in Native Memory.
@@ -112,10 +112,10 @@ classDiagram
         +Update()*
     }
 
-    GameObject "1" *-- "many" Component : Chứa
-    Component <|-- Transform : Kế thừa
-    Component <|-- MonoBehaviour : Kế thừa
-    GameObject "1" --> "1" Transform : Luôn có sẵn
+    GameObject "1" *-- "many" Component : Contains
+    Component <|-- Transform : Inherits
+    Component <|-- MonoBehaviour : Inherits
+    GameObject "1" --> "1" Transform : Always present
 ```
 
 ---
@@ -147,7 +147,7 @@ public class GameObjectSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Thực hiện sinh sản đối tượng, quản lý phân cấp và thêm/lấy component tối ưu.
+    /// Spawns objects, manages the hierarchy, and adds/retrieves components optimally.
     /// </summary>
     private void SpawnAndSetupHierarchy()
     {
@@ -159,23 +159,23 @@ public class GameObjectSpawner : MonoBehaviour
 
         for (int i = 0; i < spawnCount; i++)
         {
-            // 1. Tạo vị trí ngẫu nhiên
+            // 1. Create a random position
             Vector3 randomPos = new Vector3(i * 2.0f, 0, 0);
 
-            // 2. Instantiate đối tượng (Giữ nguyên vị trí toàn cục khi tạo)
+            // 2. Instantiate the object (keep the world position on creation)
             GameObject newCube = Instantiate(cubePrefab, randomPos, Quaternion.identity);
             newCube.name = $"Procedural_Cube_{i}";
 
-            // 3. Thiết lập phân cấp (Parenting)
+            // 3. Set up the hierarchy (Parenting)
             if (spawnRoot != null)
             {
-                // worldPositionStays = true: Giữ nguyên tọa độ thế giới (chỉ tính toán lại local transform)
-                // worldPositionStays = false: Đưa tọa độ thế giới của Cube trở thành tọa độ local tương đối của Parent
+                // worldPositionStays = true: Keep the world coordinates (only recompute the local transform)
+                // worldPositionStays = false: Turn the Cube's world coordinates into local coordinates relative to the Parent
                 newCube.transform.SetParent(spawnRoot, true);
             }
 
-            // 4. Thử nghiệm lấy Component sử dụng TryGetComponent (Không gây rác bộ nhớ)
-            // Thay vì dùng: Rigidbody rb = newCube.GetComponent<Rigidbody>(); (Tạo ra Garbage nếu component không tồn tại)
+            // 4. Retrieve the Component using TryGetComponent (does not generate memory garbage)
+            // Instead of using: Rigidbody rb = newCube.GetComponent<Rigidbody>(); (generates Garbage if the component does not exist)
             if (newCube.TryGetComponent<Rigidbody>(out Rigidbody rb))
             {
                 rb.useGravity = false;
@@ -183,20 +183,20 @@ public class GameObjectSpawner : MonoBehaviour
             }
             else
             {
-                // Nếu không có, tiến hành thêm mới một cách chủ động
+                // If absent, proactively add a new one
                 Rigidbody addedRb = newCube.AddComponent<Rigidbody>();
                 addedRb.useGravity = true;
                 addedRb.isKinematic = false;
                 UnityEngine.Debug.Log($"[Spawner] Added Rigidbody dynamically to {newCube.name}");
             }
 
-            // 5. Lưu lại danh sách quản lý
+            // 5. Store it in the managed list
             spawnedObjects[i] = newCube;
         }
     }
 
     /// <summary>
-    /// Hàm bật/tắt toàn bộ danh sách đối tượng procedural.
+    /// Enables/disables the entire list of procedural objects.
     /// </summary>
     public void ToggleObjectsState(bool isActive)
     {
@@ -206,14 +206,14 @@ public class GameObjectSpawner : MonoBehaviour
         {
             if (obj != null)
             {
-                // SetActive(false) tắt toàn bộ GameObject cùng các script đi kèm
+                // SetActive(false) disables the entire GameObject along with its attached scripts
                 obj.SetActive(isActive);
             }
         }
     }
 
     /// <summary>
-    /// Đánh giá sự khác biệt hiệu năng giữa so sánh Null thông thường của Unity và System Reference Check.
+    /// Evaluates the performance difference between Unity's standard Null comparison and a System Reference Check.
     /// </summary>
     private void TestNullCheckPerformance()
     {
@@ -223,35 +223,35 @@ public class GameObjectSpawner : MonoBehaviour
         int iterations = 100000;
         Stopwatch sw = new Stopwatch();
 
-        // Đo thời gian phép kiểm tra Null của Unity (Ghi đè toán tử ==)
+        // Measure the time of Unity's Null check (overridden == operator)
         sw.Start();
         for (int i = 0; i < iterations; i++)
         {
             if (testTarget == null)
             {
-                // Thực thi giả lập
+                // Simulated execution
             }
         }
         sw.Stop();
         long unityNullTime = sw.ElapsedTicks;
 
-        // Đo thời gian phép kiểm tra Null bằng ReferenceEquals (Bỏ qua cầu nối C++)
+        // Measure the time of the Null check using ReferenceEquals (skips the C++ bridge)
         sw.Reset();
         sw.Start();
         for (int i = 0; i < iterations; i++)
         {
             if (System.Object.ReferenceEquals(testTarget, null))
             {
-                // Thực thi giả lập
+                // Simulated execution
             }
         }
         sw.Stop();
         long systemNullTime = sw.ElapsedTicks;
 
         UnityEngine.Debug.Log($"[Spawner] Null check performance comparison ({iterations} iterations):");
-        UnityEngine.Debug.Log($"-> Unity custom '== null': {unityNullTime} ticks (gây chuyển vùng C++/C#).");
-        UnityEngine.Debug.Log($"-> System 'ReferenceEquals': {systemNullTime} ticks (chỉ chạy trên C# Managed).");
-        UnityEngine.Debug.Log($"-> Tốc độ chênh lệch: {(float)unityNullTime / systemNullTime:F2} lần.");
+        UnityEngine.Debug.Log($"-> Unity custom '== null': {unityNullTime} ticks (causes a C++/C# transition).");
+        UnityEngine.Debug.Log($"-> System 'ReferenceEquals': {systemNullTime} ticks (runs only on C# Managed).");
+        UnityEngine.Debug.Log($"-> Speed difference: {(float)unityNullTime / systemNullTime:F2}x.");
     }
 }
 

@@ -43,11 +43,11 @@ public class APConfigurator : EditorWindow
 
     void OnGUI()
     {
-        GUILayout.Label("Cấu hình Adaptive Performance", EditorStyles.boldLabel);
-        if (GUILayout.Button("Kiểm tra cài đặt dự án"))
+        GUILayout.Label("Adaptive Performance configuration", EditorStyles.boldLabel);
+        if (GUILayout.Button("Check project settings"))
         {
-            // Logic kiểm tra xem gói Adaptive Performance đã cài đặt đúng chưa
-            Debug.Log("[AP Editor] Cấu hình đang hoạt động tốt.");
+            // Logic to check whether the Adaptive Performance package is installed correctly
+            Debug.Log("[AP Editor] Configuration is working correctly.");
         }
     }
 }

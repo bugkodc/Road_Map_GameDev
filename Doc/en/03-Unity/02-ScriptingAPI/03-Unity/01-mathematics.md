@@ -16,15 +16,15 @@ Although both represent a 3-dimensional vector, their architectural nature and t
 
 ```
 ┌───────────────────────────────────────┐
-│        So sánh kiểu Toán học          │
+│         Math Type Comparison          │
 ├───────────────────┬───────────────────┤
 │UnityEngine.Vector3│ Unity.Mathematics │
-│    (Truyền thống) │  (float3 - Mới)   │
+│   (Traditional)   │  (float3 - New)   │
 ├───────────────────┼───────────────────┤
-│ - OOP truyền thống│ - Thiết kế Data   │
-│ - Nhiều hàm check │ - Thân thiện SIMD │
-│ - Không tối ưu Job│ - Tối ưu hóa Burst│
-│ - Chậm hơn        │ - Tốc độ cực nhanh│
+│ - Traditional OOP │ - Data-Oriented   │
+│ - Many checks     │ - SIMD-friendly   │
+│ - Not Job-optimal │ - Burst-optimized │
+│ - Slower          │ - Extremely fast  │
 └───────────────────┴───────────────────┘
 ```
 
@@ -58,7 +58,7 @@ Below is a real-world C# source code example that compares performance when comp
 
 ```csharp
 using UnityEngine;
-using Unity.Mathematics; // Namespace cho toán học SIMD
+using Unity.Mathematics; // Namespace for SIMD mathematics
 using Unity.Burst; // Namespace cho Burst Compiler
 
 public class MathematicsPerformanceDemo : MonoBehaviour
@@ -69,7 +69,7 @@ public class MathematicsPerformanceDemo : MonoBehaviour
 
     private void Start()
     {
-        // Khởi tạo mảng dữ liệu ngẫu nhiên
+        // Initialize the array with random data
         mathPoints = new float3[ArraySize];
         vectorPoints = new Vector3[ArraySize];
 
@@ -80,7 +80,7 @@ public class MathematicsPerformanceDemo : MonoBehaviour
             mathPoints[i] = new float3(randomVec.x, randomVec.y, randomVec.z);
         }
 
-        Debug.Log("[MathTest] Đã khởi tạo dữ liệu 10.000 điểm. Nhấn Space để so sánh hiệu năng!");
+        Debug.Log("[MathTest] Initialized data for 10,000 points. Press Space to compare performance!");
     }
 
     private void Update()
@@ -93,23 +93,23 @@ public class MathematicsPerformanceDemo : MonoBehaviour
 
     private void TestPerformance()
     {
-        // 1. Kiểm tra tốc độ của UnityEngine.Vector3 truyền thống
+        // 1. Measure the speed of the traditional UnityEngine.Vector3
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
         sw.Start();
         float totalDistLegacy = RunLegacyTest();
         sw.Stop();
         double legacyTime = sw.Elapsed.TotalMilliseconds;
 
-        // 2. Kiểm tra tốc độ của Unity.Mathematics + Burst Compiler
+        // 2. Measure the speed of Unity.Mathematics + Burst Compiler
         sw.Reset();
         sw.Start();
         float totalDistMathematics = RunMathematicsTest();
         sw.Stop();
         double mathTime = sw.Elapsed.TotalMilliseconds;
 
-        Debug.Log($"[Legacy Vector3] Tổng: {totalDistLegacy:F2} - Thời gian: {legacyTime:F4} ms");
-        Debug.Log($"[Unity.Mathematics] Tổng: {totalDistMathematics:F2} - Thời gian: {mathTime:F4} ms");
-        Debug.Log($"[So Sánh] Thư viện mới chạy nhanh hơn gấp: {legacyTime / mathTime:F2} lần!");
+        Debug.Log($"[Legacy Vector3] Total: {totalDistLegacy:F2} - Time: {legacyTime:F4} ms");
+        Debug.Log($"[Unity.Mathematics] Total: {totalDistMathematics:F2} - Time: {mathTime:F4} ms");
+        Debug.Log($"[Comparison] The new library runs faster by a factor of: {legacyTime / mathTime:F2}x!");
     }
 
     private float RunLegacyTest()
@@ -118,13 +118,13 @@ public class MathematicsPerformanceDemo : MonoBehaviour
         Vector3 origin = Vector3.zero;
         for (int i = 0; i < ArraySize; i++)
         {
-            // Tính khoảng cách tốn phép căn bậc hai chậm
+            // Computing the distance uses a slow square-root operation
             total += Vector3.Distance(origin, vectorPoints[i]);
         }
         return total;
     }
 
-    // Gán nhãn BurstCompile để trình biên dịch tối ưu hóa sang mã máy assembly tối tân
+    // Annotate with BurstCompile so the compiler optimizes it into modern assembly machine code
     [BurstCompile]
     private float RunMathematicsTest()
     {
@@ -132,7 +132,7 @@ public class MathematicsPerformanceDemo : MonoBehaviour
         float3 origin = float3.zero;
         for (int i = 0; i < ArraySize; i++)
         {
-            // Sử dụng hàm math.distance tối ưu của Unity.Mathematics
+            // Use the optimized math.distance function from Unity.Mathematics
             total += math.distance(origin, mathPoints[i]);
         }
         return total;

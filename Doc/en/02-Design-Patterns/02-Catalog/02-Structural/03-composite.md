@@ -47,14 +47,14 @@ flowchart TB
   Group --> Leaf3["Leaf"]
 ```
 
-### 2. Luồng chạy thực tế
+### 2. Real runtime flow
 
 ```mermaid
 flowchart TD
-  A["Client gọi Operation() trên node gốc"] --> B["Composite duyệt các child"]
-  B --> C["Leaf tự xử lý"]
-  B --> D["Composite con tiếp tục duyệt"]
-  D --> E["Toàn cây được xử lý giống một object"]
+  A["Client calls Operation() on the root node"] --> B["Composite iterates over its children"]
+  B --> C["Leaf handles itself"]
+  B --> D["Child Composite keeps iterating"]
+  D --> E["The whole tree is handled like a single object"]
 ```
 
 ### 3. Condensed UML
@@ -97,22 +97,22 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Giao diện chung Component
+// Common Component interface
 interface IComponent
 {
     void Execute();
 }
 
-// Đối tượng Lá (Leaf)
+// Leaf object
 class Leaf : IComponent
 {
     public void Execute()
     {
-        // Thực hiện hành vi của đối tượng đơn lẻ
+        // Perform the behavior of an individual object
     }
 }
 
-// Đối tượng Hỗn hợp (Composite)
+// Composite object
 class Composite : IComponent
 {
     private List<IComponent> _children = new List<IComponent>();
@@ -122,7 +122,7 @@ class Composite : IComponent
 
     public void Execute()
     {
-        // Duyệt đệ quy qua tất cả các con
+        // Recursively iterate over all children
         foreach (var child in _children)
         {
             child.Execute();
@@ -172,7 +172,7 @@ Below is how to implement a nested inventory system in Unity using Composite:
 ```csharp
 namespace DesignPatterns.Composite
 {
-    // Interface chung cho tất cả vật phẩm trong hòm đồ
+    // Common interface for all items in the inventory
     public interface IInventoryItem
     {
         string GetName();
@@ -186,7 +186,7 @@ namespace DesignPatterns.Composite
 ```csharp
 namespace DesignPatterns.Composite
 {
-    // Đại diện cho một vật phẩm đơn lẻ
+    // Represents a single item
     public class SingleItem : IInventoryItem
     {
         private string name;
@@ -214,11 +214,11 @@ using System.Text;
 
 namespace DesignPatterns.Composite
 {
-    // Đại diện cho hộp chứa, túi đồ có thể chứa các IInventoryItem khác
+    // Represents a container or bag that can hold other IInventoryItem objects
     public class ItemContainer : IInventoryItem
     {
         private string containerName;
-        private float containerEmptyWeight; // Trọng lượng bản thân chiếc túi khi rỗng
+        private float containerEmptyWeight; // Weight of the bag itself when empty
         private List<IInventoryItem> storedItems = new List<IInventoryItem>();
 
         public ItemContainer(string name, float emptyWeight)
@@ -239,7 +239,7 @@ namespace DesignPatterns.Composite
 
         public string GetName() => containerName;
 
-        // Tính tổng trọng lượng đệ quy: Trọng lượng túi rỗng + trọng lượng các vật phẩm bên trong
+        // Recursively compute the total weight: empty bag weight + weight of the items inside
         public float GetWeight()
         {
             float totalWeight = containerEmptyWeight;
@@ -250,7 +250,7 @@ namespace DesignPatterns.Composite
             return totalWeight;
         }
 
-        // Tính tổng giá trị đệ quy: Tổng giá trị của các vật phẩm bên trong
+        // Recursively compute the total value: sum of the values of the items inside
         public int GetValue()
         {
             int totalValue = 0;
@@ -261,12 +261,12 @@ namespace DesignPatterns.Composite
             return totalValue;
         }
 
-        // Hàm helper để in ra cấu trúc hòm đồ dạng cây
+        // Helper method to print the inventory structure as a tree
         public string GetStructureInfo(int indent = 0)
         {
             StringBuilder sb = new StringBuilder();
             string indentSpace = new string(' ', indent * 4);
-            sb.AppendLine($"{indentSpace}[Container] {containerName} (Nặng: {GetWeight()}kg | Trị giá: {GetValue()} Vàng)");
+            sb.AppendLine($"{indentSpace}[Container] {containerName} (Weight: {GetWeight()}kg | Value: {GetValue()} Gold)");
             
             foreach (var item in storedItems)
             {
@@ -276,7 +276,7 @@ namespace DesignPatterns.Composite
                 }
                 else
                 {
-                    sb.AppendLine($"{indentSpace}    - {item.GetName()} ({item.GetWeight()}kg | {item.GetValue()} Vàng)");
+                    sb.AppendLine($"{indentSpace}    - {item.GetName()} ({item.GetWeight()}kg | {item.GetValue()} Gold)");
                 }
             }
             return sb.ToString();
@@ -295,33 +295,33 @@ namespace DesignPatterns.Composite
     {
         private void Start()
         {
-            // 1. Tạo các vật phẩm lá đơn lẻ
-            IInventoryItem ironSword = new SingleItem("Kiếm Sắt", 2.5f, 120);
-            IInventoryItem redPotion = new SingleItem("Bình Máu Đỏ", 0.2f, 15);
-            IInventoryItem goldRing = new SingleItem("Nhẫn Vàng", 0.05f, 500);
+            // 1. Create the single leaf items
+            IInventoryItem ironSword = new SingleItem("Iron Sword", 2.5f, 120);
+            IInventoryItem redPotion = new SingleItem("Red Health Potion", 0.2f, 15);
+            IInventoryItem goldRing = new SingleItem("Gold Ring", 0.05f, 500);
 
-            // 2. Tạo một Túi nhỏ (Pouch) đựng Potion
-            ItemContainer potionPouch = new ItemContainer("Túi Thuốc Nhỏ", 0.1f);
+            // 2. Create a small Pouch holding potions
+            ItemContainer potionPouch = new ItemContainer("Small Potion Pouch", 0.1f);
             potionPouch.AddItem(redPotion);
-            potionPouch.AddItem(new SingleItem("Bình Mana Xanh", 0.2f, 20));
+            potionPouch.AddItem(new SingleItem("Blue Mana Potion", 0.2f, 20));
 
-            // 3. Tạo một Balo (Backpack) lớn của người chơi
-            ItemContainer backpack = new ItemContainer("Balo Thám Hiểm", 1.0f);
+            // 3. Create the player's large Backpack
+            ItemContainer backpack = new ItemContainer("Explorer Backpack", 1.0f);
             
-            // Thêm kiếm sắt và nhẫn vàng vào balo
+            // Add the iron sword and gold ring into the backpack
             backpack.AddItem(ironSword);
             backpack.AddItem(goldRing);
             
-            // Thêm chiếc túi thuốc nhỏ (Pouch) vào balo (Composite lồng Composite)
+            // Add the small potion pouch into the backpack (Composite nested in Composite)
             backpack.AddItem(potionPouch);
 
-            // 4. In ra thông tin chi tiết
-            Debug.Log("--- CẤU TRÚC HÒM ĐỒ CỦA NGƯỜI CHƠI ---");
+            // 4. Print the detailed information
+            Debug.Log("--- THE PLAYER'S INVENTORY STRUCTURE ---");
             Debug.Log(backpack.GetStructureInfo());
 
-            // 5. Tính toán nhanh
-            Debug.Log($"Tổng trọng lượng của Balo: {backpack.GetWeight()} kg");
-            Debug.Log($"Tổng giá trị kinh tế của Balo: {backpack.GetValue()} Vàng");
+            // 5. Quick calculations
+            Debug.Log($"Total weight of the Backpack: {backpack.GetWeight()} kg");
+            Debug.Log($"Total economic value of the Backpack: {backpack.GetValue()} Gold");
         }
     }
 }

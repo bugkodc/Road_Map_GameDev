@@ -51,17 +51,17 @@ Instead of reading one big UML diagram from the start, read the pattern in three
 flowchart TD
   Weapon["Base weapon"] --> Silencer["Silencer decorator"]
   Silencer --> Fire["Fire decorator"]
-  Fire --> Result["Weapon có nhiều hiệu ứng"]
+  Fire --> Result["Weapon with multiple effects"]
 ```
 
 ### 2. The actual execution flow
 
 ```mermaid
 flowchart TD
-  Client["Client gọi GetDamage()"] --> Outer["Decorator ngoài cùng"]
-  Outer --> Inner["Chuỗi wrappee"]
+  Client["Client calls GetDamage()"] --> Outer["Outermost decorator"]
+  Outer --> Inner["Chain of wrappees"]
   Inner --> Base["Base weapon"]
-  Base --> Result["Damage gốc + hiệu ứng"]
+  Base --> Result["Base damage + effects"]
 ```
 
 ### 3. Condensed UML
@@ -104,19 +104,19 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Giao diện Component
+// Component interface
 interface IComponent
 {
     string Operation();
 }
 
-// Lớp đối tượng gốc
+// Base concrete object class
 class ConcreteComponent : IComponent
 {
-    public string Operation() => "Gốc";
+    public string Operation() => "Base";
 }
 
-// Decorator cơ bản
+// Base decorator
 abstract class Decorator : IComponent
 {
     protected IComponent _component;
@@ -129,14 +129,14 @@ abstract class Decorator : IComponent
     public virtual string Operation() => _component.Operation();
 }
 
-// Bộ trang trí cụ thể A
+// Concrete decorator A
 class ConcreteDecoratorA : Decorator
 {
     public ConcreteDecoratorA(IComponent comp) : base(comp) {}
 
     public override string Operation()
     {
-        return $"Trang trí A({base.Operation()})";
+        return $"Decoration A({base.Operation()})";
     }
 }
 ```
@@ -183,14 +183,14 @@ Below is how to build a Weapon Decoration system with Fire Ammo and Silencer eff
 ```csharp
 namespace DesignPatterns.Decorator
 {
-    // Interface chung cho tất cả các loại vũ khí và phụ kiện nâng cấp
+    // Common interface for all weapons and upgrade attachments
     public interface IWeapon
     {
         string GetDescription();
         float GetDamage();
     }
 
-    // Vũ khí cơ bản ban đầu
+    // The original base weapon
     public class SimpleWeapon : IWeapon
     {
         private string weaponName;
@@ -212,7 +212,7 @@ namespace DesignPatterns.Decorator
 ```csharp
 namespace DesignPatterns.Decorator
 {
-    // Lớp cơ sở cho mọi phụ kiện trang trí vũ khí
+    // Base class for every weapon-decorating attachment
     public abstract class WeaponDecorator : IWeapon
     {
         protected IWeapon wrappedWeapon;
@@ -222,7 +222,7 @@ namespace DesignPatterns.Decorator
             this.wrappedWeapon = weapon;
         }
 
-        // Chuyển tiếp cuộc gọi đến vũ khí được bao bọc bên trong
+        // Forward the call to the weapon wrapped inside
         public virtual string GetDescription()
         {
             return wrappedWeapon.GetDescription();
@@ -240,36 +240,36 @@ namespace DesignPatterns.Decorator
 ```csharp
 namespace DesignPatterns.Decorator
 {
-    // Phụ kiện: Ống giảm thanh (Silencer)
+    // Attachment: Silencer
     public class SilencerDecorator : WeaponDecorator
     {
         public SilencerDecorator(IWeapon weapon) : base(weapon) { }
 
         public override string GetDescription()
         {
-            return base.GetDescription() + " + Ống Giảm Thanh (Silencer)";
+            return base.GetDescription() + " + Silencer";
         }
 
         public override float GetDamage()
         {
-            // Giảm thanh làm giảm nhẹ sát thương cơ bản đi 2 đơn vị
+            // The silencer slightly reduces base damage by 2 units
             return base.GetDamage() - 2f;
         }
     }
 
-    // Nâng cấp: Đạn Lửa (Fire Enchantment)
+    // Upgrade: Fire Enchantment
     public class FireEnchantment : WeaponDecorator
     {
         public FireEnchantment(IWeapon weapon) : base(weapon) { }
 
         public override string GetDescription()
         {
-            return base.GetDescription() + " & Đạn Lửa (Fire)";
+            return base.GetDescription() + " & Fire Ammo";
         }
 
         public override float GetDamage()
         {
-            // Cộng thêm 5 sát thương lửa
+            // Add 5 extra fire damage
             return base.GetDamage() + 5f;
         }
     }
@@ -286,30 +286,30 @@ namespace DesignPatterns.Decorator
     {
         private void Start()
         {
-            // 1. Tạo khẩu súng trường M4A1 cơ bản
-            IWeapon myRifle = new SimpleWeapon("Súng trường M4A1", 20f);
+            // 1. Create the basic M4A1 rifle
+            IWeapon myRifle = new SimpleWeapon("M4A1 Rifle", 20f);
             PrintWeaponInfo(myRifle);
 
-            // 2. Gắn thêm ống giảm thanh (Silencer) vào khẩu M4A1
-            Debug.Log("\n--- Người chơi gắn thêm Ống giảm thanh ---");
+            // 2. Attach a silencer to the M4A1
+            Debug.Log("\n--- The player attaches a Silencer ---");
             myRifle = new SilencerDecorator(myRifle);
             PrintWeaponInfo(myRifle);
 
-            // 3. Phù phép thêm Đạn lửa (Fire Enchantment) lên khẩu M4A1 đang có giảm thanh
-            Debug.Log("\n--- Người chơi nạp thêm Đạn lửa ---");
+            // 3. Enchant the silenced M4A1 with Fire Ammo (Fire Enchantment)
+            Debug.Log("\n--- The player loads Fire Ammo ---");
             myRifle = new FireEnchantment(myRifle);
             PrintWeaponInfo(myRifle);
 
-            // 4. Có thể lồng ghép thêm một lớp đạn lửa nữa nếu game cho phép stack hiệu ứng
-            Debug.Log("\n--- Người chơi stack thêm một lớp Đạn lửa nữa ---");
+            // 4. We can nest another fire ammo layer if the game allows stacking effects
+            Debug.Log("\n--- The player stacks another layer of Fire Ammo ---");
             myRifle = new FireEnchantment(myRifle);
             PrintWeaponInfo(myRifle);
         }
 
         private void PrintWeaponInfo(IWeapon weapon)
         {
-            Debug.Log($"Vũ khí: {weapon.GetDescription()}");
-            Debug.Log($"Tổng sát thương: {weapon.GetDamage()} DPS");
+            Debug.Log($"Weapon: {weapon.GetDescription()}");
+            Debug.Log($"Total damage: {weapon.GetDamage()} DPS");
         }
     }
 }

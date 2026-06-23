@@ -65,20 +65,20 @@ State diagram of the asynchronous scene-loading process with the `allowSceneActi
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Khởi_Khởi_Động : Gọi LoadSceneAsync()
-    Khởi_Khởi_Động --> Đang_Tải_Dữ_Liệu : Thiết lập allowSceneActivation = false
+    [*] --> Initializing : Call LoadSceneAsync()
+    Initializing --> Loading_Data : Set allowSceneActivation = false
     
-    state Đang_Tải_Dữ_Liệu {
-        [*] --> Tiến_Trình_0_đến_0_9
-        Tiến_Trình_0_đến_0_9 --> Tải_Hoàn_Tất_Nền : Đọc xong dữ liệu từ đĩa
+    state Loading_Data {
+        [*] --> Progress_0_to_0_9
+        Progress_0_to_0_9 --> Background_Load_Complete : Finished reading data from disk
     }
 
-    Tải_Hoàn_Tất_Nền --> Đang_Chờ_Kích_Hoạt : progress dừng ở 0.9
-    Đang_Chờ_Kích_Hoạt --> Đang_Chờ_Kích_Hoạt : Chờ người dùng / Chờ hiệu ứng Fade Out
+    Background_Load_Complete --> Awaiting_Activation : progress stops at 0.9
+    Awaiting_Activation --> Awaiting_Activation : Wait for user / Wait for Fade Out effect
     
-    Đang_Chờ_Kích_Hoạt --> Kích_Hoạt_Cảnh : Gán allowSceneActivation = true
-    Kích_Hoạt_Cảnh --> Hoàn_Thành : Khởi chạy Awake/Start cảnh mới, progress = 1.0
-    Hoàn_Thành --> [*]
+    Awaiting_Activation --> Activating_Scene : Set allowSceneActivation = true
+    Activating_Scene --> Completed : Run the new scene's Awake/Start, progress = 1.0
+    Completed --> [*]
 ```
 
 ---
@@ -95,7 +95,7 @@ using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
-    // Áp dụng mô hình Singleton để dễ dàng truy cập từ bất kỳ script nào
+    // Apply the Singleton pattern for easy access from any script
     public static SceneLoader Instance { get; private set; }
 
     [Header("UI Components")]
@@ -105,13 +105,13 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI promptText;
 
     [Header("Settings")]
-    [SerializeField] private float minLoadingTime = 1.5f; // Thời gian hiển thị loading tối thiểu để tránh nháy màn hình
+    [SerializeField] private float minLoadingTime = 1.5f; // Minimum loading display time to avoid screen flicker
     [SerializeField] private CanvasGroup fadeCanvasGroup;
     [SerializeField] private float fadeDuration = 0.5f;
 
     private void Awake()
     {
-        // Quản lý Singleton chuẩn mực tránh trùng lặp khi quay lại Scene cũ
+        // Proper Singleton management to avoid duplicates when returning to an old Scene
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -119,9 +119,9 @@ public class SceneLoader : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Giữ trình quản lý loading này xuyên suốt game
+        DontDestroyOnLoad(gameObject); // Keep this loading manager alive throughout the game
 
-        // Đảm bảo ẩn màn hình loading lúc ban đầu
+        // Make sure the loading screen is hidden initially
         if (loadingScreenCanvas != null)
         {
             loadingScreenCanvas.SetActive(false);
@@ -134,9 +134,9 @@ public class SceneLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// API công khai để gọi tải cảnh bất đồng bộ từ các script khác.
+    /// Public API to trigger asynchronous scene loading from other scripts.
     /// </summary>
-    /// <param name="sceneName">Tên chính xác của Scene cần tải (Phải có trong Build Settings)</param>
+    /// <param name="sceneName">The exact name of the Scene to load (must be in Build Settings)</param>
     public void LoadSceneAsync(string sceneName)
     {
         StartCoroutine(LoadSceneCoroutine(sceneName));
@@ -150,36 +150,36 @@ public class SceneLoader : MonoBehaviour
             yield break;
         }
 
-        // 1. Kích hoạt màn hình loading và đặt lại các thông số
+        // 1. Activate the loading screen and reset the parameters
         loadingScreenCanvas.SetActive(true);
         if (progressBar != null) progressBar.value = 0f;
         if (progressText != null) progressText.text = "0%";
         if (promptText != null) promptText.gameObject.SetActive(false);
 
-        // 2. Thực hiện hiệu ứng Fade In màn hình đen/loading
+        // 2. Play the Fade In effect for the black/loading screen
         if (fadeCanvasGroup != null)
         {
             yield return StartCoroutine(FadeCanvas(0f, 1f));
         }
 
-        // 3. Khởi tạo tác vụ tải cảnh bất đồng bộ nền
+        // 3. Start the background asynchronous scene-loading task
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         
-        // Cực kỳ quan trọng: Ngăn không cho cảnh tự động kích hoạt ngay khi tải xong
+        // Extremely important: Prevent the scene from auto-activating as soon as loading finishes
         asyncLoad.allowSceneActivation = false;
 
         float elapsedTime = 0f;
 
-        // 4. Vòng lặp cập nhật tiến độ loading
+        // 4. Loop that updates the loading progress
         while (!asyncLoad.isDone)
         {
-            elapsedTime += Time.unscaledDeltaTime; // Sử dụng unscaledDeltaTime đề phòng game đang pause (timeScale = 0)
+            elapsedTime += Time.unscaledDeltaTime; // Use unscaledDeltaTime in case the game is paused (timeScale = 0)
 
-            // Tiến độ thực tế của Unity chạy từ 0 đến 0.9 khi chưa kích hoạt
-            // Ta chuẩn hóa giá trị này về khoảng 0.0 đến 1.0
+            // Unity's actual progress runs from 0 to 0.9 while not yet activated
+            // We normalize this value to the 0.0 to 1.0 range
             float rawProgress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
             
-            // Tính toán tiến độ hiển thị mượt mà dựa trên thời gian trôi qua tối thiểu (Visual Padding)
+            // Compute a smooth display progress based on the minimum elapsed time (Visual Padding)
             float visualProgress = Mathf.Min(rawProgress, elapsedTime / minLoadingTime);
 
             if (progressBar != null)
@@ -192,19 +192,19 @@ public class SceneLoader : MonoBehaviour
                 progressText.text = $"{(visualProgress * 100f):F0}%";
             }
 
-            // Khi cả tiến độ thực tế và tiến độ hiển thị trực quan đều đạt tối đa (100% / 1.0)
+            // When both the actual progress and the visual display progress reach their maximum (100% / 1.0)
             if (asyncLoad.progress >= 0.9f && visualProgress >= 1.0f)
             {
                 if (promptText != null)
                 {
                     promptText.gameObject.SetActive(true);
-                    promptText.text = "Nhấn phím bất kỳ để tiếp tục...";
+                    promptText.text = "Press any key to continue...";
                 }
 
-                // Chờ người chơi nhấn phím để chính thức chuyển cảnh
+                // Wait for the player to press a key to officially transition the scene
                 if (Input.anyKeyDown)
                 {
-                    // 5. Cho phép kích hoạt cảnh
+                    // 5. Allow the scene to activate
                     asyncLoad.allowSceneActivation = true;
                 }
             }
@@ -212,18 +212,18 @@ public class SceneLoader : MonoBehaviour
             yield return null;
         }
 
-        // 6. Thực hiện hiệu ứng Fade Out màn hình đen sau khi cảnh mới đã hiển thị
+        // 6. Play the Fade Out effect for the black screen after the new scene is displayed
         if (fadeCanvasGroup != null)
         {
             yield return StartCoroutine(FadeCanvas(1f, 0f));
         }
 
-        // 7. Tắt canvas loading để trả lại màn hình chơi game
+        // 7. Disable the loading canvas to return to the gameplay screen
         loadingScreenCanvas.SetActive(false);
     }
 
     /// <summary>
-    /// Coroutine hỗ trợ hiệu ứng mờ dần (Fading) sử dụng CanvasGroup.
+    /// Helper coroutine for the fade effect using CanvasGroup.
     /// </summary>
     private IEnumerator FadeCanvas(float startAlpha, float endAlpha)
     {

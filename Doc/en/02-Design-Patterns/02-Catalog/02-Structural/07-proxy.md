@@ -51,16 +51,16 @@ flowchart TD
   Proxy --> Check["Lazy load / cache / permission"]
 ```
 
-### 2. Luồng chạy thực tế
+### 2. The actual execution flow
 
 ```mermaid
 flowchart TD
-  A["Client gọi Play()"] --> B["Proxy nhận request"]
-  B --> C{"Real object đã sẵn sàng?"}
-  C -- "Chưa" --> D["Load / kiểm tra / cache"]
-  C -- "Rồi" --> E["Ủy quyền cho RealSubject"]
+  A["Client calls Play()"] --> B["Proxy receives the request"]
+  B --> C{"Real object ready?"}
+  C -- "Not yet" --> D["Load / check / cache"]
+  C -- "Yes" --> E["Delegate to RealSubject"]
   D --> E
-  E --> F["Trả kết quả như object thật"]
+  E --> F["Return the result as the real object"]
 ```
 
 ### 3. Condensed UML
@@ -101,35 +101,35 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Interface chung cho Proxy và Real Subject
+// Common interface for the Proxy and the Real Subject
 interface ISubject
 {
     void Request();
 }
 
-// Đối tượng thực tế (Real Subject) chứa logic nghiệp vụ nặng nề
+// The real object (Real Subject) holds the heavy business logic
 class RealSubject : ISubject
 {
     public void Request()
     {
-        Print("Xử lý nghiệp vụ của RealSubject.");
+        Print("Handling the business logic of RealSubject.");
     }
 }
 
-// Đối tượng đại diện (Proxy) kiểm soát quyền truy cập
+// The proxy object (Proxy) controls access
 class Proxy : ISubject
 {
     private RealSubject _realSubject;
 
     public void Request()
     {
-        // Thực hiện tiền xử lý hoặc Lazy Loading
+        // Perform pre-processing or Lazy Loading
         if (_realSubject == null)
         {
             _realSubject = new RealSubject();
         }
         
-        // Chuyển tiếp yêu cầu
+        // Forward the request
         _realSubject.Request();
     }
 }
@@ -178,17 +178,17 @@ using UnityEngine;
 
 namespace DesignPatterns.Proxy
 {
-    // Interface chung cho tất cả các tài nguyên âm thanh
+    // Common interface for all audio resources
     public interface IAudioAsset
     {
         void Play();
     }
 
-    // Đối tượng âm thanh thật, chỉ tồn tại khi đã nạp file âm thanh vào bộ nhớ RAM
+    // The real audio object, which only exists once the audio file is loaded into RAM
     public class RealAudioAsset : IAudioAsset
     {
         private string _assetAddress;
-        private string _audioClipName; // Giả lập AudioClip thực tế
+        private string _audioClipName; // Simulates the actual AudioClip
 
         public RealAudioAsset(string address)
         {
@@ -198,14 +198,14 @@ namespace DesignPatterns.Proxy
 
         private void LoadClipFromDisk()
         {
-            // Giả lập tốn thời gian đọc file từ đĩa cứng vào RAM
+            // Simulate the time-consuming read of the file from disk into RAM
             _audioClipName = "AudioClip_Data_of_" + _assetAddress.Replace("Assets/Audio/", "");
-            Debug.Log($"[Real Subject] Đã nạp thành công '{_audioClipName}' vào RAM (Tiêu tốn 5MB bộ nhớ).");
+            Debug.Log($"[Real Subject] Successfully loaded '{_audioClipName}' into RAM (consuming 5MB of memory).");
         }
 
         public void Play()
         {
-            Debug.Log($"[Real Subject] Đang phát âm thanh: {_audioClipName} thông qua AudioSource!");
+            Debug.Log($"[Real Subject] Playing audio: {_audioClipName} through the AudioSource!");
         }
     }
 }
@@ -215,46 +215,46 @@ namespace DesignPatterns.Proxy
 ```csharp
 namespace DesignPatterns.Proxy
 {
-    // Lớp đại diện (Proxy), được tạo sẵn mà không tốn RAM load file âm thanh
+    // The proxy class (Proxy), created up front without spending RAM to load the audio file
     public class AudioAssetProxy : IAudioAsset
     {
         private string _assetAddress;
         
-        // Tham chiếu đến đối tượng thật, ban đầu bằng null
+        // Reference to the real object, initially null
         private RealAudioAsset _realAudioAsset;
 
         public AudioAssetProxy(string assetAddress)
         {
             this._assetAddress = assetAddress;
-            Debug.Log($"[Proxy] Đã khởi tạo Proxy cho âm thanh: '{_assetAddress}'. (Vẫn chưa tốn RAM nạp file)");
+            Debug.Log($"[Proxy] Initialized the Proxy for audio: '{_assetAddress}'. (No RAM spent loading the file yet)");
         }
 
-        // Thực thi phương thức interface
+        // Implement the interface method
         public void Play()
         {
-            // Lazy Loading: Nếu đối tượng thật chưa được nạp, nạp ngay lúc này
+            // Lazy Loading: if the real object has not been loaded yet, load it right now
             if (_realAudioAsset == null)
             {
-                Debug.Log($"[Proxy] Phát hiện âm thanh '{_assetAddress}' chưa có trên RAM. Bắt đầu tải chậm...");
+                Debug.Log($"[Proxy] Detected that audio '{_assetAddress}' is not in RAM yet. Starting lazy load...");
                 _realAudioAsset = new RealAudioAsset(_assetAddress);
             }
             else
             {
-                Debug.Log($"[Proxy] Âm thanh '{_assetAddress}' đã có sẵn trên RAM. Bỏ qua tải dữ liệu.");
+                Debug.Log($"[Proxy] Audio '{_assetAddress}' is already in RAM. Skipping data load.");
             }
 
-            // Chuyển tiếp yêu cầu đến đối tượng thật
+            // Forward the request to the real object
             _realAudioAsset.Play();
         }
         
-        // Hàm giải phóng bộ nhớ khi chuyển màn hoặc không dùng nữa
+        // Method to release memory when changing scenes or no longer in use
         public void ReleaseFromMemory()
         {
             if (_realAudioAsset != null)
             {
                 _realAudioAsset = null;
-                Debug.Log($"[Proxy] Giải phóng bộ nhớ RAM của âm thanh '{_assetAddress}'!");
-                System.GC.Collect(); // Giả lập dọn dẹp bộ nhớ
+                Debug.Log($"[Proxy] Releasing the RAM of audio '{_assetAddress}'!");
+                System.GC.Collect(); // Simulate memory cleanup
             }
         }
     }
@@ -274,37 +274,37 @@ namespace DesignPatterns.Proxy
 
         private void Start()
         {
-            Debug.Log("=== HỆ THỐNG KHỞI ĐỘNG GAME (Chỉ đăng ký Proxy) ===");
+            Debug.Log("=== GAME STARTUP SYSTEM (Only registering Proxies) ===");
             
-            // Đăng ký các file nhạc nền và hiệu ứng qua Proxy
+            // Register the background music and effect files through Proxies
             _soundLibrary.Add("BGM_LEVEL_1", new AudioAssetProxy("Assets/Audio/BGM_Level_1.mp3"));
             _soundLibrary.Add("SFX_EXPLOSION", new AudioAssetProxy("Assets/Audio/Explosion_Heavy.wav"));
             _soundLibrary.Add("BGM_BOSS_FIGHT", new AudioAssetProxy("Assets/Audio/Boss_Theme_Epic.mp3"));
 
-            Debug.Log("=== KHỞI ĐỘNG HOÀN TẤT (Khởi động cực nhanh vì chưa load file nặng) ===\n");
+            Debug.Log("=== STARTUP COMPLETE (Extremely fast startup since no heavy files were loaded) ===\n");
 
-            // 1. Phát tiếng nổ (Sẽ load từ đĩa trong lần đầu tiên)
-            Debug.Log("--- Tình huống 1: Người chơi bắn nổ thùng dầu ---");
+            // 1. Play the explosion sound (will load from disk on the first time)
+            Debug.Log("--- Scenario 1: The player shoots and blows up an oil barrel ---");
             _soundLibrary["SFX_EXPLOSION"].Play();
-            Debug.Log("--- Kết thúc Tình huống 1 ---\n");
+            Debug.Log("--- End of Scenario 1 ---\n");
 
-            // 2. Phát lại tiếng nổ (Sẽ phát ngay lập tức vì đã có trong cache RAM)
-            Debug.Log("--- Tình huống 2: Người chơi tiếp tục bắn nổ thùng dầu thứ hai ---");
+            // 2. Replay the explosion sound (plays instantly since it is already in the RAM cache)
+            Debug.Log("--- Scenario 2: The player blows up a second oil barrel ---");
             _soundLibrary["SFX_EXPLOSION"].Play();
-            Debug.Log("--- Kết thúc Tình huống 2 ---\n");
+            Debug.Log("--- End of Scenario 2 ---\n");
 
-            // 3. Người chơi tiến vào boss fight (Tải nhạc Boss)
-            Debug.Log("--- Tình huống 3: Người chơi chạm trán Boss ---");
+            // 3. The player enters the boss fight (load the Boss music)
+            Debug.Log("--- Scenario 3: The player confronts the Boss ---");
             _soundLibrary["BGM_BOSS_FIGHT"].Play();
-            Debug.Log("--- Kết thúc Tình huống 3 ---\n");
+            Debug.Log("--- End of Scenario 3 ---\n");
 
-            // 4. Giải phóng bộ nhớ nhạc Boss khi diệt xong boss
-            Debug.Log("--- Tình huống 4: Boss bị tiêu diệt, giải phóng nhạc Boss để giảm tải RAM ---");
+            // 4. Release the Boss music memory after the boss is defeated
+            Debug.Log("--- Scenario 4: The Boss is defeated, release the Boss music to reduce RAM load ---");
             if (_soundLibrary["BGM_BOSS_FIGHT"] is AudioAssetProxy bossBgmProxy)
             {
                 bossBgmProxy.ReleaseFromMemory();
             }
-            Debug.Log("--- Kết thúc Tình huống 4 ---");
+            Debug.Log("--- End of Scenario 4 ---");
         }
     }
 }

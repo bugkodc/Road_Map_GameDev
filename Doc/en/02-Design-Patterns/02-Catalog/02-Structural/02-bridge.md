@@ -51,13 +51,13 @@ flowchart TD
   Implementation --> I2["GamepadInput"]
 ```
 
-### 2. Luồng chạy thực tế
+### 2. Real runtime flow
 
 ```mermaid
 flowchart TD
-  A["Client dùng Abstraction"] --> B["Abstraction giữ Implementation"]
-  B --> C["Gọi impl.OperationImpl()"]
-  C --> D["Đổi implementation mà không đổi abstraction"]
+  A["Client uses Abstraction"] --> B["Abstraction holds Implementation"]
+  B --> C["Call impl.OperationImpl()"]
+  C --> D["Swap implementation without changing the abstraction"]
 ```
 
 ### 3. Condensed UML
@@ -99,13 +99,13 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Phân cấp Thực thi (Implementation)
+// Implementation hierarchy
 interface IImplementation
 {
     void MethodImpl();
 }
 
-// Phân cấp Trừu tượng (Abstraction)
+// Abstraction hierarchy
 class Abstraction
 {
     protected IImplementation _impl;
@@ -121,7 +121,7 @@ class Abstraction
     }
 }
 
-// Lớp trừu tượng mở rộng (Refined Abstraction)
+// Refined Abstraction
 class RefinedAbstraction : Abstraction
 {
     public RefinedAbstraction(IImplementation impl) : base(impl) {}
@@ -129,7 +129,7 @@ class RefinedAbstraction : Abstraction
     public override void Operation()
     {
         base.Operation();
-        // Logic bổ sung riêng
+        // Additional dedicated logic
     }
 }
 ```
@@ -178,40 +178,40 @@ using UnityEngine;
 
 namespace DesignPatterns.Bridge
 {
-    // Giao diện điều khiển hình ảnh và âm thanh của vũ khí
+    // Interface that controls the weapon's visuals and audio
     public interface IWeaponVisual
     {
         void PlayAttackEffects(Vector3 spawnPosition);
         void PlayHitSound();
     }
 
-    // Hiệu ứng lửa (Fire Elemental)
+    // Fire effect (Fire Elemental)
     public class FireWeaponVisual : IWeaponVisual
     {
         public void PlayAttackEffects(Vector3 spawnPosition)
         {
-            Debug.Log($"[VFX] Bùng nổ hạt lửa đỏ rực rỡ tại {spawnPosition}!");
-            // Thực tế sẽ Instantiate một Particle System lửa ở đây:
+            Debug.Log($"[VFX] A burst of bright red fire particles at {spawnPosition}!");
+            // In practice you would Instantiate a fire Particle System here:
             // Object.Instantiate(firePrefab, spawnPosition, Quaternion.identity);
         }
 
         public void PlayHitSound()
         {
-            Debug.Log("[SFX] Âm thanh xèo xèo thiêu đốt!");
+            Debug.Log("[SFX] A sizzling, scorching sound!");
         }
     }
 
-    // Hiệu ứng băng (Ice Elemental)
+    // Ice effect (Ice Elemental)
     public class IceWeaponVisual : IWeaponVisual
     {
         public void PlayAttackEffects(Vector3 spawnPosition)
         {
-            Debug.Log($"[VFX] Tạo chông băng nhọn hoắt tỏa hơi lạnh tại {spawnPosition}!");
+            Debug.Log($"[VFX] Sharp ice spikes radiating cold air at {spawnPosition}!");
         }
 
         public void PlayHitSound()
         {
-            Debug.Log("[SFX] Âm thanh rạn nứt đóng băng giòn giã!");
+            Debug.Log("[SFX] A crisp, cracking freeze sound!");
         }
     }
 }
@@ -221,10 +221,10 @@ namespace DesignPatterns.Bridge
 ```csharp
 namespace DesignPatterns.Bridge
 {
-    // Lớp trừu tượng đại diện cho Vũ khí
+    // Abstract class representing a Weapon
     public abstract class Weapon
     {
-        // Cầu nối (Bridge) sang phần thực thi hiển thị
+        // Bridge to the visual implementation
         protected IWeaponVisual weaponVisual;
 
         protected Weapon(IWeaponVisual visual)
@@ -232,7 +232,7 @@ namespace DesignPatterns.Bridge
             weaponVisual = visual;
         }
 
-        // Cho phép thay đổi hiệu ứng ở runtime (Enchantment)
+        // Allows changing the effect at runtime (Enchantment)
         public void SetVisual(IWeaponVisual newVisual)
         {
             weaponVisual = newVisual;
@@ -241,31 +241,31 @@ namespace DesignPatterns.Bridge
         public abstract void PerformAttack(Vector3 targetPosition);
     }
 
-    // Kiếm cận chiến
+    // Melee sword
     public class Sword : Weapon
     {
         public Sword(IWeaponVisual visual) : base(visual) { }
 
         public override void PerformAttack(Vector3 targetPosition)
         {
-            Debug.Log("[Weapon System] Thực hiện nhát chém chí mạng cận chiến!");
+            Debug.Log("[Weapon System] Delivering a deadly melee slash!");
             
-            // Gọi phần thực thi hiển thị thông qua cầu nối
+            // Call the visual implementation through the bridge
             weaponVisual.PlayAttackEffects(targetPosition);
             weaponVisual.PlayHitSound();
         }
     }
 
-    // Cung bắn xa
+    // Long-range bow
     public class Bow : Weapon
     {
         public Bow(IWeaponVisual visual) : base(visual) { }
 
         public override void PerformAttack(Vector3 targetPosition)
         {
-            Debug.Log("[Weapon System] Bắn ra mũi tên xuyên thấu tầm xa!");
+            Debug.Log("[Weapon System] Firing a piercing long-range arrow!");
             
-            // Gọi phần thực thi hiển thị thông qua cầu nối
+            // Call the visual implementation through the bridge
             weaponVisual.PlayAttackEffects(targetPosition);
             weaponVisual.PlayHitSound();
         }
@@ -283,22 +283,22 @@ namespace DesignPatterns.Bridge
     {
         private void Start()
         {
-            // 1. Tạo các đối tượng thực thi hiệu ứng
+            // 1. Create the effect implementation objects
             IWeaponVisual fireEffect = new FireWeaponVisual();
             IWeaponVisual iceEffect = new IceWeaponVisual();
 
-            // 2. Khởi tạo vũ khí kiếm mang hiệu ứng lửa
-            Debug.Log("--- Khởi tạo Kiếm Lửa ---");
+            // 2. Create a sword weapon carrying the fire effect
+            Debug.Log("--- Creating the Fire Sword ---");
             Weapon mySword = new Sword(fireEffect);
             mySword.PerformAttack(new Vector3(2f, 0f, 0f));
 
-            // 3. Khởi tạo cung mang hiệu ứng băng
-            Debug.Log("\n--- Khởi tạo Cung Băng ---");
+            // 3. Create a bow carrying the ice effect
+            Debug.Log("\n--- Creating the Ice Bow ---");
             Weapon myBow = new Bow(iceEffect);
             myBow.PerformAttack(new Vector3(10f, 2f, 0f));
 
-            // 4. Thay đổi hiệu ứng của thanh kiếm sang băng tại runtime (Nhặt bùa băng)
-            Debug.Log("\n--- Thanh kiếm được phù phép băng (Enchant Ice) ---");
+            // 4. Change the sword's effect to ice at runtime (picked up an ice charm)
+            Debug.Log("\n--- The sword is enchanted with ice (Enchant Ice) ---");
             mySword.SetVisual(iceEffect);
             mySword.PerformAttack(new Vector3(3f, 0f, 0f));
         }

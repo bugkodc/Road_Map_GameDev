@@ -56,10 +56,10 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  A["Client gọi facade.StartLevel()"] --> B["Facade gọi asset loader"]
-  B --> C["Facade gọi audio"]
-  C --> D["Facade gọi UI"]
-  D --> E["Client không phải biết chi tiết subsystem"]
+  A["Client calls facade.StartLevel()"] --> B["Facade calls asset loader"]
+  B --> C["Facade calls audio"]
+  C --> D["Facade calls UI"]
+  D --> E["Client does not need to know subsystem details"]
 ```
 
 ### 3. Condensed UML
@@ -97,12 +97,12 @@ classDiagram
 ## 💻 Pseudocode
 
 ```csharp
-// Các lớp hệ thống con phức tạp (Subsystems)
+// The complex subsystem classes (Subsystems)
 class SubsystemA { public void OperationA1() {} }
 class SubsystemB { public void OperationB1() {} }
 class SubsystemC { public void OperationC1() {} }
 
-// Facade gom tất cả hệ thống con lại
+// The Facade gathers all the subsystems together
 class Facade
 {
     private SubsystemA _a = new SubsystemA();
@@ -111,7 +111,7 @@ class Facade
 
     public void SimpleOperation()
     {
-        // Phối hợp các hệ thống con
+        // Orchestrate the subsystems
         _a.OperationA1();
         _b.OperationB1();
         _c.OperationC1();
@@ -160,7 +160,7 @@ using UnityEngine;
 
 namespace DesignPatterns.Facade
 {
-    // Lớp chứa dữ liệu Save game
+    // Class holding the saved game data
     [Serializable]
     public class SaveData
     {
@@ -169,63 +169,63 @@ namespace DesignPatterns.Facade
         public string currentScene;
     }
 
-    // Subsystem 1: Chuyển đổi dữ liệu (Serializer)
+    // Subsystem 1: Data conversion (Serializer)
     public class GameSerializer
     {
         public string Serialize(SaveData data)
         {
-            Debug.Log("[Subsystem] Đang serialize SaveData sang JSON...");
+            Debug.Log("[Subsystem] Serializing SaveData to JSON...");
             return JsonUtility.ToJson(data);
         }
 
         public SaveData Deserialize(string json)
         {
-            Debug.Log("[Subsystem] Đang deserialize JSON sang SaveData...");
+            Debug.Log("[Subsystem] Deserializing JSON to SaveData...");
             return JsonUtility.FromJson<SaveData>(json);
         }
     }
 
-    // Subsystem 2: Mã hóa dữ liệu (Encryptor)
+    // Subsystem 2: Data encryption (Encryptor)
     public class DataEncryptor
     {
         public string Encrypt(string plainText)
         {
-            Debug.Log("[Subsystem] Đang mã hóa dữ liệu (AES)...");
-            return "ENCRYPTED_[" + plainText + "]"; // Giả lập mã hóa
+            Debug.Log("[Subsystem] Encrypting data (AES)...");
+            return "ENCRYPTED_[" + plainText + "]"; // Simulated encryption
         }
 
         public string Decrypt(string cipherText)
         {
-            Debug.Log("[Subsystem] Đang giải mã dữ liệu...");
+            Debug.Log("[Subsystem] Decrypting data...");
             return cipherText.Replace("ENCRYPTED_[", "").Replace("]", "");
         }
     }
 
-    // Subsystem 3: Ghi file xuống ổ cứng (FileWriter)
+    // Subsystem 3: Writing the file to disk (FileWriter)
     public class FileStorage
     {
         public void WriteToFile(string fileName, string content)
         {
             string path = Application.persistentDataPath + "/" + fileName;
-            Debug.Log($"[Subsystem] Đang ghi file xuống ổ đĩa cục bộ tại: {path}");
-            // Thực tế: File.WriteAllText(path, content);
+            Debug.Log($"[Subsystem] Writing file to local disk at: {path}");
+            // In practice: File.WriteAllText(path, content);
         }
 
         public string ReadFromFile(string fileName)
         {
             string path = Application.persistentDataPath + "/" + fileName;
-            Debug.Log($"[Subsystem] Đang đọc file từ ổ đĩa cục bộ tại: {path}");
-            // Thực tế: return File.ReadAllText(path);
-            return "ENCRYPTED_[{\"playerLevel\":15,\"health\":85.5,\"currentScene\":\"Level_3\"}]"; // Giả lập dữ liệu đọc được
+            Debug.Log($"[Subsystem] Reading file from local disk at: {path}");
+            // In practice: return File.ReadAllText(path);
+            return "ENCRYPTED_[{\"playerLevel\":15,\"health\":85.5,\"currentScene\":\"Level_3\"}]"; // Simulated read data
         }
     }
 
-    // Subsystem 4: Đồng bộ hóa đám mây (CloudService)
+    // Subsystem 4: Cloud synchronization (CloudService)
     public class CloudService
     {
         public void SyncToCloud(string fileName)
         {
-            Debug.Log($"[Subsystem] Đang đồng bộ file '{fileName}' lên Steam Cloud...");
+            Debug.Log($"[Subsystem] Syncing file '{fileName}' to Steam Cloud...");
         }
     }
 }
@@ -235,7 +235,7 @@ namespace DesignPatterns.Facade
 ```csharp
 namespace DesignPatterns.Facade
 {
-    // Lớp Mặt tiền (Facade) quản lý toàn bộ hệ thống Save/Load phức tạp
+    // The Facade class managing the entire complex Save/Load system
     public class SaveLoadManager
     {
         private readonly GameSerializer _serializer;
@@ -253,29 +253,29 @@ namespace DesignPatterns.Facade
             _cloud = new CloudService();
         }
 
-        // Interface cực kỳ đơn giản cho Client sử dụng để Lưu Game
+        // Extremely simple interface for the Client to Save the Game
         public void SaveGame(SaveData data)
         {
-            Debug.Log(">>> Bắt đầu quy trình Lưu Game (Save Facade) <<<");
+            Debug.Log(">>> Starting the Save Game process (Save Facade) <<<");
             
             string json = _serializer.Serialize(data);
             string encryptedData = _encryptor.Encrypt(json);
             _storage.WriteToFile(SAVE_FILE_NAME, encryptedData);
             _cloud.SyncToCloud(SAVE_FILE_NAME);
             
-            Debug.Log(">>> Đã lưu game thành công! <<<\n");
+            Debug.Log(">>> Game saved successfully! <<<\n");
         }
 
-        // Interface cực kỳ đơn giản cho Client sử dụng để Tải Game
+        // Extremely simple interface for the Client to Load the Game
         public SaveData LoadGame()
         {
-            Debug.Log(">>> Bắt đầu quy trình Tải Game (Load Facade) <<<");
+            Debug.Log(">>> Starting the Load Game process (Load Facade) <<<");
             
             string encryptedData = _storage.ReadFromFile(SAVE_FILE_NAME);
             string json = _encryptor.Decrypt(encryptedData);
             SaveData data = _serializer.Deserialize(json);
             
-            Debug.Log(">>> Đã tải game thành công! <<<\n");
+            Debug.Log(">>> Game loaded successfully! <<<\n");
             return data;
         }
     }
@@ -294,10 +294,10 @@ namespace DesignPatterns.Facade
 
         private void Start()
         {
-            // 1. Khởi tạo Facade
+            // 1. Initialize the Facade
             _saveLoadManager = new SaveLoadManager();
 
-            // 2. Tạo dữ liệu game hiện tại của người chơi
+            // 2. Create the player's current game data
             SaveData currentProgress = new SaveData
             {
                 playerLevel = 15,
@@ -305,14 +305,14 @@ namespace DesignPatterns.Facade
                 currentScene = "Level_3"
             };
 
-            // 3. Thực hiện lưu game qua 1 cuộc gọi duy nhất
+            // 3. Save the game through a single call
             _saveLoadManager.SaveGame(currentProgress);
 
-            // 4. Thực hiện tải game qua 1 cuộc gọi duy nhất
+            // 4. Load the game through a single call
             SaveData loadedProgress = _saveLoadManager.LoadGame();
 
-            // Kiểm tra dữ liệu sau khi tải
-            Debug.Log($"[Client] Kết quả tải game - Level: {loadedProgress.playerLevel}, Máu: {loadedProgress.health}, Màn: {loadedProgress.currentScene}");
+            // Verify the data after loading
+            Debug.Log($"[Client] Load result - Level: {loadedProgress.playerLevel}, Health: {loadedProgress.health}, Scene: {loadedProgress.currentScene}");
         }
     }
 }

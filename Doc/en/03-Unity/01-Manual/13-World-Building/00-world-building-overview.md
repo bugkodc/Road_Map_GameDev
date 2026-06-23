@@ -56,16 +56,16 @@ The diagram of the LOD Group component's mesh-display switching based on camera 
 
 ```mermaid
 graph TD
-    A[Camera của người chơi] --> B{Tính tỷ lệ chiều cao vật thể trên màn hình %}
+    A[Player Camera] --> B{Compute the object's screen-height percentage %}
     
-    B -->|Chiếm > 60% màn hình| C[Hiển thị LOD 0 - High Poly Mesh]
-    B -->|Chiếm 30% - 60% màn hình| D[Hiển thị LOD 1 - Medium Poly Mesh]
-    B -->|Chiếm 10% - 30% màn hình| E[Hiển thị LOD 2 - Low Poly Mesh]
-    B -->|Chiếm < 10% màn hình| F[Culled - Ẩn hoàn toàn Mesh]
+    B -->|Occupies > 60% of the screen| C[Display LOD 0 - High Poly Mesh]
+    B -->|Occupies 30% - 60% of the screen| D[Display LOD 1 - Medium Poly Mesh]
+    B -->|Occupies 10% - 30% of the screen| E[Display LOD 2 - Low Poly Mesh]
+    B -->|Occupies < 10% of the screen| F[Culled - Hide the Mesh entirely]
     
-    C -->|Giảm đa giác| D
-    D -->|Giảm đa giác| E
-    E -->|Không render| F
+    C -->|Reduce polygons| D
+    D -->|Reduce polygons| E
+    E -->|Do not render| F
 ```
 
 ---
@@ -91,21 +91,21 @@ public class GridPlacementEditor : EditorWindow
     [MenuItem("Tools/World Building/Grid Placement Tool")]
     public static void ShowWindow()
     {
-        // Hiển thị cửa sổ công cụ tùy chỉnh trong Editor
+        // Show the custom tool window in the Editor
         GetWindow<GridPlacementEditor>("Grid Placement Tool");
     }
 
     private void OnGUI()
     {
-        GUILayout.Label("Thiết lập Sinh thế giới dạng Lưới", EditorStyles.boldLabel);
+        GUILayout.Label("Grid World Generation Setup", EditorStyles.boldLabel);
 
-        prefabToSpawn = (GameObject)EditorGUILayout.ObjectField("Prefab cần xếp", prefabToSpawn, typeof(GameObject), false);
-        rows = EditorGUILayout.IntField("Số Hàng (Rows)", rows);
-        columns = EditorGUILayout.IntField("Số Cột (Columns)", columns);
-        spacing = EditorGUILayout.FloatField("Khoảng cách (Spacing)", spacing);
-        markAsBatchingStatic = EditorGUILayout.Toggle("Đặt Batching Static?", markAsBatchingStatic);
+        prefabToSpawn = (GameObject)EditorGUILayout.ObjectField("Prefab to place", prefabToSpawn, typeof(GameObject), false);
+        rows = EditorGUILayout.IntField("Rows", rows);
+        columns = EditorGUILayout.IntField("Columns", columns);
+        spacing = EditorGUILayout.FloatField("Spacing", spacing);
+        markAsBatchingStatic = EditorGUILayout.Toggle("Set Batching Static?", markAsBatchingStatic);
 
-        if (GUILayout.Button("Sắp Xếp Lưới (Generate Grid)"))
+        if (GUILayout.Button("Generate Grid"))
         {
             GenerateGrid();
         }
@@ -115,11 +115,11 @@ public class GridPlacementEditor : EditorWindow
     {
         if (prefabToSpawn == null)
         {
-            EditorUtility.DisplayDialog("Lỗi", "Vui lòng gán Prefab trước khi sinh lưới!", "Đóng");
+            EditorUtility.DisplayDialog("Error", "Please assign a Prefab before generating the grid!", "Close");
             return;
         }
 
-        // Tạo một GameObject cha để chứa cả lưới cho gọn Hierarchy
+        // Create a parent GameObject to hold the whole grid for a tidy Hierarchy
         GameObject parentRoot = new GameObject($"Procedural_Grid_{prefabToSpawn.name}");
         Undo.RegisterCreatedObjectUndo(parentRoot, "Generate Prefab Grid");
 
@@ -127,28 +127,28 @@ public class GridPlacementEditor : EditorWindow
         {
             for (int c = 0; c < columns; c++)
             {
-                // 1. Tính toán tọa độ lưới
+                // 1. Compute the grid coordinates
                 Vector3 spawnPosition = new Vector3(r * spacing, 0, c * spacing);
 
-                // 2. Instantiate Prefab bằng công cụ của Editor để giữ liên kết Prefab gốc (không dùng Instantiate runtime)
+                // 2. Instantiate the Prefab through the Editor tool to keep the original Prefab link (not the runtime Instantiate)
                 GameObject spawnedObj = (GameObject)PrefabUtility.InstantiatePrefab(prefabToSpawn);
                 spawnedObj.transform.position = spawnPosition;
                 spawnedObj.transform.SetParent(parentRoot.transform);
 
-                // Ghi nhận lịch sử để có thể nhấn Ctrl + Z trong Editor để hoàn tác
+                // Record history so you can press Ctrl + Z in the Editor to undo
                 Undo.RegisterCreatedObjectUndo(spawnedObj, "Spawn Grid Element");
 
-                // 3. Tự động thiết lập Static Flags tối ưu hóa Draw Calls
+                // 3. Automatically set Static Flags to optimize Draw Calls
                 if (markAsBatchingStatic)
                 {
-                    // Thiết lập cờ Batching Static và Occluder Static
+                    // Set the Batching Static and Occluder Static flags
                     GameObjectUtility.SetStaticEditorFlags(
                         spawnedObj,
                         StaticEditorFlags.BatchingStatic | StaticEditorFlags.OccludeeStatic | StaticEditorFlags.OccluderStatic
                     );
                 }
 
-                // 4. Kiểm tra hoặc thiết lập thành phần LOD Group
+                // 4. Check or set up the LOD Group component
                 ConfigureLODGroup(spawnedObj);
             }
         }
@@ -157,24 +157,24 @@ public class GridPlacementEditor : EditorWindow
     }
 
     /// <summary>
-    /// Tự động kiểm tra và thiết lập LOD Group mẫu cho các vật thể được tạo ra.
+    /// Automatically checks and sets up a sample LOD Group for the generated objects.
     /// </summary>
     private void ConfigureLODGroup(GameObject target)
     {
-        // Kiểm tra xem đối tượng có sẵn component LODGroup chưa
+        // Check whether the object already has a LODGroup component
         if (!target.TryGetComponent<LODGroup>(out LODGroup lodGroup))
         {
-            // Nếu chưa có, ta có thể tự động thêm vào
+            // If not, we can add it automatically
             lodGroup = target.AddComponent<LODGroup>();
 
-            // Lấy tất cả MeshRenderer con để tự động gán vào LOD 0
+            // Get all child MeshRenderers to automatically assign to LOD 0
             MeshRenderer[] renderers = target.GetComponentsInChildren<MeshRenderer>();
             
             if (renderers.Length > 0)
             {
-                // Thiết lập một cấp LOD mẫu
+                // Set up a sample LOD level
                 LOD[] lods = new LOD[1];
-                lods[0] = new LOD(0.5f, renderers); // LOD0 chiếm từ 50% màn hình trở lên
+                lods[0] = new LOD(0.5f, renderers); // LOD0 applies from 50% of the screen and above
                 
                 lodGroup.SetLODs(lods);
                 lodGroup.RecalculateBounds();
