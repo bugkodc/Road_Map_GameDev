@@ -20,6 +20,13 @@ const TreeSvg = ({ w, h, vb, children }) => (
   <svg className="tree" width={w} height={h} viewBox={vb}>{children}</svg>
 );
 
+const Flower = ({ left, color, scale = 1 }) => (
+  <span className="flower" style={{ left: `${left}%`, '--fc': color, transform: `scale(${scale})` }}>
+    <span className="stem" />
+    <span className="bloom" />
+  </span>
+);
+
 const WorldMapPage = () => {
   const { isArticleCompleted, getProgressStats } = useProgress();
   const { language } = useLanguage();
@@ -77,6 +84,12 @@ const WorldMapPage = () => {
       <div className="layer hills" data-depth="30">
         <svg viewBox="0 0 1200 360" preserveAspectRatio="none"><path d="M0 250 Q260 170 520 230 T1040 210 T1200 240 V360 H0 Z" fill="var(--hill-mid)" /></svg>
       </div>
+      <div className="layer stream" data-depth="40">
+        <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
+          <path d="M-40 110 C 220 80 380 150 600 124 S 980 80 1240 130" stroke="var(--stream)" strokeWidth="34" fill="none" strokeLinecap="round" />
+          <path d="M-40 110 C 220 80 380 150 600 124 S 980 80 1240 130" stroke="var(--stream-hi)" strokeWidth="12" fill="none" strokeLinecap="round" />
+        </svg>
+      </div>
       <div className="layer trees" data-depth="46">
         <TreeSvg w="44" h="78" vb="0 0 46 80"><rect x="20" y="46" width="6" height="30" rx="3" fill="var(--wood-dark)" /><circle cx="23" cy="30" r="20" fill="var(--hill-near)" /><circle cx="12" cy="38" r="13" fill="var(--ground-2)" /><circle cx="34" cy="38" r="13" fill="var(--ground)" /></TreeSvg>
         <TreeSvg w="34" h="64" vb="0 0 36 66"><rect x="15" y="40" width="5" height="24" rx="2.5" fill="var(--wood-dark)" /><circle cx="18" cy="26" r="16" fill="var(--hill-near)" /><circle cx="28" cy="32" r="10" fill="var(--ground)" /></TreeSvg>
@@ -84,7 +97,15 @@ const WorldMapPage = () => {
         <TreeSvg w="32" h="60" vb="0 0 34 62"><rect x="14" y="38" width="5" height="22" rx="2.5" fill="var(--wood-dark)" /><circle cx="17" cy="24" r="15" fill="var(--hill-near)" /></TreeSvg>
         <TreeSvg w="42" h="76" vb="0 0 44 78"><rect x="19" y="46" width="6" height="28" rx="3" fill="var(--wood-dark)" /><circle cx="22" cy="30" r="19" fill="var(--hill-near)" /><circle cx="33" cy="36" r="11" fill="var(--ground)" /></TreeSvg>
       </div>
-      <div className="layer ground" data-depth="60" />
+      <div className="layer ground" data-depth="60">
+        <div className="fence" />
+        <Flower left={5} color="var(--petal-a)" />
+        <Flower left={18} color="var(--petal-b)" scale={0.85} />
+        <Flower left={43} color="var(--petal-c)" />
+        <Flower left={55} color="var(--petal-b)" scale={0.9} />
+        <Flower left={73} color="var(--petal-a)" />
+        <Flower left={88} color="var(--petal-c)" scale={0.85} />
+      </div>
 
       {/* HUD */}
       <div className="hud">
