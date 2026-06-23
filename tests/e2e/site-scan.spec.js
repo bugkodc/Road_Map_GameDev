@@ -19,7 +19,7 @@ const allArticlePaths = navData.categories.flatMap((category) => collectPaths(ca
 
 const waitForReaderToSettle = async (page) => {
   await page.waitForFunction(() => {
-    const readerHasSettled = document.querySelector('.markdown-body, .unity-doc-body, .reader-error, .placeholder-container');
+    const readerHasSettled = document.querySelector('.markdown-body, .unity-doc-body, .unreal-doc-body, .reader-error, .placeholder-container, .pdf-not-found-card, .pdf-viewer-container');
     const loader = document.querySelector('.reader-loader');
     return Boolean(readerHasSettled) && !loader;
   }, null, { timeout: 15_000 });
@@ -32,19 +32,25 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test('scan all navigation pages without raw Vite HTML or reader errors', async ({ page }, testInfo) => {
+test('scan all navigation pages without raw Vite HTML or reader errors', async ({ page, baseURL }, testInfo) => {
   test.setTimeout(180_000);
   const failures = [];
+  const base = baseURL || 'http://127.0.0.1:5173';
 
   for (const item of allArticlePaths) {
-    await page.goto(`/#${item.path}`);
+    // If it's a dynamic doc path (unreal-doc: or unity-doc:), it has no leading slash
+    const targetUrl = item.path.includes('unreal-doc:') || item.path.includes('unity-doc:')
+      ? `${base}/#${item.path}`
+      : `${base}/#${item.path}`;
+
+    await page.goto(targetUrl);
     await waitForReaderToSettle(page);
     await page.waitForTimeout(150);
 
     const state = await page.evaluate(() => {
       const bodyText = document.body.innerText;
       return {
-        title: document.querySelector('.markdown-body h1, .unity-doc-body h1, .reader-error h3')?.textContent?.trim() || '',
+        title: document.querySelector('.markdown-body h1, .unity-doc-body h1, .unreal-doc-body h1, .reader-error h3, .pdf-viewer-header h3, .pdf-not-found-card h3')?.textContent?.trim() || '',
         hasReaderError: Boolean(document.querySelector('.reader-error')),
         hasMermaidError: bodyText.includes('Syntax error in text')
           || bodyText.includes('mermaid version')
@@ -53,7 +59,7 @@ test('scan all navigation pages without raw Vite HTML or reader errors', async (
           || bodyText.includes('<script type="module"')
           || bodyText.includes('<meta charset="UTF-8"')
           || bodyText.includes('<title>Road Map GameDev</title>'),
-        hasContent: Boolean(document.querySelector('.markdown-body, .unity-doc-body, .placeholder-container'))
+        hasContent: Boolean(document.querySelector('.markdown-body, .unity-doc-body, .unreal-doc-body, .placeholder-container, .pdf-not-found-card, .pdf-viewer-container'))
       };
     });
 
@@ -69,8 +75,9 @@ test('scan all navigation pages without raw Vite HTML or reader errors', async (
   expect(failures, JSON.stringify(failures, null, 2)).toEqual([]);
 });
 
-test('capture representative pages after language switching', async ({ page }, testInfo) => {
-  await page.goto('/#03-Unity/01-Manual/03-Packages-Management/00-packages-management-overview.md');
+test('capture representative pages after language switching', async ({ page, baseURL }, testInfo) => {
+  const base = baseURL || 'http://127.0.0.1:5173';
+  await page.goto(`${base}/#03-Unity/01-Manual/03-Packages-Management/00-packages-management-overview.md`);
   await waitForReaderToSettle(page);
   await page.waitForTimeout(150);
   await expect(page.locator('.reader-error')).toHaveCount(0);
@@ -78,7 +85,7 @@ test('capture representative pages after language switching', async ({ page }, t
   await expect(page.getByText('Syntax error in text')).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('manual-packages-vi.png'), fullPage: true });
 
-  await page.goto('/#03-Unity/02-ScriptingAPI/01-UnityEngine/04-physics-api.md');
+  await page.goto(`${base}/#03-Unity/02-ScriptingAPI/01-UnityEngine/04-physics-api.md`);
   await waitForReaderToSettle(page);
   await expect(page.locator('.unity-doc-toolbar')).toHaveCount(0);
   await expect(page.getByText('Global physics properties and helper methods.')).toHaveCount(0);

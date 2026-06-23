@@ -1,17 +1,22 @@
 {
-  "name": "temp_vite",
+  "name": "road-map-gamedev",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/copyDocToDist.js",
     "lint": "eslint .",
     "test:e2e": "playwright test --config tests/playwright.config.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update:unity": "node scripts/updateUnityDocs.js",
+    "update:unreal": "node scripts/updateUnrealDocs.js",
+    "update:gpp": "node scripts/updateGppDocs.js",
+    "update:docs": "node scripts/updateUnityDocs.js && node scripts/updateGppDocs.js && node scripts/updateUnrealDocs.js"
   },
   "dependencies": {
     "dompurify": "^3.4.7",
+    "lucide-react": "^0.468.0",
     "marked": "^18.0.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

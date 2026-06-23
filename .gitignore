@@ -28,3 +28,12 @@ playwright-report
 # Public directory junctions / symlinks
 public/Doc
 
+# Local debug / scratch artifacts (not part of the app)
+api_response.json
+check_epic.js
+check_epic_sub.js
+epic_test.html
+epic_sub_test.html
+gameobject.html
+state_script.txt
+
