@@ -50,7 +50,7 @@ flowchart TB
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Client gọi Operation() trên node gốc"] --> B["Composite duyệt các child"]
   B --> C["Leaf tự xử lý"]
   B --> D["Composite con tiếp tục duyệt"]
@@ -61,7 +61,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Component {
     <<interface>>
     +Operation()

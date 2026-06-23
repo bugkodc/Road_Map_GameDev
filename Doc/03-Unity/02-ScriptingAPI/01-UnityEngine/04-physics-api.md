@@ -14,22 +14,14 @@ Hệ thống vật lý của Unity (3D dựa trên **NVIDIA PhysX**, 2D dựa tr
 
 Để Unity nhận diện bất kỳ va chạm nào, **ít nhất một trong hai đối tượng** tham gia va chạm bắt buộc phải có component **Rigidbody** (hoặc Rigidbody2D) gắn kèm.
 
-```
-                  ┌─────────────────────────────────────┐
-                  │          Kiểu va chạm (Type)        │
-                  └──────────────────┬──────────────────┘
-                                     │
-          ┌──────────────────────────┴──────────────────────────┐
-          v                                                     v
-┌─────────────────────────┐                           ┌─────────────────────────┐
-│        Collision        │                           │         Trigger         │
-│ (Vật lý - Cản trở nhau) │                           │ (Cảm biến - Đi xuyên qua)│
-└─────────┬───────────────┘                           └─────────┬───────────────┘
-          │                                                     │
-          v                                                     v
-   OnCollisionEnter                                      OnTriggerEnter
-   OnCollisionStay                                       OnTriggerStay
-   OnCollisionExit                                       OnTriggerExit
+```mermaid
+flowchart TD
+  Type["Kiểu va chạm"]
+  Type --> Collision["Collision<br/>Vật lý, cản trở nhau"]
+  Type --> Trigger["Trigger<br/>Cảm biến, đi xuyên qua"]
+
+  Collision --> CollisionEvents["OnCollisionEnter<br/>OnCollisionStay<br/>OnCollisionExit"]
+  Trigger --> TriggerEvents["OnTriggerEnter<br/>OnTriggerStay<br/>OnTriggerExit"]
 ```
 
 ### So sánh bản chất:

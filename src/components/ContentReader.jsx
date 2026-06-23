@@ -5,10 +5,48 @@ import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import navData from '../utils/navigation.json';
 import { Link } from '../App';
+import {
+  fetchUnityDoc,
+  getUnityDocTarget,
+  isUnityScriptingPath,
+  parseUnityDocHtml,
+  clearUnityDocCache
+} from '../utils/unityDocs';
+import {
+  fetchUnrealDoc,
+  parseUnrealDocHtml,
+  clearUnrealDocCache
+} from '../utils/unrealDocs';
+import {
+  fetchGppDoc,
+  parseGppDocHtml,
+  clearGppDocCache
+} from '../utils/gppDocs';
 
 // Custom Markdown preprocessor to handle GitHub-style alert boxes and image paths
 const preprocessMarkdown = (markdown, currentPath, t) => {
   if (!markdown) return '';
+
+  const resolveMarkdownPath = (href) => {
+    if (!href || /^(https?:|mailto:|#|\/)/i.test(href) || !href.includes('.md')) {
+      return href;
+    }
+
+    const [rawPath, hash = ''] = href.split('#');
+    const currentDir = currentPath.split('/').slice(0, -1);
+    const parts = rawPath.split('/');
+
+    parts.forEach((part) => {
+      if (!part || part === '.') return;
+      if (part === '..') {
+        currentDir.pop();
+      } else {
+        currentDir.push(part);
+      }
+    });
+
+    return `#${currentDir.join('/')}${hash ? `#${hash}` : ''}`;
+  };
 
   // 1. Rewrite relative image paths to absolute public paths:
   // e.g. `../../images/refactoring/clean-code.png` -> `./Doc/images/refactoring/clean-code.png`
@@ -22,6 +60,11 @@ const preprocessMarkdown = (markdown, currentPath, t) => {
       }
       return match;
     }
+  );
+
+  processed = processed.replace(
+    /(?<!!)\[([^\]]+)\]\(([^)]+\.md(?:#[^)]+)?)\)/g,
+    (match, label, href) => `[${label}](${resolveMarkdownPath(href)})`
   );
 
   // 2. Parse GitHub style alerts:
@@ -128,10 +171,81 @@ const ContentReader = ({ path, placeholder }) => {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [unityRefreshToken, setUnityRefreshToken] = useState(0);
+  const [unrealRefreshToken, setUnrealRefreshToken] = useState(0);
+  const [gppRefreshToken, setGppRefreshToken] = useState(0);
+  const [pdfExists, setPdfExists] = useState(true);
   
   const { isArticleCompleted, toggleArticleCompleted } = useProgress();
-  const { t, navTitle } = useLanguage();
+  const { language, t, navTitle } = useLanguage();
   const { prev, next, currentItem } = getPagination(path);
+  const isDirectUnityDoc = path.startsWith('unity-doc:');
+  const isUnityManualPath = (p) => p.startsWith('03-Unity/01-Manual/');
+  const shouldUseLiveUnityDoc = isDirectUnityDoc || (language === 'en' && (isUnityScriptingPath(path) || isUnityManualPath(path)));
+  
+  const isDirectUnrealDoc = path.startsWith('unreal-doc:');
+  const shouldUseLiveUnrealDoc = isDirectUnrealDoc;
+  const isGppDoc = path.startsWith('gpp-doc:');
+  const gppDocSlug = isGppDoc ? decodeURIComponent(path.replace('gpp-doc:', '')) : null;
+  const isPdfDoc = path.endsWith('.pdf');
+  const pdfName = isPdfDoc ? path.split('/').pop() : null;
+  const unrealDocTarget = shouldUseLiveUnrealDoc
+    ? (() => {
+        const rawUrl = path.replace('unreal-doc:', '');
+        const [slugEncoded] = rawUrl.split('?');
+        const slug = decodeURIComponent(slugEncoded);
+        return {
+          title: slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+          slug
+        };
+      })()
+    : null;
+  const unrealDocSlug = unrealDocTarget?.slug;
+  const unityDocTarget = shouldUseLiveUnityDoc
+    ? isDirectUnityDoc
+      ? (() => {
+          const rawUrl = path.replace('unity-doc:', '');
+          const [docPathEncoded, queryStr = ''] = rawUrl.split('?');
+          const docPath = decodeURIComponent(docPathEncoded);
+          const isManualLink = queryStr.includes('isManual=true');
+          return {
+            title: docPath.replace(/\.html$/i, ''),
+            docPath,
+            sourceKind: 'direct',
+            isManual: isManualLink
+          };
+        })()
+      : (() => {
+          if (isUnityManualPath(path)) {
+            // Map local manual pages to live Unity manual html files.
+            // E.g., '03-Unity/01-Manual/01-Get-Started/00-get-started-overview.md' -> 'GettingStarted.html'
+            const fileName = path.split('/').pop();
+            const manualMapping = {
+              '00-get-started-overview.md': 'get-started.html',
+              '00-editor-interface-overview.md': 'unity-editor.html',
+              '00-packages-management-overview.md': 'Packages.html',
+              '00-assets-media-overview.md': 'AssetWorkflow.html',
+              '00-2d-game-dev-overview.md': 'Unity2D.html',
+              '00-ai-overview.md': 'com.unity.ai.navigation.html',
+              '00-xr-overview.md': 'XR.html',
+              '00-multiplayer-overview.md': 'multiplayer.html',
+              '00-platform-dev-overview.md': 'PlatformSpecific.html',
+              '00-gameobjects-overview.md': 'GameObjects.html',
+              '00-scenes-overview.md': 'CreatingScenes.html',
+              '00-cameras-overview.md': 'CamerasOverview.html',
+              '00-world-building-overview.md': 'CreatingEnvironments.html',
+              '00-physics-overview.md': 'PhysicsSection.html',
+              '01-introduction-to-input.md': 'Input.html'
+            };
+            const docPath = manualMapping[fileName] || 'index.html';
+            const title = currentItem?.title || 'Unity Manual';
+            return { title, docPath, sourceKind: 'manual', isManual: true };
+          }
+          return getUnityDocTarget(path, currentItem);
+        })()
+    : null;
+  const unityDocPath = unityDocTarget?.docPath;
+  const unityDocIsManual = Boolean(unityDocTarget?.isManual);
 
   // Initialize Mermaid once on mount
   useEffect(() => {
@@ -174,6 +288,94 @@ const ContentReader = ({ path, placeholder }) => {
       setError(null);
     });
 
+    if (isPdfDoc) {
+      queueMicrotask(() => {
+        setLoading(true);
+        setError(null);
+      });
+      fetch(`./books/${pdfName}`, { method: 'HEAD' })
+        .then((res) => {
+          if (res.ok) {
+            setPdfExists(true);
+          } else {
+            setPdfExists(false);
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          setPdfExists(false);
+          setLoading(false);
+        });
+      return;
+    }
+
+    if (isGppDoc) {
+      queueMicrotask(() => {
+        setLoading(true);
+        setError(null);
+      });
+      fetchGppDoc(gppDocSlug, { force: gppRefreshToken > 0 })
+        .then((payload) => {
+          const parsed = parseGppDocHtml(payload, {
+            cacheHit: t('unityDocsCacheHit'),
+            freshFetch: t('unityDocsFreshFetch'),
+            updatedAt: t('unityDocsUpdatedAt'),
+            openSource: t('unityDocsOpenSource')
+          });
+          setContent(parsed.html);
+          setLoading(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch((err) => {
+          console.error(err);
+          setError(err.message);
+          setLoading(false);
+        });
+      return;
+    }
+
+    if (shouldUseLiveUnrealDoc) {
+      fetchUnrealDoc(unrealDocSlug, { language, force: unrealRefreshToken > 0 })
+        .then((payload) => {
+          const parsed = parseUnrealDocHtml(payload, {
+            cacheHit: t('unrealDocsCacheHit'),
+            freshFetch: t('unrealDocsFreshFetch'),
+            updatedAt: t('unrealDocsUpdatedAt'),
+            openSource: t('unrealDocsOpenSource')
+          });
+          setContent(parsed.html);
+          setLoading(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(err => {
+          console.error(err);
+          setError(t('unrealDocsLoadError', err.message));
+          setLoading(false);
+        });
+      return;
+    }
+
+    if (shouldUseLiveUnityDoc) {
+      fetchUnityDoc(unityDocPath, { force: unityRefreshToken > 0, isManual: unityDocIsManual })
+        .then((payload) => {
+          const parsed = parseUnityDocHtml(payload, {
+            cacheHit: t('unityDocsCacheHit'),
+            freshFetch: t('unityDocsFreshFetch'),
+            updatedAt: t('unityDocsUpdatedAt'),
+            openSource: t('unityDocsOpenSource')
+          }, { isManual: unityDocIsManual });
+          setContent(parsed.html);
+          setLoading(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(err => {
+          console.error(err);
+          setError(t('unityDocsLoadError', err.message));
+          setLoading(false);
+        });
+      return;
+    }
+
     // Fetch the markdown file from our public directory junction
     fetch(`./Doc/${path}`)
       .then(res => {
@@ -183,6 +385,10 @@ const ContentReader = ({ path, placeholder }) => {
         return res.text();
       })
       .then(text => {
+        if (/^\s*<!doctype html/i.test(text) || text.includes('/@vite/client')) {
+          throw new Error(t('loadError', path));
+        }
+
         const preprocessed = preprocessMarkdown(text, path, t);
         const html = marked.parse(preprocessed);
         let cleanHtml = DOMPurify.sanitize(html);
@@ -209,7 +415,7 @@ const ContentReader = ({ path, placeholder }) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [path, placeholder, t]);
+  }, [path, placeholder, t, language, shouldUseLiveUnityDoc, unityDocPath, unityDocIsManual, unityRefreshToken, shouldUseLiveUnrealDoc, unrealDocSlug, unrealRefreshToken, isPdfDoc, pdfName, isGppDoc, gppDocSlug, gppRefreshToken]);
 
   if (placeholder) {
     return (
@@ -257,11 +463,90 @@ const ContentReader = ({ path, placeholder }) => {
 
   return (
     <article className="reading-pane">
-      {/* Article HTML Content */}
-      <div 
-        className="markdown-body" 
-        dangerouslySetInnerHTML={{ __html: content }} 
-      />
+      {unityDocTarget && (
+        <div className="unity-doc-toolbar">
+          <div>
+            <span className="unity-doc-kicker">{t('unityDocsLive')}</span>
+            <strong>{unityDocTarget.title}</strong>
+          </div>
+          <button
+            className="btn-secondary unity-doc-refresh"
+            onClick={() => {
+              clearUnityDocCache(unityDocTarget.docPath, unityDocIsManual);
+              setUnityRefreshToken((value) => value + 1);
+            }}
+          >
+            {t('unityDocsRefresh')}
+          </button>
+        </div>
+      )}
+
+      {unrealDocTarget && (
+        <div className="unity-doc-toolbar unreal-doc-toolbar">
+          <div>
+            <span className="unity-doc-kicker unreal-doc-kicker">{t('unrealDocsLive')}</span>
+            <strong>{unrealDocTarget.title}</strong>
+          </div>
+          <button
+            className="btn-secondary unity-doc-refresh unreal-doc-refresh"
+            onClick={() => {
+              clearUnrealDocCache(unrealDocTarget.slug, language);
+              setUnrealRefreshToken((value) => value + 1);
+            }}
+          >
+            {t('unrealDocsRefresh')}
+          </button>
+        </div>
+      )}
+
+      {isGppDoc && (
+        <div className="unity-doc-toolbar" style={{ borderLeftColor: 'var(--resources)' }}>
+          <div>
+            <span className="unity-doc-kicker" style={{ color: 'var(--resources)' }}>Game Programming Patterns</span>
+            <strong>{currentItem ? navTitle(currentItem) : 'GPP'}</strong>
+          </div>
+          <button
+            className="btn-secondary unity-doc-refresh"
+            onClick={() => {
+              clearGppDocCache(gppDocSlug);
+              setGppRefreshToken((value) => value + 1);
+            }}
+          >
+            {t('unityDocsRefresh')}
+          </button>
+        </div>
+      )}
+ 
+       {/* Article HTML Content or PDF Viewer */}
+       {isPdfDoc ? (
+         !pdfExists ? (
+           <div className="pdf-not-found-card">
+             <span className="pdf-not-found-icon">📂</span>
+             <h3>{t('pdfNotFoundTitle')}</h3>
+             <p>{t('pdfNotFoundText', currentItem?.title || pdfName, `public/books/${pdfName}`)}</p>
+             <div className="pdf-path-box">{`public/books/${pdfName}`}</div>
+           </div>
+         ) : (
+           <div className="pdf-viewer-container">
+             <div className="pdf-viewer-header">
+               <h3>{currentItem?.title || pdfName}</h3>
+               <a href={`./books/${pdfName}`} target="_blank" rel="noreferrer" className="btn-secondary" style={{ fontSize: '0.78rem', padding: '4px 10px' }}>
+                 {t('unityDocsOpenSource') || 'Open PDF'}
+               </a>
+             </div>
+             <iframe
+               src={`./books/${pdfName}`}
+               className="pdf-viewer-iframe"
+               title={currentItem?.title || pdfName}
+             />
+           </div>
+         )
+       ) : (
+         <div 
+           className="markdown-body" 
+           dangerouslySetInnerHTML={{ __html: content }} 
+         />
+       )}
 
       {/* Progress Checker box at end of reading */}
       {currentItem && (

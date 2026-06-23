@@ -40,7 +40,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Request["Damage request"] --> H1["Armor handler"]
   H1 --> H2["Shield handler"]
   H2 --> H3["Buff handler"]
@@ -50,7 +50,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Client gửi request"] --> B["Handler hiện tại thử xử lý"]
   B --> C{"Xử lý xong?"}
   C -- "Có" --> D["Dừng chuỗi"]
@@ -62,7 +62,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Handler {
     <<interface>>
     +SetNext()

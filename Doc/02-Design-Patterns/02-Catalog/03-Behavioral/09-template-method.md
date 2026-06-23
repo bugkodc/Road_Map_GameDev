@@ -42,7 +42,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Template["Base algorithm"] --> Step1["Fixed step"]
   Template --> Hook["Hook / overridable step"]
   Template --> Step2["Fixed step"]
@@ -52,7 +52,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Client gọi TemplateMethod()"] --> B["Base class chạy skeleton"]
   B --> C["Gọi step cố định"]
   C --> D["Gọi primitive operation của subclass"]
@@ -63,7 +63,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class AbstractClass {
     +TemplateMethod()
     #StepA()

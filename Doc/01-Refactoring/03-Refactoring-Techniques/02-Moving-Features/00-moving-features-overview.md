@@ -137,23 +137,17 @@ public static class VectorExtensions
 
 ## 🗺️ Khi nào dùng kỹ thuật nào?
 
-```
-Class quá lớn?
-├── Có 2 nhóm responsibility rõ ràng? → Extract Class
-└── Chỉ 1 method/field không thuộc về? → Move Method / Move Field
+```mermaid
+flowchart TD
+  Large["Class quá lớn?"]
+  Large --> Extract["Có 2 nhóm responsibility rõ ràng<br/>Extract Class"]
+  Large --> Move["Method/field không thuộc về<br/>Move Method / Move Field"]
 
-Class quá nhỏ?
-└── Gần như không có responsibility? → Inline Class
-
-Client biết quá nhiều về cấu trúc nội bộ?
-└── Gọi a.getB().getC().doSomething()? → Hide Delegate
-
-Class chỉ forward call?
-└── Quá nhiều delegate method? → Remove Middle Man
-
-Cần thêm method cho class không sửa được?
-├── Chỉ 1-2 method? → Introduce Foreign Method
-└── Nhiều method? → Introduce Local Extension
+  Small["Class quá nhỏ?"] --> Inline["Gần như không có responsibility<br/>Inline Class"]
+  Client["Client biết quá nhiều cấu trúc nội bộ?"] --> Hide["a.getB().getC().doSomething()<br/>Hide Delegate"]
+  Middle["Class chỉ forward call?"] --> Remove["Quá nhiều delegate method<br/>Remove Middle Man"]
+  External["Cần thêm method cho class không sửa được?"] --> Foreign["Chỉ 1-2 method<br/>Introduce Foreign Method"]
+  External --> Extension["Nhiều method<br/>Introduce Local Extension"]
 ```
 
 ---

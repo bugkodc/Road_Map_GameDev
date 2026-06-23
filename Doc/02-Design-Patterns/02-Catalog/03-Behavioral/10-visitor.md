@@ -1,77 +1,77 @@
-# Visitor (Bộ truy cập)
+﻿# Visitor (Bá»™ truy cáº­p)
 
-> 📖 **Nguồn:** [Refactoring.Guru — Visitor](https://refactoring.guru/design-patterns/visitor) | Tác giả: Alexander Shvets
-
----
-
-## 🎯 Ý định (Intent)
-
-**Visitor** là một mẫu thiết kế thuộc nhóm hành vi (behavioral), cho phép bạn tách biệt các thuật toán và hành vi khỏi các đối tượng mà chúng hoạt động trên đó, giúp bạn thêm các hoạt động mới vào các cấu trúc đối tượng hiện có mà không cần sửa đổi các lớp đó.
+> ðŸ“– **Nguá»“n:** [Refactoring.Guru â€” Visitor](https://refactoring.guru/design-patterns/visitor) | TÃ¡c giáº£: Alexander Shvets
 
 ---
 
-## ❌ Vấn đề (Problem)
+## ðŸŽ¯ Ã Ä‘á»‹nh (Intent)
 
-Hãy tưởng tượng bạn đang thiết kế một trò chơi đi cảnh (Platformer) với hệ thống **Vật phẩm bổ trợ (Power-up / Buff System)**:
-- Game của bạn có một số loại thực thể chính kế thừa từ `IEntity`: **Player** (người chơi), **Enemy** (kẻ địch), và **Obstacle** (chướng ngại vật như thùng gỗ, tường đá).
-- Bây giờ bạn muốn viết tính năng cho vật phẩm **Freeze Power-up (Búa đóng băng)**:
-  - Khi tác động lên **Player**: Đóng băng di chuyển của người chơi trong 2 giây.
-  - Khi tác động lên **Enemy**: Làm chậm quái vật 50% trong 5 giây.
-  - Khi tác động lên **Obstacle**: Khiến chướng ngại vật giòn đi và dễ bị đập vỡ.
-- Nếu bạn giải quyết bằng cách thêm hàm `ApplyFreeze()` trực tiếp vào interface `IEntity` và triển khai trong tất cả các class con, code sẽ hoạt động. Tuy nhiên, vài tuần sau Designer lại muốn thêm: **Lava Power-up (Lửa đỏ)**, **Electricity Power-up (Sét đánh)**.
-- Bạn lại phải mở toàn bộ các file `Player`, `Enemy`, `Obstacle` ra để viết thêm các hàm `ApplyLava()`, `ApplyLightning()`. Điều này vi phạm nghiêm trọng nguyên lý **Open/Closed Principle** (lớp thực thể bị chỉnh sửa liên tục cho các tính năng không phải cốt lõi của nó).
-- Nếu dùng kiểm tra kiểu dữ liệu thủ công dạng `if (entity is Player)`, bạn sẽ tạo ra đống code kiểm tra rườm rà, mất đi tính hướng đối tượng và dễ bỏ sót khi thêm thực thể mới.
+**Visitor** lÃ  má»™t máº«u thiáº¿t káº¿ thuá»™c nhÃ³m hÃ nh vi (behavioral), cho phÃ©p báº¡n tÃ¡ch biá»‡t cÃ¡c thuáº­t toÃ¡n vÃ  hÃ nh vi khá»i cÃ¡c Ä‘á»‘i tÆ°á»£ng mÃ  chÃºng hoáº¡t Ä‘á»™ng trÃªn Ä‘Ã³, giÃºp báº¡n thÃªm cÃ¡c hoáº¡t Ä‘á»™ng má»›i vÃ o cÃ¡c cáº¥u trÃºc Ä‘á»‘i tÆ°á»£ng hiá»‡n cÃ³ mÃ  khÃ´ng cáº§n sá»­a Ä‘á»•i cÃ¡c lá»›p Ä‘Ã³.
 
 ---
 
-## ✅ Giải pháp (Solution)
+## âŒ Váº¥n Ä‘á» (Problem)
 
-Mẫu **Visitor** đề xuất bạn đóng gói toàn bộ logic của các hành vi bổ trợ (Power-up) vào các lớp riêng biệt gọi là **Visitors (Bộ truy cập)**. Bản thân các thực thể cũ chỉ cung cấp một điểm móc nối nhỏ nhận Visitor.
+HÃ£y tÆ°á»Ÿng tÆ°á»£ng báº¡n Ä‘ang thiáº¿t káº¿ má»™t trÃ² chÆ¡i Ä‘i cáº£nh (Platformer) vá»›i há»‡ thá»‘ng **Váº­t pháº©m bá»• trá»£ (Power-up / Buff System)**:
+- Game cá»§a báº¡n cÃ³ má»™t sá»‘ loáº¡i thá»±c thá»ƒ chÃ­nh káº¿ thá»«a tá»« `IEntity`: **Player** (ngÆ°á»i chÆ¡i), **Enemy** (káº» Ä‘á»‹ch), vÃ  **Obstacle** (chÆ°á»›ng ngáº¡i váº­t nhÆ° thÃ¹ng gá»—, tÆ°á»ng Ä‘Ã¡).
+- BÃ¢y giá» báº¡n muá»‘n viáº¿t tÃ­nh nÄƒng cho váº­t pháº©m **Freeze Power-up (BÃºa Ä‘Ã³ng bÄƒng)**:
+  - Khi tÃ¡c Ä‘á»™ng lÃªn **Player**: ÄÃ³ng bÄƒng di chuyá»ƒn cá»§a ngÆ°á»i chÆ¡i trong 2 giÃ¢y.
+  - Khi tÃ¡c Ä‘á»™ng lÃªn **Enemy**: LÃ m cháº­m quÃ¡i váº­t 50% trong 5 giÃ¢y.
+  - Khi tÃ¡c Ä‘á»™ng lÃªn **Obstacle**: Khiáº¿n chÆ°á»›ng ngáº¡i váº­t giÃ²n Ä‘i vÃ  dá»… bá»‹ Ä‘áº­p vá»¡.
+- Náº¿u báº¡n giáº£i quyáº¿t báº±ng cÃ¡ch thÃªm hÃ m `ApplyFreeze()` trá»±c tiáº¿p vÃ o interface `IEntity` vÃ  triá»ƒn khai trong táº¥t cáº£ cÃ¡c class con, code sáº½ hoáº¡t Ä‘á»™ng. Tuy nhiÃªn, vÃ i tuáº§n sau Designer láº¡i muá»‘n thÃªm: **Lava Power-up (Lá»­a Ä‘á»)**, **Electricity Power-up (SÃ©t Ä‘Ã¡nh)**.
+- Báº¡n láº¡i pháº£i má»Ÿ toÃ n bá»™ cÃ¡c file `Player`, `Enemy`, `Obstacle` ra Ä‘á»ƒ viáº¿t thÃªm cÃ¡c hÃ m `ApplyLava()`, `ApplyLightning()`. Äiá»u nÃ y vi pháº¡m nghiÃªm trá»ng nguyÃªn lÃ½ **Open/Closed Principle** (lá»›p thá»±c thá»ƒ bá»‹ chá»‰nh sá»­a liÃªn tá»¥c cho cÃ¡c tÃ­nh nÄƒng khÃ´ng pháº£i cá»‘t lÃµi cá»§a nÃ³).
+- Náº¿u dÃ¹ng kiá»ƒm tra kiá»ƒu dá»¯ liá»‡u thá»§ cÃ´ng dáº¡ng `if (entity is Player)`, báº¡n sáº½ táº¡o ra Ä‘á»‘ng code kiá»ƒm tra rÆ°á»m rÃ , máº¥t Ä‘i tÃ­nh hÆ°á»›ng Ä‘á»‘i tÆ°á»£ng vÃ  dá»… bá» sÃ³t khi thÃªm thá»±c thá»ƒ má»›i.
 
-1.  Tạo interface `IVisitor` định nghĩa các hàm truy cập cho từng loại thực thể cụ thể:
+---
+
+## âœ… Giáº£i phÃ¡p (Solution)
+
+Máº«u **Visitor** Ä‘á» xuáº¥t báº¡n Ä‘Ã³ng gÃ³i toÃ n bá»™ logic cá»§a cÃ¡c hÃ nh vi bá»• trá»£ (Power-up) vÃ o cÃ¡c lá»›p riÃªng biá»‡t gá»i lÃ  **Visitors (Bá»™ truy cáº­p)**. Báº£n thÃ¢n cÃ¡c thá»±c thá»ƒ cÅ© chá»‰ cung cáº¥p má»™t Ä‘iá»ƒm mÃ³c ná»‘i nhá» nháº­n Visitor.
+
+1.  Táº¡o interface `IVisitor` Ä‘á»‹nh nghÄ©a cÃ¡c hÃ m truy cáº­p cho tá»«ng loáº¡i thá»±c thá»ƒ cá»¥ thá»ƒ:
     *   `Visit(Player player)`
     *   `Visit(Enemy enemy)`
     *   `Visit(Obstacle obstacle)`
-2.  Tạo interface `IEntity` khai báo phương thức: `Accept(IVisitor visitor)`.
-3.  Trong mỗi thực thể cụ thể, triển khai hàm `Accept` cực kỳ đơn giản bằng kỹ thuật **Double Dispatch**:
+2.  Táº¡o interface `IEntity` khai bÃ¡o phÆ°Æ¡ng thá»©c: `Accept(IVisitor visitor)`.
+3.  Trong má»—i thá»±c thá»ƒ cá»¥ thá»ƒ, triá»ƒn khai hÃ m `Accept` cá»±c ká»³ Ä‘Æ¡n giáº£n báº±ng ká»¹ thuáº­t **Double Dispatch**:
     ```csharp
     public void Accept(IVisitor visitor) {
-        visitor.Visit(this); // Gọi đúng hàm overload của Visitor tương ứng với kiểu của 'this'
+        visitor.Visit(this); // Gá»i Ä‘Ãºng hÃ m overload cá»§a Visitor tÆ°Æ¡ng á»©ng vá»›i kiá»ƒu cá»§a 'this'
     }
     ```
-4.  Bây giờ, khi muốn thêm hiệu ứng Búa đóng băng, bạn chỉ cần tạo class `FreezeVisitor` kế thừa `IVisitor` và viết logic xử lý riêng cho Player, Enemy, Obstacle tại đó. Bạn không cần sửa đổi bất kỳ dòng code cốt lõi nào của các lớp thực thể nữa!
+4.  BÃ¢y giá», khi muá»‘n thÃªm hiá»‡u á»©ng BÃºa Ä‘Ã³ng bÄƒng, báº¡n chá»‰ cáº§n táº¡o class `FreezeVisitor` káº¿ thá»«a `IVisitor` vÃ  viáº¿t logic xá»­ lÃ½ riÃªng cho Player, Enemy, Obstacle táº¡i Ä‘Ã³. Báº¡n khÃ´ng cáº§n sá»­a Ä‘á»•i báº¥t ká»³ dÃ²ng code cá»‘t lÃµi nÃ o cá»§a cÃ¡c lá»›p thá»±c thá»ƒ ná»¯a!
 
 ---
 
-## 🎨 Cấu trúc (Structure)
+## ðŸŽ¨ Cáº¥u trÃºc (Structure)
 
-Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 lớp: **ý tưởng nhanh → luồng chạy thực tế → UML rút gọn**.
+Thay vÃ¬ Ä‘á»c má»™t UML lá»›n ngay tá»« Ä‘áº§u, hÃ£y Ä‘á»c pattern theo 3 lá»›p: **Ã½ tÆ°á»Ÿng nhanh â†’ luá»“ng cháº¡y thá»±c táº¿ â†’ UML rÃºt gá»n**.
 
-### 1. Ý tưởng nhanh
+### 1. Ã tÆ°á»Ÿng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Visitor["Visitor operation"] --> Enemy["Enemy"]
   Visitor --> Chest["Chest"]
   Visitor --> NPC["NPC"]
   ObjectStructure["Object list"] --> Visitor
 ```
 
-### 2. Luồng chạy thực tế
+### 2. Luá»“ng cháº¡y thá»±c táº¿
 
 ```mermaid
-flowchart LR
-  Client["Client chọn Visitor"] --> List["Object structure"]
+flowchart TD
+  Client["Client chá»n Visitor"] --> List["Object structure"]
   List --> Accept["Element.Accept(visitor)"]
   Accept --> Visit["VisitElement(this)"]
-  Visit --> Result["Operation mới chạy"]
+  Visit --> Result["Operation má»›i cháº¡y"]
 ```
 
-### 3. UML rút gọn
+### 3. UML rÃºt gá»n
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Visitor {
     <<interface>>
     +VisitElementA(ElementA)
@@ -91,97 +91,97 @@ classDiagram
   ElementB ..> Visitor : accepts
 ```
 
-### Cách đọc sơ đồ
+### CÃ¡ch Ä‘á»c sÆ¡ Ä‘á»“
 
-| Thành phần | Ý nghĩa |
+| ThÃ nh pháº§n | Ã nghÄ©a |
 |---|---|
-| Nhìn nhanh | Thêm operation mới bằng Visitor thay vì sửa từng class element. |
-| Luồng chính | Double dispatch: element gọi đúng VisitX của visitor. |
-| Trong game | Export/save, buff effect, damage calculation qua nhiều entity type. |
-| Mũi tên nét liền | Object đang giữ tham chiếu hoặc gọi trực tiếp object khác. |
-| Mũi tên tam giác / nét đứt trong UML | Kế thừa hoặc thực thi interface. |
+| NhÃ¬n nhanh | ThÃªm operation má»›i báº±ng Visitor thay vÃ¬ sá»­a tá»«ng class element. |
+| Luá»“ng chÃ­nh | Double dispatch: element gá»i Ä‘Ãºng VisitX cá»§a visitor. |
+| Trong game | Export/save, buff effect, damage calculation qua nhiá»u entity type. |
+| MÅ©i tÃªn nÃ©t liá»n | Object Ä‘ang giá»¯ tham chiáº¿u hoáº·c gá»i trá»±c tiáº¿p object khÃ¡c. |
+| MÅ©i tÃªn tam giÃ¡c / nÃ©t Ä‘á»©t trong UML | Káº¿ thá»«a hoáº·c thá»±c thi interface. |
 
-> Mẹo đọc nhanh: trước hết hãy tìm **Client/Context**, sau đó đi theo mũi tên đến interface chính. Các class cụ thể chỉ là biến thể được thay vào khi chạy.
+> Máº¹o Ä‘á»c nhanh: trÆ°á»›c háº¿t hÃ£y tÃ¬m **Client/Context**, sau Ä‘Ã³ Ä‘i theo mÅ©i tÃªn Ä‘áº¿n interface chÃ­nh. CÃ¡c class cá»¥ thá»ƒ chá»‰ lÃ  biáº¿n thá»ƒ Ä‘Æ°á»£c thay vÃ o khi cháº¡y.
 
 ---
 
-## 💻 Mã giả (Pseudocode)
+## ðŸ’» MÃ£ giáº£ (Pseudocode)
 
 ```csharp
-// Giao diện Visitor chứa các hàm overload cho từng thực thể
+// Giao diá»‡n Visitor chá»©a cÃ¡c hÃ m overload cho tá»«ng thá»±c thá»ƒ
 interface IVisitor
 {
     void VisitConcreteElementA(ElementA element);
     void VisitConcreteElementB(ElementB element);
 }
 
-// Giao diện Element chấp nhận Visitor
+// Giao diá»‡n Element cháº¥p nháº­n Visitor
 interface IElement
 {
     void Accept(IVisitor visitor);
 }
 
-// Element cụ thể A
+// Element cá»¥ thá»ƒ A
 class ElementA : IElement
 {
     public void Accept(IVisitor visitor) => visitor.VisitConcreteElementA(this);
-    public void FeatureA() => Print("Tính năng của A");
+    public void FeatureA() => Print("TÃ­nh nÄƒng cá»§a A");
 }
 
-// Visitor cụ thể xử lý tính năng mới
+// Visitor cá»¥ thá»ƒ xá»­ lÃ½ tÃ­nh nÄƒng má»›i
 class ConcreteVisitor : IVisitor
 {
     public void VisitConcreteElementA(ElementA element)
     {
-        element.FeatureA(); // Thực thi hành vi mới trên A
+        element.FeatureA(); // Thá»±c thi hÃ nh vi má»›i trÃªn A
     }
 
     public void VisitConcreteElementB(ElementB element)
     {
-        // Thực thi hành vi mới trên B
+        // Thá»±c thi hÃ nh vi má»›i trÃªn B
     }
 }
 ```
 
 ---
 
-## ⚙️ Khả năng áp dụng (Applicability)
+## âš™ï¸ Kháº£ nÄƒng Ã¡p dá»¥ng (Applicability)
 
-Dùng Visitor khi:
-- Bạn cần thực hiện một hoạt động trên tất cả các phần tử của một cấu trúc đối tượng phức tạp (như một cây thực thể game, Scene Hierarchy) và các phần tử này có các lớp cụ thể khác nhau.
-- Bạn muốn làm sạch mã nguồn của các lớp thực thể bằng cách loại bỏ các hành vi phụ trợ không liên quan đến nhiệm vụ chính của chúng.
-- Bạn thường xuyên phải thêm các tính năng mới cho các lớp trong cấu trúc đối tượng hiện có, nhưng cấu trúc của các lớp thực thể này rất ổn định và hiếm khi thay đổi (chỉ có Player, Enemy, Obstacle, không phát sinh thêm kiểu thực thể mới).
-
----
-
-## 📝 Các bước thực hiện (How to Implement)
-
-1.  Định nghĩa interface `IVisitor` với tập hợp các phương thức `Visit...` tương ứng cho mỗi lớp Concrete Element có sẵn trong game.
-2.  Định nghĩa phương thức `Accept(IVisitor visitor)` trong interface của Element gốc.
-3.  Triển khai phương thức `Accept` trong tất cả các lớp Element cụ thể. Code triển khai luôn là: `visitor.Visit(this);` (trong đó `this` tự động trỏ về kiểu dữ liệu chính xác của class hiện tại nhờ cơ chế biên dịch).
-4.  Tạo ra các class Concrete Visitor kế thừa `IVisitor` để cài đặt các thuật toán/hành vi mới.
-5.  Khi cần áp dụng hành vi, Client gọi: `element.Accept(visitor)`.
+DÃ¹ng Visitor khi:
+- Báº¡n cáº§n thá»±c hiá»‡n má»™t hoáº¡t Ä‘á»™ng trÃªn táº¥t cáº£ cÃ¡c pháº§n tá»­ cá»§a má»™t cáº¥u trÃºc Ä‘á»‘i tÆ°á»£ng phá»©c táº¡p (nhÆ° má»™t cÃ¢y thá»±c thá»ƒ game, Scene Hierarchy) vÃ  cÃ¡c pháº§n tá»­ nÃ y cÃ³ cÃ¡c lá»›p cá»¥ thá»ƒ khÃ¡c nhau.
+- Báº¡n muá»‘n lÃ m sáº¡ch mÃ£ nguá»“n cá»§a cÃ¡c lá»›p thá»±c thá»ƒ báº±ng cÃ¡ch loáº¡i bá» cÃ¡c hÃ nh vi phá»¥ trá»£ khÃ´ng liÃªn quan Ä‘áº¿n nhiá»‡m vá»¥ chÃ­nh cá»§a chÃºng.
+- Báº¡n thÆ°á»ng xuyÃªn pháº£i thÃªm cÃ¡c tÃ­nh nÄƒng má»›i cho cÃ¡c lá»›p trong cáº¥u trÃºc Ä‘á»‘i tÆ°á»£ng hiá»‡n cÃ³, nhÆ°ng cáº¥u trÃºc cá»§a cÃ¡c lá»›p thá»±c thá»ƒ nÃ y ráº¥t á»•n Ä‘á»‹nh vÃ  hiáº¿m khi thay Ä‘á»•i (chá»‰ cÃ³ Player, Enemy, Obstacle, khÃ´ng phÃ¡t sinh thÃªm kiá»ƒu thá»±c thá»ƒ má»›i).
 
 ---
 
-## ⚖️ Ưu & Nhược điểm (Pros and Cons)
+## ðŸ“ CÃ¡c bÆ°á»›c thá»±c hiá»‡n (How to Implement)
 
-*   **👍 Ưu điểm:**
-    *   *Open/Closed Principle:* Dễ dàng thêm các hiệu ứng/thuật toán mới (Visitor mới) tác động lên các đối tượng mà không cần sửa đổi các đối tượng đó.
-    *   *Single Responsibility Principle:* Gom tất cả các biến thể của một thuật toán mới cho nhiều lớp vào một nơi duy nhất.
-    *   *Double Dispatch:* Giải quyết sạch sẽ vấn đề đa hình theo tham số đầu vào mà không cần ép kiểu (`casting`).
-*   **👎 Nhược điểm:**
-    *   *Khó thay đổi cấu trúc Element:* Nếu bạn thêm một loại thực thể mới (ví dụ: `Npc`), bạn bắt buộc phải mở toàn bộ các file interface `IVisitor` và tất cả các Concrete Visitor hiện có để viết thêm hàm `VisitNpc(...)`.
+1.  Äá»‹nh nghÄ©a interface `IVisitor` vá»›i táº­p há»£p cÃ¡c phÆ°Æ¡ng thá»©c `Visit...` tÆ°Æ¡ng á»©ng cho má»—i lá»›p Concrete Element cÃ³ sáºµn trong game.
+2.  Äá»‹nh nghÄ©a phÆ°Æ¡ng thá»©c `Accept(IVisitor visitor)` trong interface cá»§a Element gá»‘c.
+3.  Triá»ƒn khai phÆ°Æ¡ng thá»©c `Accept` trong táº¥t cáº£ cÃ¡c lá»›p Element cá»¥ thá»ƒ. Code triá»ƒn khai luÃ´n lÃ : `visitor.Visit(this);` (trong Ä‘Ã³ `this` tá»± Ä‘á»™ng trá» vá» kiá»ƒu dá»¯ liá»‡u chÃ­nh xÃ¡c cá»§a class hiá»‡n táº¡i nhá» cÆ¡ cháº¿ biÃªn dá»‹ch).
+4.  Táº¡o ra cÃ¡c class Concrete Visitor káº¿ thá»«a `IVisitor` Ä‘á»ƒ cÃ i Ä‘áº·t cÃ¡c thuáº­t toÃ¡n/hÃ nh vi má»›i.
+5.  Khi cáº§n Ã¡p dá»¥ng hÃ nh vi, Client gá»i: `element.Accept(visitor)`.
 
 ---
 
-## 🎮 Trong Game Dev: C# Code Example (Unity)
+## âš–ï¸ Æ¯u & NhÆ°á»£c Ä‘iá»ƒm (Pros and Cons)
 
-Dưới đây là hệ thống tương tác **Power-up (Freeze & Fire)** tác động lên các thực thể khác nhau trong Unity bằng Visitor Pattern:
+*   **ðŸ‘ Æ¯u Ä‘iá»ƒm:**
+    *   *Open/Closed Principle:* Dá»… dÃ ng thÃªm cÃ¡c hiá»‡u á»©ng/thuáº­t toÃ¡n má»›i (Visitor má»›i) tÃ¡c Ä‘á»™ng lÃªn cÃ¡c Ä‘á»‘i tÆ°á»£ng mÃ  khÃ´ng cáº§n sá»­a Ä‘á»•i cÃ¡c Ä‘á»‘i tÆ°á»£ng Ä‘Ã³.
+    *   *Single Responsibility Principle:* Gom táº¥t cáº£ cÃ¡c biáº¿n thá»ƒ cá»§a má»™t thuáº­t toÃ¡n má»›i cho nhiá»u lá»›p vÃ o má»™t nÆ¡i duy nháº¥t.
+    *   *Double Dispatch:* Giáº£i quyáº¿t sáº¡ch sáº½ váº¥n Ä‘á» Ä‘a hÃ¬nh theo tham sá»‘ Ä‘áº§u vÃ o mÃ  khÃ´ng cáº§n Ã©p kiá»ƒu (`casting`).
+*   **ðŸ‘Ž NhÆ°á»£c Ä‘iá»ƒm:**
+    *   *KhÃ³ thay Ä‘á»•i cáº¥u trÃºc Element:* Náº¿u báº¡n thÃªm má»™t loáº¡i thá»±c thá»ƒ má»›i (vÃ­ dá»¥: `Npc`), báº¡n báº¯t buá»™c pháº£i má»Ÿ toÃ n bá»™ cÃ¡c file interface `IVisitor` vÃ  táº¥t cáº£ cÃ¡c Concrete Visitor hiá»‡n cÃ³ Ä‘á»ƒ viáº¿t thÃªm hÃ m `VisitNpc(...)`.
 
-### 1. Interfaces chính
+---
+
+## ðŸŽ® Trong Game Dev: C# Code Example (Unity)
+
+DÆ°á»›i Ä‘Ã¢y lÃ  há»‡ thá»‘ng tÆ°Æ¡ng tÃ¡c **Power-up (Freeze & Fire)** tÃ¡c Ä‘á»™ng lÃªn cÃ¡c thá»±c thá»ƒ khÃ¡c nhau trong Unity báº±ng Visitor Pattern:
+
+### 1. Interfaces chÃ­nh
 ```csharp
-// Giao diện Bộ truy cập
+// Giao diá»‡n Bá»™ truy cáº­p
 public interface IEntityVisitor
 {
     void Visit(PlayerCharacter player);
@@ -189,39 +189,39 @@ public interface IEntityVisitor
     void Visit(DestructibleObstacle obstacle);
 }
 
-// Giao diện Thực thể chấp nhận Bộ truy cập
+// Giao diá»‡n Thá»±c thá»ƒ cháº¥p nháº­n Bá»™ truy cáº­p
 public interface IGameEntity
 {
     void Accept(IEntityVisitor visitor);
 }
 ```
 
-### 2. Các thực thể Element cụ thể (Player, Enemy, Obstacle)
+### 2. CÃ¡c thá»±c thá»ƒ Element cá»¥ thá»ƒ (Player, Enemy, Obstacle)
 ```csharp
 using UnityEngine;
 
-// 1. Thực thể Người chơi
+// 1. Thá»±c thá»ƒ NgÆ°á»i chÆ¡i
 public class PlayerCharacter : MonoBehaviour, IGameEntity
 {
     public float movementSpeed = 5f;
 
     public void Accept(IEntityVisitor visitor)
     {
-        visitor.Visit(this); // Double Dispatch định tuyến đúng hàm của Visitor
+        visitor.Visit(this); // Double Dispatch Ä‘á»‹nh tuyáº¿n Ä‘Ãºng hÃ m cá»§a Visitor
     }
 
     public void ApplySpeedDebuff(float factor, float duration)
     {
-        Debug.Log($"👤 [Player] Tốc độ chạy bị giảm đi {factor * 100}% trong {duration} giây!");
+        Debug.Log($"ðŸ‘¤ [Player] Tá»‘c Ä‘á»™ cháº¡y bá»‹ giáº£m Ä‘i {factor * 100}% trong {duration} giÃ¢y!");
     }
 
     public void BurnPlayer(float damage)
     {
-        Debug.Log($"👤 [Player] Bị bỏng lửa! Nhận {damage} sát thương thiêu đốt.");
+        Debug.Log($"ðŸ‘¤ [Player] Bá»‹ bá»ng lá»­a! Nháº­n {damage} sÃ¡t thÆ°Æ¡ng thiÃªu Ä‘á»‘t.");
     }
 }
 
-// 2. Thực thể Kẻ địch
+// 2. Thá»±c thá»ƒ Káº» Ä‘á»‹ch
 public class EnemyCharacter : MonoBehaviour, IGameEntity
 {
     public void Accept(IEntityVisitor visitor)
@@ -231,16 +231,16 @@ public class EnemyCharacter : MonoBehaviour, IGameEntity
 
     public void FreezeEnemy(float stunDuration)
     {
-        Debug.Log($"🤖 [Enemy] Bị ĐÓNG BĂNG hoàn toàn! Choáng trong {stunDuration} giây.");
+        Debug.Log($"ðŸ¤– [Enemy] Bá»‹ ÄÃ“NG BÄ‚NG hoÃ n toÃ n! ChoÃ¡ng trong {stunDuration} giÃ¢y.");
     }
 
     public void BurnEnemy(float damage)
     {
-        Debug.Log($"🤖 [Enemy] Bị thiêu rụi bởi lửa! Nhận {damage} sát thương.");
+        Debug.Log($"ðŸ¤– [Enemy] Bá»‹ thiÃªu rá»¥i bá»Ÿi lá»­a! Nháº­n {damage} sÃ¡t thÆ°Æ¡ng.");
     }
 }
 
-// 3. Thực thể Chướng ngại vật
+// 3. Thá»±c thá»ƒ ChÆ°á»›ng ngáº¡i váº­t
 public class DestructibleObstacle : MonoBehaviour, IGameEntity
 {
     public void Accept(IEntityVisitor visitor)
@@ -250,43 +250,43 @@ public class DestructibleObstacle : MonoBehaviour, IGameEntity
 
     public void MakeShatterable()
     {
-        Debug.Log("📦 [Obstacle] Thùng gỗ hóa giòn dễ vỡ!");
+        Debug.Log("ðŸ“¦ [Obstacle] ThÃ¹ng gá»— hÃ³a giÃ²n dá»… vá»¡!");
     }
 
     public void MeltObstacle()
     {
-        Debug.Log("📦 [Obstacle] Rào chắn gỗ bị đốt cháy tiêu hủy hoàn toàn.");
+        Debug.Log("ðŸ“¦ [Obstacle] RÃ o cháº¯n gá»— bá»‹ Ä‘á»‘t chÃ¡y tiÃªu há»§y hoÃ n toÃ n.");
     }
 }
 ```
 
-### 3. Các Concrete Visitors (Freeze & Fire Power-up)
+### 3. CÃ¡c Concrete Visitors (Freeze & Fire Power-up)
 ```csharp
 using UnityEngine;
 
-// 1. Hiệu ứng Đóng băng
+// 1. Hiá»‡u á»©ng ÄÃ³ng bÄƒng
 public class FreezePowerUp : IEntityVisitor
 {
     public void Visit(PlayerCharacter player)
     {
-        // Player bị làm chậm
+        // Player bá»‹ lÃ m cháº­m
         player.ApplySpeedDebuff(0.5f, 2.0f);
     }
 
     public void Visit(EnemyCharacter enemy)
     {
-        // Enemy bị stun hoàn toàn
+        // Enemy bá»‹ stun hoÃ n toÃ n
         enemy.FreezeEnemy(3.0f);
     }
 
     public void Visit(DestructibleObstacle obstacle)
     {
-        // Thùng gỗ hóa giòn
+        // ThÃ¹ng gá»— hÃ³a giÃ²n
         obstacle.MakeShatterable();
     }
 }
 
-// 2. Hiệu ứng Lửa cháy
+// 2. Hiá»‡u á»©ng Lá»­a chÃ¡y
 public class FirePowerUp : IEntityVisitor
 {
     private readonly float _damage = 25f;
@@ -298,7 +298,7 @@ public class FirePowerUp : IEntityVisitor
 
     public void Visit(EnemyCharacter enemy)
     {
-        enemy.BurnEnemy(_damage * 1.5f); // Lửa khắc quái vật nên gây sát thương nhân đôi
+        enemy.BurnEnemy(_damage * 1.5f); // Lá»­a kháº¯c quÃ¡i váº­t nÃªn gÃ¢y sÃ¡t thÆ°Æ¡ng nhÃ¢n Ä‘Ã´i
     }
 
     public void Visit(DestructibleObstacle obstacle)
@@ -308,19 +308,19 @@ public class FirePowerUp : IEntityVisitor
 }
 ```
 
-### 4. Client code (Va chạm vật lý áp dụng Visitor)
+### 4. Client code (Va cháº¡m váº­t lÃ½ Ã¡p dá»¥ng Visitor)
 ```csharp
 using UnityEngine;
 
 public class PowerUpTrigger : MonoBehaviour
 {
-    // Cấu hình loại PowerUp qua Inspector
+    // Cáº¥u hÃ¬nh loáº¡i PowerUp qua Inspector
     public enum PowerUpType { Freeze, Fire }
     public PowerUpType activePowerUp;
 
     private void OnTriggerEnter(Collider other)
     {
-        // Tìm xem đối tượng va chạm có thực thi IGameEntity không
+        // TÃ¬m xem Ä‘á»‘i tÆ°á»£ng va cháº¡m cÃ³ thá»±c thi IGameEntity khÃ´ng
         IGameEntity entity = other.GetComponent<IGameEntity>();
         
         if (entity != null)
@@ -331,17 +331,17 @@ public class PowerUpTrigger : MonoBehaviour
             {
                 case PowerUpType.Freeze:
                     visitor = new FreezePowerUp();
-                    Debug.Log("❄️ Kích hoạt va chạm ĐÓNG BĂNG!");
+                    Debug.Log("â„ï¸ KÃ­ch hoáº¡t va cháº¡m ÄÃ“NG BÄ‚NG!");
                     break;
                 case PowerUpType.Fire:
                     visitor = new FirePowerUp();
-                    Debug.Log("🔥 Kích hoạt va chạm LỬA ĐỎ!");
+                    Debug.Log("ðŸ”¥ KÃ­ch hoáº¡t va cháº¡m Lá»¬A Äá»Ž!");
                     break;
             }
 
             if (visitor != null)
             {
-                // Thực thi mẫu thiết kế Visitor
+                // Thá»±c thi máº«u thiáº¿t káº¿ Visitor
                 entity.Accept(visitor);
             }
         }
@@ -350,9 +350,9 @@ public class PowerUpTrigger : MonoBehaviour
 ```
 
 ---
-> 📚 **Nguồn gốc:** Nội dung tham khảo từ [Refactoring.Guru](https://refactoring.guru/) — Tác giả: Alexander Shvets, Minh họa: Dmitry Zhart
+> ðŸ“š **Nguá»“n gá»‘c:** Ná»™i dung tham kháº£o tá»« [Refactoring.Guru](https://refactoring.guru/) â€” TÃ¡c giáº£: Alexander Shvets, Minh há»a: Dmitry Zhart
 
-| Hướng | Liên kết |
+| HÆ°á»›ng | LiÃªn káº¿t |
 |-------|----------|
-| ← Quay lại | [Template Method](./09-template-method.md) |
-| → Tiếp theo | [Behavioral Patterns Overview](./00-behavioral-overview.md) |
+| â† Quay láº¡i | [Template Method](./09-template-method.md) |
+| â†’ Tiáº¿p theo | [Behavioral Patterns Overview](./00-behavioral-overview.md) |

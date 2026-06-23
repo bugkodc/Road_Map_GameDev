@@ -41,7 +41,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Prototype["Prototype prefab/template"] --> Clone["Clone()"]
   Clone --> Copy1["Object copy A"]
   Clone --> Copy2["Object copy B"]
@@ -51,7 +51,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Chọn prototype có sẵn"] --> B["Clone()"]
   B --> C["Copy dữ liệu gốc"]
   C --> D["Tinh chỉnh phần riêng"]
@@ -62,7 +62,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Prototype {
     <<interface>>
     +Clone() Prototype

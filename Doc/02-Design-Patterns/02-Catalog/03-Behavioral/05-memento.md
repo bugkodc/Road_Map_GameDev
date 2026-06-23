@@ -37,7 +37,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Originator["Game object"] --> Memento["Snapshot"]
   Caretaker["Save manager"] --> Memento
   Memento --> Restore["Restore state"]
@@ -46,7 +46,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Originator tạo snapshot"] --> B["Caretaker lưu memento"]
   B --> C["Game tiếp tục thay đổi state"]
   C --> D["Cần undo/load"]
@@ -58,7 +58,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Originator {
     +Save() Memento
     +Restore(Memento)

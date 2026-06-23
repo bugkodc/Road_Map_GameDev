@@ -38,7 +38,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Input["Input/UI"] --> Command["Command object"]
   Command --> Receiver["Receiver"]
   Command --> History["Undo / replay history"]
@@ -47,7 +47,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Player nhấn phím"] --> B["Tạo Command"]
   B --> C["Invoker Execute()"]
   C --> D["Receiver thực hiện hành động"]
@@ -59,7 +59,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Command {
     <<interface>>
     +Execute()

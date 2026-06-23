@@ -1,26 +1,34 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { LanguageProvider } from './context/LanguageContext';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import LandingPage from './pages/LandingPage';
-import RoadmapPage from './pages/RoadmapPage';
-import ReaderPage from './pages/ReaderPage';
 import './App.css';
+import './workspace.css';
+
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
+const ReaderPage = lazy(() => import('./pages/ReaderPage'));
 
 // Export a lightweight navigation Link component that handles state-based Hash Routing
 export const Link = ({ to, children, className, onClick }) => {
   const handleClick = (e) => {
-    // If it's a disabled button/link, prevent navigation
+    e.preventDefault();
+
     if (className && className.includes('btn-disabled')) {
-      e.preventDefault();
       return;
     }
-    
-    // Smooth transition between hash change
-    window.location.hash = to;
+
     if (onClick) onClick();
+
+    const nextHash = `#${to}`;
+    if (window.location.hash === nextHash) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    window.location.hash = to;
   };
 
   return (
@@ -34,7 +42,7 @@ const MainApp = () => {
   const [currentRoute, setCurrentRoute] = useState(() => {
     const hash = window.location.hash;
     if (!hash || hash === '#/' || hash === '#home') return 'home';
-    if (hash === '#roadmap') return 'roadmap';
+    if (hash === '#roadmap') return 'roadmap/foundations';
     return hash.substring(1); // Remove the '#'
   });
 
@@ -46,7 +54,7 @@ const MainApp = () => {
       if (!hash || hash === '#/' || hash === '#home') {
         setCurrentRoute('home');
       } else if (hash === '#roadmap') {
-        setCurrentRoute('roadmap');
+        setCurrentRoute('roadmap/foundations');
       } else {
         setCurrentRoute(hash.substring(1));
       }
@@ -82,12 +90,16 @@ const MainApp = () => {
         <Header onMenuToggle={toggleSidebar} />
 
         {/* Dynamic Page Router */}
-        <main className={`page-wrapper ${currentRoute === 'home' ? 'full-width' : ''}`}>
-          {currentRoute === 'home' && <LandingPage />}
-          {currentRoute === 'roadmap' && <RoadmapPage />}
-          {currentRoute !== 'home' && currentRoute !== 'roadmap' && (
-            <ReaderPage path={currentRoute} />
-          )}
+        <main className={`page-wrapper ${currentRoute === 'home' || currentRoute.startsWith('roadmap/') ? 'full-width' : ''}`}>
+          <Suspense fallback={<div className="route-loader" aria-label="Loading"><span /></div>}>
+            {currentRoute === 'home' && <LandingPage />}
+            {currentRoute.startsWith('roadmap/') && (
+              <RoadmapPage trackId={currentRoute.split('/')[1] || 'foundations'} />
+            )}
+            {currentRoute !== 'home' && !currentRoute.startsWith('roadmap/') && (
+              <ReaderPage path={currentRoute} />
+            )}
+          </Suspense>
         </main>
       </div>
     </div>

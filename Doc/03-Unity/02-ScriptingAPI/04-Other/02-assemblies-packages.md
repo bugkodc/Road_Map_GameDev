@@ -16,19 +16,14 @@ Tài liệu này hướng dẫn cách sử dụng **Assembly Definitions (`.asmd
 
 `Assembly Definition` (`.asmdef`) là tệp tin cấu hình JSON đặc thù của Unity xác định phạm vi của một cụm mã nguồn để biên dịch nó thành một file `.dll` riêng biệt.
 
-```
-          ┌────────────────────────────────────────────────────────┐
-          │                    Mặc định (Default)                  │
-          │  - Sửa 1 dòng code ➔ Unity biên dịch lại toàn bộ dự án  │
-          └──────────────────────────┬─────────────────────────────┘
-                                     │ Tối ưu hóa bằng .asmdef
-                                     v
-┌──────────────────────────┐   ┌──────────────────────────┐   ┌──────────────────────────┐
-│       CoreGame.dll       │   │         UI.dll           │   │       EditorTool.dll     │
-│  (Chứa mã nguồn lõi)     │   │  (Giao diện người dùng)   │   │  (Công cụ tùy biến)      │
-│  - Thay đổi: Chỉ compile │   │  - Tham chiếu CoreGame   │   │  - Chỉ chạy ở Editor     │
-│    lại CoreGame.dll.     │   │  - Không compile lại.    │   │  - Không nạp vào Build   │
-└──────────────────────────┘   └──────────────────────────┘   └──────────────────────────┘
+```mermaid
+flowchart TD
+  Default["Mặc định<br/>Sửa 1 dòng code có thể khiến Unity biên dịch lại toàn bộ dự án"]
+  Default -->|"Tối ưu bằng .asmdef"| Split["Chia code thành assembly độc lập"]
+
+  Split --> Core["CoreGame.dll<br/>Mã nguồn lõi<br/>Sửa Core chỉ compile Core"]
+  Split --> UI["UI.dll<br/>Giao diện người dùng<br/>Tham chiếu CoreGame"]
+  Split --> Editor["EditorTool.dll<br/>Công cụ tùy biến<br/>Chỉ chạy trong Editor"]
 ```
 
 ### Các lợi ích cốt lõi của Assembly Definition:

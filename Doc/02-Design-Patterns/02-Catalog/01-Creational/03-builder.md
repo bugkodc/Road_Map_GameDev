@@ -43,7 +43,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Director["Director / LevelPreset"] --> Builder["Builder interface"]
   Builder --> Step1["BuildBody()"]
   Builder --> Step2["BuildWeapon()"]
@@ -54,7 +54,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Client chọn builder"] --> B["Director gọi các bước theo thứ tự"]
   B --> C["Builder tích lũy từng phần"]
   C --> D["GetResult()"]
@@ -65,7 +65,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Builder {
     <<interface>>
     +BuildPartA()

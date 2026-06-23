@@ -56,7 +56,7 @@ flowchart TB
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Component phát event"] --> B["Mediator nhận event"]
   B --> C["Mediator quyết định component nào cần phản ứng"]
   C --> D["Gửi lệnh tới component liên quan"]
@@ -67,7 +67,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Mediator {
     <<interface>>
     +Notify(sender,event)

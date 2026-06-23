@@ -1,122 +1,102 @@
-import navData from '../utils/navigation.json';
+import { ArrowRight, Blocks, BookOpen, Box, Check, ChevronRight, Hexagon } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Link } from '../App';
+import {
+  flattenArticles,
+  getTrackCategories,
+  learningTracks,
+  localizeTrack
+} from '../utils/learningTracks';
 
-const RoadmapPage = () => {
-  const { isArticleCompleted, toggleArticleCompleted, getProgressStats } = useProgress();
-  const { t, navTitle } = useLanguage();
-  const { completed, total, percentage } = getProgressStats();
+const trackIcons = { blocks: Blocks, box: Box, hexagon: Hexagon, book: BookOpen };
 
-  // Helper to flat-map all articles belonging to a specific category
-  const getCategoryStats = (category) => {
-    const list = [];
-    const traverse = (item) => {
-      if (item.path && !item.placeholder) {
-        list.push(item);
-      }
-      if (item.children) {
-        item.children.forEach(traverse);
-      }
-    };
-    category.items.forEach(traverse);
-    
-    const count = list.length;
-    const finished = list.filter(item => isArticleCompleted(item.id)).length;
-    const pct = count > 0 ? Math.round((finished / count) * 100) : 0;
-    
-    return { count, finished, pct, list };
-  };
+const RoadmapPage = ({ trackId }) => {
+  const { isArticleCompleted, toggleArticleCompleted } = useProgress();
+  const { language, navTitle } = useLanguage();
+  const track = learningTracks.find((item) => item.id === trackId) || learningTracks[0];
+  const localized = localizeTrack(track, language);
+  const categories = getTrackCategories(track.id);
+  const allArticles = categories.flatMap((category) => flattenArticles(category.items, []));
+  const completed = allArticles.filter((item) => isArticleCompleted(item.id)).length;
+  const percentage = allArticles.length ? Math.round((completed / allArticles.length) * 100) : 0;
+  const TrackIcon = trackIcons[track.icon];
+
+  const getRoadmapGroups = () => categories.flatMap((category) => {
+    const branchGroups = category.items.filter((item) => item.children?.length);
+    const standalone = category.items.filter((item) => item.path);
+    const result = [];
+    if (standalone.length) result.push({ id: `${category.id}-start`, title: navTitle(category), children: standalone });
+    branchGroups.forEach((group) => result.push({ ...group, children: flattenArticles(group.children, []) }));
+    return result;
+  });
 
   return (
-    <div className="roadmap-page">
-      <div className="roadmap-header">
-        <span className="roadmap-header-icon" aria-hidden="true">RM</span>
-        <h1>{t('roadmapTitle')}</h1>
-        <p>{t('roadmapIntro')}</p>
-        
-        {total > 0 && (
-          <div className="roadmap-overall-progress-card">
-            <div className="progress-details">
-              <span>{t('roadmapOverall')}:</span>
-              <strong>{percentage}% ({t('lessonsCount', completed, total)})</strong>
-            </div>
-            <div className="progress-track">
-              <div className="progress-fill" style={{ width: `${percentage}%` }}></div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="roadmap-timeline">
-        {navData.categories.map((category, index) => {
-          const { count, finished, pct, list } = getCategoryStats(category);
-          const isUnderConstruction = count === 0;
-
+    <div className={`roadmap-page roadmap-${track.accent}`}>
+      <div className="roadmap-track-tabs">
+        {learningTracks.map((item) => {
+          const Icon = trackIcons[item.icon];
           return (
-            <div key={category.id} className={`roadmap-step-node ${isUnderConstruction ? 'under-construction' : ''}`}>
-              <div className="step-number-badge">0{index + 1}</div>
-              
-              <div className="step-card">
-                <div className="step-card-header">
-                  <h3 className="step-card-title">{navTitle(category)}</h3>
-                  {!isUnderConstruction && (
-                    <span className="step-progress-badge">
-                      {t('roadmapBadge', finished, count, pct)}
-                    </span>
-                  )}
-                  {isUnderConstruction && (
-                    <span className="step-construction-badge">{t('constructionBadge')}</span>
-                  )}
-                </div>
-
-                {!isUnderConstruction ? (
-                  <div className="step-card-body">
-                    <p className="step-description">
-                      {t('stepDescription', navTitle(category))}
-                    </p>
-                    
-                    <div className="roadmap-checklist-grid">
-                      {list.map(item => {
-                        const checked = isArticleCompleted(item.id);
-                        return (
-                          <div key={item.id} className={`roadmap-checkbox-item ${checked ? 'checked' : ''}`}>
-                            <label className="checkbox-container">
-                              <input 
-                                type="checkbox" 
-                                checked={checked} 
-                                onChange={() => toggleArticleCompleted(item.id)}
-                              />
-                              <span className="checkmark"></span>
-                            </label>
-                            
-                            <Link to={item.path} className="roadmap-item-link">
-                              {navTitle(item)}
-                            </Link>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="step-card-body">
-                    <p className="construction-text">
-                      {t('constructionText')}
-                    </p>
-                    
-                    {category.items.length > 0 && (
-                      <div className="construction-link-wrapper">
-                        <Link to={category.items[0].path} className="btn-secondary">
-                          {t('overviewSummary')}
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+            <Link key={item.id} to={`roadmap/${item.id}`} className={item.id === track.id ? 'active' : ''}>
+              <Icon size={17} /> {localizeTrack(item, language).shortTitle}
+            </Link>
           );
         })}
+      </div>
+
+      <header className="roadmap-hero">
+        <div className="roadmap-title-block">
+          <span className="roadmap-icon"><TrackIcon size={25} /></span>
+          <div>
+            <span>{language === 'vi' ? 'LEARNING ROADMAP' : 'LEARNING ROADMAP'}</span>
+            <h1>{localized.title}</h1>
+            <p>{localized.description}</p>
+          </div>
+        </div>
+        <div className="roadmap-progress-panel">
+          <strong>{percentage}%</strong>
+          <span>{completed}/{allArticles.length} {language === 'vi' ? 'bài hoàn thành' : 'completed'}</span>
+          <div className="progress-track"><div className="progress-fill" style={{ width: `${percentage}%` }} /></div>
+        </div>
+      </header>
+
+      <div className="roadmap-sequence">
+        {getRoadmapGroups().map((group, index) => {
+          const lessons = group.children || [];
+          const groupCompleted = lessons.filter((item) => isArticleCompleted(item.id)).length;
+          return (
+            <section key={group.id} className="roadmap-stage">
+              <div className="stage-index">{String(index + 1).padStart(2, '0')}</div>
+              <div className="stage-content">
+                <div className="stage-header">
+                  <div>
+                    <span>{language === 'vi' ? 'CHẶNG' : 'STAGE'} {index + 1}</span>
+                    <h2>{navTitle(group)}</h2>
+                  </div>
+                  <span className="stage-count">{groupCompleted}/{lessons.length}</span>
+                </div>
+                <div className="stage-lessons">
+                  {lessons.map((item) => {
+                    const done = isArticleCompleted(item.id);
+                    return (
+                      <div key={item.id} className={`stage-lesson ${done ? 'completed' : ''}`}>
+                        <button onClick={() => toggleArticleCompleted(item.id)} aria-label={navTitle(item)}>
+                          {done && <Check size={14} />}
+                        </button>
+                        <Link to={item.path}><span>{navTitle(item)}</span><ChevronRight size={16} /></Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      <div className="roadmap-next">
+        <span>{language === 'vi' ? 'Bắt đầu lộ trình này' : 'Start this roadmap'}</span>
+        <Link to={track.startPath} className="btn-primary">{language === 'vi' ? 'Mở bài đầu tiên' : 'Open first lesson'} <ArrowRight size={17} /></Link>
       </div>
     </div>
   );

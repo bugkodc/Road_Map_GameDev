@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { BookOpen, Search, X } from 'lucide-react';
 import navData from '../utils/navigation.json';
 import { useLanguage } from '../context/LanguageContext';
 import { Link } from '../App';
@@ -78,7 +79,7 @@ const SearchBar = ({ onResultClick }) => {
   return (
     <div className="search-bar-container" ref={searchRef}>
       <div className="search-input-wrapper">
-        <span className="search-icon">🔍</span>
+        <Search className="search-icon" size={20} />
         <input
           type="text"
           className="search-input"
@@ -89,7 +90,7 @@ const SearchBar = ({ onResultClick }) => {
         />
         {query && (
           <button className="search-clear-btn" onClick={() => { setQuery(''); setResults([]); setIsOpen(false); }}>
-            ×
+            <X size={17} />
           </button>
         )}
       </div>
@@ -106,7 +107,7 @@ const SearchBar = ({ onResultClick }) => {
                     onClick={handleItemClick}
                   >
                     <div className="result-main">
-                      <span className="result-icon">{item.isPlaceholder ? '•' : '◦'}</span>
+                      <span className="result-icon"><BookOpen size={15} /></span>
                       <span className="result-title">{navTitle(item)}</span>
                     </div>
                     <span className="result-category">{navTitle(item.categoryId)}</span>

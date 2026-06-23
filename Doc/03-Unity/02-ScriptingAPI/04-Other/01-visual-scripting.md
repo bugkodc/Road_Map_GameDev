@@ -12,11 +12,13 @@ Hệ thống **Unity Visual Scripting** cho phép nhà thiết kế game (Game D
 
 ## ⚙️ 1. Giao tiếp Hai chiều: C# vs Visual Scripting
 
-```
-┌──────────────────┐                    ┌──────────────────┐
-│      C# Code     │ ─── Gọi Hàm/Event ─>│  Visual Script   │
-│   (Script C#)    │ <─── Đọc/Ghi Biến ──│   (Visual Graph) │
-└──────────────────┘                    └──────────────────┘
+```mermaid
+flowchart LR
+  Code["C# Code<br/>Script runtime"]
+  Graph["Visual Script<br/>Visual Graph"]
+
+  Code -->|"CustomEvent.Trigger<br/>Gọi hàm / phát event"| Graph
+  Graph -->|"Custom Unit<br/>Đọc / ghi biến"| Code
 ```
 
 1.  **C# gọi sang Visual Scripting:**

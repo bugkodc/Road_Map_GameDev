@@ -619,24 +619,397 @@
           "isHeader": true,
           "children": [
             {
-              "id": "unity-scripting-core",
-              "title": "UnityEngine Core API",
-              "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/00-core-api.md"
+              "id": "scripting-unityengine",
+              "title": "■ UnityEngine",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "unityengine-core",
+                  "title": "UnityEngine Core API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/01-core-api.md"
+                },
+                {
+                  "id": "unityengine-lifecycle",
+                  "title": "MonoBehaviour Lifecycle",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/02-monobehaviour-lifecycle.md"
+                },
+                {
+                  "id": "unityengine-inputsystem",
+                  "title": "UnityEngine.InputSystem API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/03-inputsystem-api.md"
+                },
+                {
+                  "id": "unityengine-physics",
+                  "title": "Physics & Physics2D API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/04-physics-api.md"
+                },
+                {
+                  "id": "unityengine-scene",
+                  "title": "SceneManagement API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/05-scene-management-api.md"
+                },
+                {
+                  "id": "unityengine-events",
+                  "title": "Events & Actions API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/06-events-api.md"
+                },
+                {
+                  "id": "unityengine-audio",
+                  "title": "Audio System API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/07-audio-api.md"
+                },
+                {
+                  "id": "unityengine-ai",
+                  "title": "UnityEngine.AI",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/08-ai-api.md"
+                },
+                {
+                  "id": "unityengine-animations",
+                  "title": "UnityEngine.Animations",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/09-animations-api.md"
+                },
+                {
+                  "id": "unityengine-rendering",
+                  "title": "Rendering & Materials API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/10-rendering-api.md"
+                },
+                {
+                  "id": "unityengine-ui",
+                  "title": "UI Toolkit & UGUI API",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/11-ui-api.md"
+                },
+                {
+                  "id": "unityengine-device",
+                  "title": "UnityEngine.Device",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/12-device-platforms-api.md"
+                },
+                {
+                  "id": "unityengine-accessibility",
+                  "title": "UnityEngine.Accessibility",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/accessibility.md"
+                },
+                {
+                  "id": "unityengine-adaptiveperformance",
+                  "title": "UnityEngine.AdaptivePerformance",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/adaptive-performance.md"
+                },
+                {
+                  "id": "unityengine-amd",
+                  "title": "UnityEngine.AMD",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/amd.md"
+                },
+                {
+                  "id": "unityengine-android",
+                  "title": "UnityEngine.Android",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/android.md"
+                },
+                {
+                  "id": "unityengine-apple",
+                  "title": "UnityEngine.Apple",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/apple.md"
+                },
+                {
+                  "id": "unityengine-assemblies",
+                  "title": "UnityEngine.Assemblies",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/assemblies.md"
+                },
+                {
+                  "id": "unityengine-assertions",
+                  "title": "UnityEngine.Assertions",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/assertions.md"
+                },
+                {
+                  "id": "unityengine-categorization",
+                  "title": "UnityEngine.Categorization",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/categorization.md"
+                },
+                {
+                  "id": "unityengine-crashreporthandler",
+                  "title": "UnityEngine.CrashReportHandler",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/crash-report-handler.md"
+                },
+                {
+                  "id": "unityengine-dedicatedserver",
+                  "title": "UnityEngine.DedicatedServer",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/dedicated-server.md"
+                },
+                {
+                  "id": "unityengine-diagnostics",
+                  "title": "UnityEngine.Diagnostics",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/diagnostics.md"
+                },
+                {
+                  "id": "unityengine-experimental",
+                  "title": "UnityEngine.Experimental",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/experimental.md"
+                },
+                {
+                  "id": "unityengine-identifiers",
+                  "title": "UnityEngine.Identifiers",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/identifiers.md"
+                },
+                {
+                  "id": "unityengine-ios",
+                  "title": "UnityEngine.iOS",
+                  "path": "03-Unity/02-ScriptingAPI/01-UnityEngine/ios.md"
+                }
+              ]
             },
             {
-              "id": "unity-scripting-lifecycle",
-              "title": "MonoBehaviour Lifecycle",
-              "path": "03-Unity/02-ScriptingAPI/02-Lifecycle/00-monobehaviour-lifecycle.md"
+              "id": "scripting-unityeditor",
+              "title": "■ UnityEditor",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "unityeditor-core",
+                  "title": "UnityEditor Core API",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/01-editor-core.md"
+                },
+                {
+                  "id": "unityeditor-scene",
+                  "title": "Editor Scene Management",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/02-editor-scene-management.md"
+                },
+                {
+                  "id": "unityeditor-assetdatabase",
+                  "title": "AssetDatabase & Importer",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/03-asset-database.md"
+                },
+                {
+                  "id": "unityeditor-actions",
+                  "title": "UnityEditor.Actions",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/actions.md"
+                },
+                {
+                  "id": "unityeditor-adaptiveperformance",
+                  "title": "UnityEditor.AdaptivePerformance",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/adaptive-performance.md"
+                },
+                {
+                  "id": "unityeditor-advertisements",
+                  "title": "UnityEditor.Advertisements",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/advertisements.md"
+                },
+                {
+                  "id": "unityeditor-ai",
+                  "title": "UnityEditor.AI",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/ai.md"
+                },
+                {
+                  "id": "unityeditor-analytics",
+                  "title": "UnityEditor.Analytics",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/analytics.md"
+                },
+                {
+                  "id": "unityeditor-android",
+                  "title": "UnityEditor.Android",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/android.md"
+                },
+                {
+                  "id": "unityeditor-animatedvalues",
+                  "title": "UnityEditor.AnimatedValues",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/animated-values.md"
+                },
+                {
+                  "id": "unityeditor-animations",
+                  "title": "UnityEditor.Animations",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/animations.md"
+                },
+                {
+                  "id": "unityeditor-appletv",
+                  "title": "UnityEditor.AppleTV",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/apple-tv.md"
+                },
+                {
+                  "id": "unityeditor-build",
+                  "title": "UnityEditor.Build",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/build.md"
+                },
+                {
+                  "id": "unityeditor-callbacks",
+                  "title": "UnityEditor.Callbacks",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/callbacks.md"
+                },
+                {
+                  "id": "unityeditor-categorization",
+                  "title": "UnityEditor.Categorization",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/categorization.md"
+                },
+                {
+                  "id": "unityeditor-compilation",
+                  "title": "UnityEditor.Compilation",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/compilation.md"
+                },
+                {
+                  "id": "unityeditor-connect",
+                  "title": "UnityEditor.Connect",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/connect.md"
+                },
+                {
+                  "id": "unityeditor-crashreporting",
+                  "title": "UnityEditor.CrashReporting",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/crash-reporting.md"
+                },
+                {
+                  "id": "unityeditor-devicesimulation",
+                  "title": "UnityEditor.DeviceSimulation",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/device-simulation.md"
+                },
+                {
+                  "id": "unityeditor-editortools",
+                  "title": "UnityEditor.EditorTools",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/editor-tools.md"
+                },
+                {
+                  "id": "unityeditor-embree",
+                  "title": "UnityEditor.Embree",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/embree.md"
+                },
+                {
+                  "id": "unityeditor-enginediagnostics",
+                  "title": "UnityEditor.EngineDiagnostics",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/engine-diagnostics.md"
+                },
+                {
+                  "id": "unityeditor-events",
+                  "title": "UnityEditor.Events",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/events.md"
+                },
+                {
+                  "id": "unityeditor-experimental",
+                  "title": "UnityEditor.Experimental",
+                  "path": "03-Unity/02-ScriptingAPI/02-UnityEditor/experimental.md"
+                }
+              ]
             },
             {
-              "id": "unity-scripting-inputsystem",
-              "title": "UnityEngine.InputSystem API",
-              "path": "03-Unity/02-ScriptingAPI/03-InputSystem/00-inputsystem-api.md"
+              "id": "scripting-unity",
+              "title": "■ Unity",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "unity-android",
+                  "title": "Unity.Android",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/android.md"
+                },
+                {
+                  "id": "unity-burst",
+                  "title": "Unity.Burst",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/burst.md"
+                },
+                {
+                  "id": "unity-codeeditor",
+                  "title": "Unity.CodeEditor",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/code-editor.md"
+                },
+                {
+                  "id": "unity-collections",
+                  "title": "Unity.Collections",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/02-collections.md"
+                },
+                {
+                  "id": "unity-content",
+                  "title": "Unity.Content",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/content.md"
+                },
+                {
+                  "id": "unity-graphtoolkit",
+                  "title": "Unity.GraphToolkit",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/graph-toolkit.md"
+                },
+                {
+                  "id": "unity-hierarchy",
+                  "title": "Unity.Hierarchy",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/hierarchy.md"
+                },
+                {
+                  "id": "unity-integertime",
+                  "title": "Unity.IntegerTime",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/integer-time.md"
+                },
+                {
+                  "id": "unity-io",
+                  "title": "Unity.IO",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/io.md"
+                },
+                {
+                  "id": "unity-jobs",
+                  "title": "Unity.Jobs",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/jobs.md"
+                },
+                {
+                  "id": "unity-loading",
+                  "title": "Unity.Loading",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/loading.md"
+                },
+                {
+                  "id": "unity-math",
+                  "title": "Unity.Mathematics",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/01-mathematics.md"
+                },
+                {
+                  "id": "unity-multiplayer",
+                  "title": "Unity.Multiplayer",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/multiplayer.md"
+                },
+                {
+                  "id": "unity-playmode",
+                  "title": "Unity.PlayMode",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/play-mode.md"
+                },
+                {
+                  "id": "unity-profiling",
+                  "title": "Unity.Profiling",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/03-profiling.md"
+                },
+                {
+                  "id": "unity-projectauditor",
+                  "title": "Unity.ProjectAuditor",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/project-auditor.md"
+                },
+                {
+                  "id": "unity-properties",
+                  "title": "Unity.Properties",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/properties.md"
+                },
+                {
+                  "id": "unity-vectorgraphics",
+                  "title": "Unity.VectorGraphics",
+                  "path": "03-Unity/02-ScriptingAPI/03-Unity/vector-graphics.md"
+                },
+                {
+                  "id": "unity-assemblies",
+                  "title": "Assemblies",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/02-assemblies-packages.md"
+                }
+              ]
             },
             {
-              "id": "unity-scripting-ui",
-              "title": "UI Toolkit & UGUI API",
-              "path": "03-Unity/02-ScriptingAPI/04-UI/00-ui-api.md"
+              "id": "scripting-other",
+              "title": "■ Other",
+              "isGroup": true,
+              "children": [
+                {
+                  "id": "other-classes",
+                  "title": "Classes",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/classes.md"
+                },
+                {
+                  "id": "other-structs",
+                  "title": "Structs",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/structs.md"
+                },
+                {
+                  "id": "other-enumerations",
+                  "title": "Enumerations",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/enumerations.md"
+                },
+                {
+                  "id": "other-visualscripting",
+                  "title": "Unity.VisualScripting API",
+                  "path": "03-Unity/02-ScriptingAPI/04-Other/01-visual-scripting.md"
+                }
+              ]
             }
           ]
         }
@@ -648,9 +1021,238 @@
       "items": [
         {
           "id": "unreal-overview",
-          "title": "Tổng quan Unreal Lộ trình",
-          "path": "04-Unreal/00-unreal-overview.md",
-          "placeholder": "Nội dung lộ trình tự học Unreal Engine đang được tổng hợp từ Epic Games. Sẽ sớm ra mắt!"
+          "title": "Tổng quan Unreal Engine 5.7",
+          "path": "unreal-doc:unreal-engine-5-7-documentation"
+        },
+        {
+          "id": "unreal-whats-new",
+          "title": "What's New in UE 5.7",
+          "path": "unreal-doc:whats-new"
+        },
+        {
+          "id": "unreal-basics-header",
+          "title": "📚 Nền tảng phát triển",
+          "isHeader": true,
+          "children": [
+            {
+              "id": "unreal-basics",
+              "title": "Understanding the Basics",
+              "path": "unreal-doc:understanding-the-basics-of-unreal-engine"
+            },
+            {
+              "id": "unreal-working-with-content",
+              "title": "Working with Content",
+              "path": "unreal-doc:working-with-content-in-unreal-engine"
+            },
+            {
+              "id": "unreal-building-virtual-worlds",
+              "title": "Building Virtual Worlds",
+              "path": "unreal-doc:building-virtual-worlds-in-unreal-engine"
+            },
+            {
+              "id": "unreal-production-pipeline",
+              "title": "Production Pipeline Setup",
+              "path": "unreal-doc:setting-up-your-production-pipeline-in-unreal-engine"
+            }
+          ]
+        },
+        {
+          "id": "unreal-programming-header",
+          "title": "💻 Lập trình & Logic",
+          "isHeader": true,
+          "children": [
+            {
+              "id": "unreal-programming-cpp",
+              "title": "Programming with C++",
+              "path": "unreal-doc:programming-with-cplusplus-in-unreal-engine"
+            },
+            {
+              "id": "unreal-blueprints",
+              "title": "Blueprints Visual Scripting",
+              "path": "unreal-doc:blueprints-visual-scripting-in-unreal-engine"
+            },
+            {
+              "id": "unreal-gameplay-systems",
+              "title": "Gameplay Systems",
+              "path": "unreal-doc:gameplay-systems-in-unreal-engine"
+            },
+            {
+              "id": "unreal-gameplay-tutorials",
+              "title": "Gameplay Tutorials",
+              "path": "unreal-doc:gameplay-tutorials-for-unreal-engine"
+            }
+          ]
+        },
+        {
+          "id": "unreal-graphics-audio-header",
+          "title": "🎨 Đồ họa, Âm thanh & UI",
+          "isHeader": true,
+          "children": [
+            {
+              "id": "unreal-rendering-graphics",
+              "title": "Rendering & Graphics",
+              "path": "unreal-doc:designing-visuals-rendering-and-graphics-with-unreal-engine"
+            },
+            {
+              "id": "unreal-visual-effects",
+              "title": "Niagara Visual Effects (VFX)",
+              "path": "unreal-doc:creating-visual-effects-in-niagara-for-unreal-engine"
+            },
+            {
+              "id": "unreal-animating-characters",
+              "title": "Animating Characters & Objects",
+              "path": "unreal-doc:animating-characters-and-objects-in-unreal-engine"
+            },
+            {
+              "id": "unreal-motion-design",
+              "title": "Motion Design",
+              "path": "unreal-doc:motion-design-in-unreal-engine"
+            },
+            {
+              "id": "unreal-user-interfaces",
+              "title": "UMG & Slate User Interfaces",
+              "path": "unreal-doc:creating-user-interfaces-with-umg-and-slate-in-unreal-engine"
+            },
+            {
+              "id": "unreal-working-with-audio",
+              "title": "Working with Audio",
+              "path": "unreal-doc:working-with-audio-in-unreal-engine"
+            },
+            {
+              "id": "unreal-working-with-media",
+              "title": "Working with Media",
+              "path": "unreal-doc:working-with-media-in-unreal-engine"
+            }
+          ]
+        },
+        {
+          "id": "unreal-deployment-header",
+          "title": "🚀 Tối ưu & Phát hành",
+          "isHeader": true,
+          "children": [
+            {
+              "id": "unreal-mobile-development",
+              "title": "Mobile Development",
+              "path": "unreal-doc:getting-started-with-mobile-development-in-unreal-engine"
+            },
+            {
+              "id": "unreal-testing-optimizing",
+              "title": "Testing & Optimizing",
+              "path": "unreal-doc:testing-and-optimizing-your-content"
+            },
+            {
+              "id": "unreal-sharing-releasing",
+              "title": "Sharing & Releasing Projects",
+              "path": "unreal-doc:sharing-and-releasing-projects-for-unreal-engine"
+            },
+            {
+              "id": "unreal-samples-tutorials",
+              "title": "Samples & Tutorials",
+              "path": "unreal-doc:samples-and-tutorials-for-unreal-engine"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "title": "📚 Sách & Tài nguyên",
+      "items": [
+        {
+          "id": "resources-books-game",
+          "title": "Sách Kiến trúc Game",
+          "isHeader": true,
+          "children": [
+            { "id": "book-game-engine-architecture", "title": "Game Engine Architecture (PDF)", "path": "books/game-engine-architecture.pdf" },
+            {
+              "id": "book-gpp",
+              "title": "Game Programming Patterns",
+              "isGroup": true,
+              "children": [
+                { "id": "gpp-introduction", "title": "Introduction", "path": "gpp-doc:introduction" },
+                { "id": "gpp-architecture", "title": "Architecture & Performance", "path": "gpp-doc:architecture-performance-and-games" },
+                { "id": "gpp-command", "title": "Command Pattern", "path": "gpp-doc:command" },
+                { "id": "gpp-flyweight", "title": "Flyweight Pattern", "path": "gpp-doc:flyweight" },
+                { "id": "gpp-observer", "title": "Observer Pattern", "path": "gpp-doc:observer" },
+                { "id": "gpp-prototype", "title": "Prototype Pattern", "path": "gpp-doc:prototype" },
+                { "id": "gpp-singleton", "title": "Singleton Pattern", "path": "gpp-doc:singleton" },
+                { "id": "gpp-state", "title": "State Pattern", "path": "gpp-doc:state" },
+                { "id": "gpp-double-buffer", "title": "Double Buffer", "path": "gpp-doc:double-buffer" },
+                { "id": "gpp-game-loop", "title": "Game Loop", "path": "gpp-doc:game-loop" },
+                { "id": "gpp-update-method", "title": "Update Method", "path": "gpp-doc:update-method" },
+                { "id": "gpp-bytecode", "title": "Bytecode", "path": "gpp-doc:bytecode" },
+                { "id": "gpp-subclass-sandbox", "title": "Subclass Sandbox", "path": "gpp-doc:subclass-sandbox" },
+                { "id": "gpp-type-object", "title": "Type Object", "path": "gpp-doc:type-object" },
+                { "id": "gpp-component", "title": "Component Pattern", "path": "gpp-doc:component" },
+                { "id": "gpp-event-queue", "title": "Event Queue", "path": "gpp-doc:event-queue" },
+                { "id": "gpp-spatial-partition", "title": "Spatial Partition", "path": "gpp-doc:spatial-partition" }
+              ]
+            },
+            { "id": "book-multiplayer-game-programming", "title": "Multiplayer Game Programming (PDF)", "path": "books/multiplayer-game-programming.pdf" },
+            { "id": "book-mog", "title": "Development of MOG (PDF)", "path": "books/development-and-deployment-of-multiplayer-online-games.pdf" }
+          ]
+        },
+        {
+          "id": "resources-books-system",
+          "title": "Sách Kiến trúc Hệ thống",
+          "isHeader": true,
+          "children": [
+            {
+              "id": "resources-system-tier1",
+              "title": "Tầng 1 — Nền tảng tư duy kiến trúc",
+              "isGroup": true,
+              "children": [
+                { "id": "book-fosa", "title": "Fundamentals of Software Architecture (PDF)", "path": "books/fundamentals-of-software-architecture.pdf" },
+                { "id": "book-clean-architecture", "title": "Clean Architecture (PDF)", "path": "books/clean-architecture.pdf" },
+                { "id": "book-sathp", "title": "Software Architecture: The Hard Parts (PDF)", "path": "books/software-architecture-the-hard-parts.pdf" }
+              ]
+            },
+            {
+              "id": "resources-system-tier2",
+              "title": "Tầng 2 — Distributed Systems & Scalability",
+              "isGroup": true,
+              "children": [
+                { "id": "book-ddia", "title": "Designing Data-Intensive Applications (PDF)", "path": "books/designing-data-intensive-applications.pdf" },
+                { "id": "book-uds", "title": "Understanding Distributed Systems (PDF)", "path": "books/understanding-distributed-systems.pdf" },
+                { "id": "book-art-scalability", "title": "The Art of Scalability (PDF)", "path": "books/the-art-of-scalability.pdf" },
+                { "id": "book-distributed-systems-tanenbaum", "title": "Distributed Systems (PDF)", "path": "books/distributed-systems.pdf" }
+              ]
+            },
+            {
+              "id": "resources-system-tier3",
+              "title": "Tầng 3 — Patterns & Microservices",
+              "isGroup": true,
+              "children": [
+                { "id": "book-building-microservices", "title": "Building Microservices (PDF)", "path": "books/building-microservices.pdf" },
+                { "id": "book-eip", "title": "Enterprise Integration Patterns (PDF)", "path": "books/enterprise-integration-patterns.pdf" },
+                { "id": "book-ddd-evans", "title": "Domain-Driven Design (PDF)", "path": "books/domain-driven-design.pdf" },
+                { "id": "book-implementing-ddd", "title": "Implementing Domain-Driven Design (PDF)", "path": "books/implementing-domain-driven-design.pdf" },
+                { "id": "book-system-design-interview-1", "title": "System Design Interview Vol. 1 (PDF)", "path": "books/system-design-interview-vol-1.pdf" },
+                { "id": "book-system-design-interview-2", "title": "System Design Interview Vol. 2 (PDF)", "path": "books/system-design-interview-vol-2.pdf" }
+              ]
+            },
+            {
+              "id": "resources-system-tier4",
+              "title": "Tầng 4 — Chuyên sâu & Nâng cao",
+              "isGroup": true,
+              "children": [
+                { "id": "book-building-evolutionary", "title": "Building Evolutionary Architectures (PDF)", "path": "books/building-evolutionary-architectures.pdf" },
+                { "id": "book-release-it", "title": "Release It! (PDF)", "path": "books/release-it.pdf" },
+                { "id": "book-97-things", "title": "97 Things Software Architect Should Know (PDF)", "path": "books/97-things-every-software-architect-should-know.pdf" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "resources-external",
+          "title": "🌐 Trang web, Blogs & Phương tiện",
+          "isHeader": true,
+          "children": [
+            { "id": "resources-websites", "title": "Trang web học tập", "path": "05-Resources/03-websites.md" },
+            { "id": "resources-blogs", "title": "Blog Kỹ thuật", "path": "05-Resources/04-blogs.md" },
+            { "id": "resources-videos", "title": "Video & Khóa học", "path": "05-Resources/05-videos.md" },
+            { "id": "resources-podcasts", "title": "Podcast & Bản tin", "path": "05-Resources/06-podcasts.md" }
+          ]
         }
       ]
     }

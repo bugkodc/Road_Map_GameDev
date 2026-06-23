@@ -1,125 +1,147 @@
-import { useState } from 'react';
-import navData from '../utils/navigation.json';
+import { useMemo, useState } from 'react';
+import { Blocks, BookOpen, Box, ChevronDown, ChevronRight, Hexagon, Home, Map } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Link } from '../App';
+import {
+  countArticles,
+  getTrackCategories,
+  getTrackForPath,
+  learningTracks,
+  localizeTrack
+} from '../utils/learningTracks';
+
+const trackIcons = {
+  blocks: Blocks,
+  box: Box,
+  hexagon: Hexagon,
+  book: BookOpen
+};
 
 const Sidebar = ({ currentPath, isOpen, onClose }) => {
   const { isArticleCompleted } = useProgress();
-  const { t, navTitle } = useLanguage();
-  const [expandedGroups, setExpandedGroups] = useState({
-    'what-is-refactoring': true,
-    'code-smells': true,
-    'refactoring-techniques': true,
-    'bloaters': false,
-    'oo-abusers': false,
-    'change-preventers': false,
-    'dispensables': false,
-    'couplers': false,
-    'composing-methods': false
-  });
+  const { language, navTitle } = useLanguage();
+  const activeTrack = currentPath.startsWith('roadmap/')
+    ? learningTracks.find((track) => track.id === currentPath.split('/')[1]) || learningTracks[0]
+    : getTrackForPath(currentPath);
+  const [selectedTrackId, setSelectedTrackId] = useState(activeTrack.id);
+  const [expandedGroups, setExpandedGroups] = useState({});
+  const selectedTrack = currentPath === 'home'
+    ? learningTracks.find((track) => track.id === selectedTrackId) || activeTrack
+    : activeTrack;
+  const categories = useMemo(() => getTrackCategories(selectedTrack.id), [selectedTrack.id]);
 
-  const toggleGroup = (id) => {
-    setExpandedGroups(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
+  const containsPath = (items, path) => items.some((item) =>
+    item.path === path || (item.children && containsPath(item.children, path))
+  );
 
-  const renderNavList = (items) => {
-    return (
-      <ul className="sidebar-list">
-        {items.map(item => {
-          if (item.isHeader) {
-            const isExpanded = expandedGroups[item.id];
-            return (
-              <li key={item.id} className={`sidebar-header-node ${isExpanded ? 'expanded' : ''}`}>
-                <div className="sidebar-group-title" onClick={() => toggleGroup(item.id)}>
-                  <span>{navTitle(item)}</span>
-                  <span className="arrow">{isExpanded ? '▼' : '▶'}</span>
-                </div>
-                {isExpanded && item.children && renderNavList(item.children)}
-              </li>
-            );
-          }
+  const toggleGroup = (id, defaultExpanded) => setExpandedGroups((current) => ({
+    ...current,
+    [id]: !(current[id] ?? defaultExpanded)
+  }));
 
-          if (item.isGroup) {
-            const isExpanded = expandedGroups[item.id];
-            return (
-              <li key={item.id} className={`sidebar-group-node ${isExpanded ? 'expanded' : ''}`}>
-                <div className="sidebar-subgroup-title" onClick={() => toggleGroup(item.id)}>
-                  <span>{navTitle(item)}</span>
-                  <span className="arrow">{isExpanded ? '▼' : '▶'}</span>
-                </div>
-                {isExpanded && item.children && renderNavList(item.children)}
-              </li>
-            );
-          }
+  const renderItems = (items, depth = 0) => (
+    <ul className="sidebar-list" data-depth={depth}>
+      {items.map((item) => {
+        const isBranch = Boolean(item.children?.length);
+        const isActiveBranch = isBranch && containsPath(item.children, currentPath);
+        const defaultExpanded = isActiveBranch || depth === 0;
+        const isExpanded = expandedGroups[item.id] ?? defaultExpanded;
 
-          // Regular Leaf Node
-          const isCompleted = isArticleCompleted(item.id);
-          const isActive = currentPath === item.path;
-
+        if (isBranch) {
           return (
-            <li key={item.id} className="sidebar-item-node">
-              <Link 
-                to={item.path} 
-                className={`sidebar-link ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
-                onClick={onClose}
+            <li key={item.id} className="sidebar-tree-group">
+              <button
+                type="button"
+                className="sidebar-group-title"
+                onClick={() => toggleGroup(item.id, defaultExpanded)}
+                aria-expanded={isExpanded}
               >
-                <span className="link-status-icon">{isCompleted ? '✓' : '•'}</span>
-                <span className="link-text">{navTitle(item)}</span>
-              </Link>
+                <span>{navTitle(item)}</span>
+                {isExpanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+              </button>
+              {isExpanded && renderItems(item.children, depth + 1)}
             </li>
           );
-        })}
-      </ul>
-    );
-  };
+        }
+
+        const isActive = currentPath === item.path;
+        const isCompleted = isArticleCompleted(item.id);
+        return (
+          <li key={item.id}>
+            <Link
+              to={item.path}
+              className={`sidebar-link ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+              onClick={onClose}
+            >
+              <span className="lesson-dot" aria-hidden="true" />
+              <span className="link-text">{navTitle(item)}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
 
   return (
     <>
-      {/* Mobile Sidebar Overlay */}
-      {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
-      
+      {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
       <aside className={`sidebar-nav ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <Link to="home" className="sidebar-brand" onClick={onClose}>
-            <span className="brand-logo" aria-hidden="true">RM</span>
+            <span className="brand-logo">GR</span>
             <div className="brand-info">
               <h3>GameDev Roadmap</h3>
-              <span>{t('brandSubtitle')}</span>
+              <span>{language === 'vi' ? 'Learning workspace' : 'Learning workspace'}</span>
             </div>
           </Link>
         </div>
 
         <nav className="sidebar-menu-wrapper">
-          <div className="sidebar-menu-section">
-            <Link 
-              to="home" 
-              className={`sidebar-link root-link ${currentPath === 'home' ? 'active' : ''}`}
-              onClick={onClose}
-            >
-              <span className="link-status-icon">⌂</span>
-              <span className="link-text font-bold">{t('navHome')}</span>
+          <div className="sidebar-primary-nav">
+            <Link to="home" className={`sidebar-link root-link ${currentPath === 'home' ? 'active' : ''}`} onClick={onClose}>
+              <Home size={17} /><span>{language === 'vi' ? 'Tổng quan' : 'Overview'}</span>
             </Link>
-            
-            <Link 
-              to="roadmap" 
-              className={`sidebar-link root-link ${currentPath === 'roadmap' ? 'active' : ''}`}
-              onClick={onClose}
-            >
-              <span className="link-status-icon">◇</span>
-              <span className="link-text font-bold">{t('navRoadmap')}</span>
+            <Link to={`roadmap/${selectedTrack.id}`} className={`sidebar-link root-link ${currentPath.startsWith('roadmap/') ? 'active' : ''}`} onClick={onClose}>
+              <Map size={17} /><span>{language === 'vi' ? 'Roadmap' : 'Roadmap'}</span>
             </Link>
           </div>
 
-          {navData.categories.map(category => (
-            <div key={category.id} className="sidebar-category-group">
-              <h4 className="sidebar-category-title">{navTitle(category)}</h4>
-              {renderNavList(category.items)}
-            </div>
-          ))}
+          <div className="sidebar-section-label">{language === 'vi' ? 'LỘ TRÌNH HỌC' : 'LEARNING TRACKS'}</div>
+          <div className="track-switcher">
+            {learningTracks.map((track) => {
+              const Icon = trackIcons[track.icon];
+              const localized = localizeTrack(track, language);
+              return (
+                <button
+                  key={track.id}
+                  className={`track-switch ${selectedTrack.id === track.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setSelectedTrackId(track.id);
+                    if (currentPath !== 'home') window.location.hash = `roadmap/${track.id}`;
+                  }}
+                  title={localized.title}
+                >
+                  <Icon size={17} />
+                  <span>{localized.shortTitle}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="sidebar-doc-header">
+            <span><BookOpen size={15} /> {localizeTrack(selectedTrack, language).shortTitle}</span>
+            <span>{categories.reduce((sum, category) => sum + countArticles(category.items), 0)}</span>
+          </div>
+
+          <div className="sidebar-document-tree">
+            {categories.map((category) => (
+              <section key={category.id} className="sidebar-category-group">
+                {categories.length > 1 && <h4>{navTitle(category)}</h4>}
+                {renderItems(category.items)}
+              </section>
+            ))}
+          </div>
         </nav>
       </aside>
     </>

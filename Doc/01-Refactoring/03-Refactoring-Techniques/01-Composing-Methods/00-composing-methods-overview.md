@@ -31,19 +31,18 @@ Nhóm kỹ thuật **Composing Methods** tập trung vào việc:
 
 ## 🗺️ Khi nào dùng kỹ thuật nào?
 
-```
-Method quá dài?
-├── Có đoạn code lặp lại? → Extract Method
-├── Biểu thức quá phức tạp? → Extract Variable
-├── Biến tạm thừa? → Inline Temp
-├── Biến tạm chứa kết quả tính toán? → Replace Temp with Query
-├── Biến tạm dùng cho nhiều mục đích? → Split Temporary Variable
-├── Gán lại giá trị cho parameter? → Remove Assignments to Parameters
-├── Quá nhiều biến local, khó Extract Method? → Replace Method with Method Object
-└── Thuật toán phức tạp, có cách tốt hơn? → Substitute Algorithm
-
-Method quá đơn giản?
-└── Body đơn giản như tên method? → Inline Method
+```mermaid
+flowchart TD
+  Long["Method quá dài?"]
+  Long --> Repeat["Có code lặp lại<br/>Extract Method"]
+  Long --> Expression["Biểu thức phức tạp<br/>Extract Variable"]
+  Long --> Temp["Biến tạm thừa<br/>Inline Temp"]
+  Long --> Query["Biến tạm chứa kết quả<br/>Replace Temp with Query"]
+  Long --> Split["Biến tạm nhiều mục đích<br/>Split Temporary Variable"]
+  Long --> Param["Gán lại parameter<br/>Remove Assignments to Parameters"]
+  Long --> Object["Nhiều biến local<br/>Replace Method with Method Object"]
+  Long --> Algorithm["Thuật toán phức tạp<br/>Substitute Algorithm"]
+  Simple["Method quá đơn giản?"] --> Inline["Body rõ như tên method<br/>Inline Method"]
 ```
 
 ---

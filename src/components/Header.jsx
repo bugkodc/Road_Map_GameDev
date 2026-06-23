@@ -1,7 +1,8 @@
+import { Menu, Moon, Search, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
-import { Link } from '../App'; // We will build a lightweight router in App.jsx
+import { Link } from '../App';
 
 const Header = ({ onMenuToggle }) => {
   const { theme, toggleTheme } = useTheme();
@@ -9,47 +10,44 @@ const Header = ({ onMenuToggle }) => {
   const { language, toggleLanguage, t } = useLanguage();
   const { completed, total, percentage } = getProgressStats();
 
+  const openSearch = () => {
+    window.location.hash = 'home';
+    window.setTimeout(() => document.querySelector('.search-input')?.focus(), 80);
+  };
+
   return (
     <header className="site-header">
       <div className="header-left">
-        <button className="menu-toggle-btn" onClick={onMenuToggle} aria-label={t('menuToggle')}>
-          <span aria-hidden="true">☰</span>
+        <button className="icon-button menu-toggle-btn" onClick={onMenuToggle} aria-label={t('menuToggle')}>
+          <Menu size={20} />
         </button>
         <Link to="home" className="header-logo">
-          <span className="logo-mark" aria-hidden="true">RM</span>
+          <span className="logo-mark" aria-hidden="true">GR</span>
           <span className="logo-text">GameDev Roadmap</span>
         </Link>
       </div>
 
       <div className="header-right">
+        <button className="header-search-button" onClick={openSearch}>
+          <Search size={17} />
+          <span>{language === 'vi' ? 'Tìm tài liệu' : 'Search docs'}</span>
+          <kbd>/</kbd>
+        </button>
+
         {total > 0 && (
-          <div className="global-progress" title={t('progressTitle', completed, total)}>
-            <span className="progress-label">{t('progress')}: {percentage}%</span>
-            <div className="progress-track">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${percentage}%` }}
-              ></div>
-            </div>
-          </div>
+          <Link to="roadmap/foundations" className="global-progress" title={t('progressTitle', completed, total)}>
+            <span className="progress-label">{percentage}%</span>
+            <div className="progress-track"><div className="progress-fill" style={{ width: `${percentage}%` }} /></div>
+          </Link>
         )}
 
-        <button
-          className="language-toggle"
-          onClick={toggleLanguage}
-          title={t('switchLanguage')}
-          aria-label={t('switchLanguage')}
-        >
+        <button className="language-toggle" onClick={toggleLanguage} aria-label={t('switchLanguage')}>
           <span className={language === 'vi' ? 'active' : ''}>VI</span>
           <span className={language === 'en' ? 'active' : ''}>EN</span>
         </button>
 
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme} 
-          title={t('themeTitle', theme)}
-        >
-          <span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
+        <button className="icon-button theme-toggle" onClick={toggleTheme} title={t('themeTitle', theme)}>
+          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
         </button>
       </div>
     </header>

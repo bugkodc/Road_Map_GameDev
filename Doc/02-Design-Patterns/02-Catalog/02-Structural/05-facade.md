@@ -45,7 +45,7 @@ Thay vì đọc một UML lớn ngay từ đầu, hãy đọc pattern theo 3 l�
 ### 1. Ý tưởng nhanh
 
 ```mermaid
-flowchart LR
+flowchart TD
   Client["Client"] --> Facade["Simple Facade"]
   Facade --> S1["Subsystem A"]
   Facade --> S2["Subsystem B"]
@@ -55,7 +55,7 @@ flowchart LR
 ### 2. Luồng chạy thực tế
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["Client gọi facade.StartLevel()"] --> B["Facade gọi asset loader"]
   B --> C["Facade gọi audio"]
   C --> D["Facade gọi UI"]
@@ -66,7 +66,7 @@ flowchart LR
 
 ```mermaid
 classDiagram
-  direction LR
+  direction TB
   class Facade {
     +Operation()
   }
