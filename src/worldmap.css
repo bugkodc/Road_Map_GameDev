@@ -1,0 +1,124 @@
+/* ============================================================
+   WORLD MAP — cozy game-map route. Scoped under .worldmap so it
+   never leaks into the rest of the app. Uses app theme tokens for
+   cards/nodes + its own scene tokens (sky/hills/ground) per theme.
+   ============================================================ */
+.map-wrapper { max-width: none !important; padding: 0 !important; }
+
+.worldmap {
+  --sky-1: #bfe6f2; --sky-2: #d9eede; --hill-far: #bfe0a6; --hill-mid: #94cf7e;
+  --hill-near: #6fb556; --ground: #7cbb59; --ground-2: #69a749; --sun: #f6c044;
+  --wood-dark: #6e4a2e;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 66px);
+  min-height: 560px;
+  overflow: hidden;
+  background: var(--sky-1);
+  font-family: var(--font-body);
+}
+[data-theme='dark'] .worldmap {
+  --sky-1: #1b2342; --sky-2: #26305a; --hill-far: #2c3a52; --hill-mid: #27425a;
+  --hill-near: #234a44; --ground: #26503f; --ground-2: #1f4636; --sun: #f6d873; --wood-dark: #d79a5e;
+}
+
+.worldmap .layer { position: absolute; inset: -4% -2% 0 -2%; width: 104%; will-change: transform; }
+.worldmap .sky { inset: 0; width: 100%; background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 58%, var(--hill-far) 100%); }
+.worldmap .sun {
+  position: absolute; top: 10%; right: 9%; width: 110px; height: 110px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #fff0c0, var(--sun) 60%, #e7a82c);
+  box-shadow: 0 0 0 14px color-mix(in oklab, var(--sun) 20%, transparent), 0 0 70px color-mix(in oklab, var(--sun) 50%, transparent);
+}
+[data-theme='dark'] .worldmap .sun { background: radial-gradient(circle at 42% 40%, #fff7da, var(--sun) 62%, #d9b24e); }
+.worldmap .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: .9; box-shadow: 34px 8px 0 -4px #fff, 70px 16px 0 -8px #fff, -30px 10px 0 -6px #fff; }
+[data-theme='dark'] .worldmap .cloud { background: #9fb0d8; opacity: .16; box-shadow: 34px 8px 0 -4px #9fb0d8, 70px 16px 0 -8px #9fb0d8, -30px 10px 0 -6px #9fb0d8; }
+.worldmap .c1 { top: 16%; left: 14%; width: 84px; height: 28px; }
+.worldmap .c2 { top: 26%; left: 52%; width: 64px; height: 22px; opacity: .8; }
+.worldmap .c3 { top: 11%; left: 72%; width: 56px; height: 18px; opacity: .7; }
+.worldmap .stars { position: absolute; inset: 0; opacity: 0; transition: opacity .5s;
+  background-image: radial-gradient(1.5px 1.5px at 20% 22%, #fff, transparent), radial-gradient(1.5px 1.5px at 67% 14%, #fff, transparent), radial-gradient(1.4px 1.4px at 82% 30%, #fff, transparent), radial-gradient(1.3px 1.3px at 38% 12%, #fff, transparent), radial-gradient(1.2px 1.2px at 52% 26%, #fff, transparent); }
+[data-theme='dark'] .worldmap .stars { opacity: .8; }
+
+.worldmap .hills { bottom: 0; height: 76%; }
+.worldmap .hills svg { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; }
+.worldmap .trees { bottom: 17%; left: 0; right: 0; width: 104%; display: flex; justify-content: space-around; align-items: flex-end; opacity: .92; }
+.worldmap .tree { transform-origin: bottom center; }
+.worldmap .ground { bottom: 0; height: 28%; background: linear-gradient(180deg, var(--ground) 0%, var(--ground-2) 100%); border-top: 4px solid color-mix(in oklab, var(--ground) 70%, #000 12%); }
+
+.worldmap .scene-content { position: absolute; inset: 0; z-index: 20; }
+.worldmap .trail-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.worldmap .trail-base { fill: none; stroke: rgba(255, 255, 255, .55); stroke-width: 13; stroke-linecap: round; stroke-dasharray: 2 25; }
+[data-theme='dark'] .worldmap .trail-base { stroke: rgba(255, 255, 255, .22); }
+
+.worldmap .hud {
+  position: absolute; top: 22px; left: 22px; z-index: 40; min-width: 210px;
+  background: color-mix(in oklab, var(--bg-card) 92%, transparent); border: 2px solid var(--border-color);
+  border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow-lg); backdrop-filter: blur(4px);
+}
+.worldmap .hud .h-lab { font-family: var(--font-pixel); font-size: .5rem; color: var(--text-secondary); letter-spacing: 1px; }
+.worldmap .hud .h-big { font-family: var(--font-heading); font-weight: 700; font-size: 1.6rem; color: var(--text-primary); margin-top: 6px; line-height: 1; }
+.worldmap .hud .h-track { margin-top: 10px; height: 9px; border-radius: 999px; background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.worldmap .hud .h-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--color-accent-hover), var(--color-accent)); }
+.worldmap .hud .h-sub { margin-top: 8px; font-size: .76rem; font-weight: 700; color: var(--text-secondary); }
+
+.worldmap .node { position: absolute; z-index: 30; transform: translate(-50%, -50%); cursor: pointer; }
+.worldmap .node-dot {
+  width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; position: relative;
+  background: var(--bg-card); border: 4px solid var(--c); color: var(--c); box-shadow: var(--shadow-lg);
+  transition: transform .2s ease; --c: var(--color-accent);
+}
+.worldmap .node:hover .node-dot { transform: translateY(-5px) scale(1.05); }
+.worldmap .node-dot .lv { font-family: var(--font-pixel); font-size: .5rem; text-align: center; line-height: 1.5; }
+.worldmap .node.done .node-dot { background: var(--c); color: #fff; }
+.worldmap .node-flag { position: absolute; top: -15px; left: 50%; width: 3px; height: 17px; background: var(--wood-dark); }
+.worldmap .node-flag::after { content: ""; position: absolute; top: 0; left: 3px; width: 15px; height: 11px; background: var(--c); clip-path: polygon(0 0, 100% 0, 80% 50%, 100% 100%, 0 100%); }
+.worldmap .node-name {
+  position: absolute; top: 68px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+  font-family: var(--font-heading); font-weight: 600; font-size: .85rem; color: var(--text-primary);
+  background: color-mix(in oklab, var(--bg-card) 88%, transparent); padding: 3px 10px; border-radius: 999px; border: 2px solid var(--border-color);
+}
+.worldmap .t-foundation { --c: var(--foundation); } .worldmap .t-unity { --c: var(--unity); }
+.worldmap .t-unreal { --c: var(--unreal); } .worldmap .t-resources { --c: var(--resources); }
+
+.worldmap .tip {
+  position: absolute; bottom: 76px; left: 50%; transform: translate(-50%, 8px); width: 230px; opacity: 0; pointer-events: none;
+  background: var(--bg-card); border: 2px solid var(--c); border-radius: 16px; padding: 15px; box-shadow: var(--shadow-lg);
+  transition: opacity .18s ease, transform .18s ease; z-index: 60;
+}
+.worldmap .node:hover .tip { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.worldmap .tip::after { content: ""; position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 14px; height: 14px; background: var(--bg-card); border-right: 2px solid var(--c); border-bottom: 2px solid var(--c); }
+.worldmap .tip .t-top { display: flex; align-items: center; justify-content: space-between; }
+.worldmap .tip .t-tag { font-family: var(--font-pixel); font-size: .44rem; color: var(--c); }
+.worldmap .tip .t-pct { font-family: var(--font-heading); font-weight: 700; color: var(--text-primary); }
+.worldmap .tip h4 { font-family: var(--font-heading); font-weight: 600; font-size: 1.15rem; margin: 8px 0 0; color: var(--text-primary); }
+.worldmap .tip p { margin: 5px 0 0; font-size: .78rem; font-weight: 600; color: var(--text-secondary); }
+.worldmap .tip .t-track { margin-top: 10px; height: 8px; border-radius: 999px; background: var(--bg-secondary); border: 1px solid var(--border-color); overflow: hidden; }
+.worldmap .tip .t-fill { height: 100%; border-radius: 999px; background: var(--c); }
+.worldmap .tip .t-btn {
+  margin-top: 12px; width: 100%; height: 38px; border: 0; border-radius: 11px; cursor: pointer;
+  font-family: var(--font-heading); font-weight: 600; font-size: .85rem; color: #fff; background: var(--c);
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none;
+  box-shadow: 0 3px 0 -1px color-mix(in oklab, var(--c) 60%, #000);
+}
+.worldmap .tip .t-btn:hover { transform: translateY(-1px); }
+
+.worldmap .avatar { position: absolute; z-index: 35; transform: translate(-50%, -50%); }
+.worldmap .avatar .pin { width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: linear-gradient(160deg, #fff, #ffe9b8); border: 3px solid var(--wood-dark); box-shadow: var(--shadow-sm); }
+.worldmap .avatar .pin::after { content: ""; position: absolute; top: 6px; left: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--sun); }
+.worldmap .avatar .you { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: var(--font-pixel); font-size: .42rem; color: var(--text-primary); background: var(--bg-card); padding: 4px 7px; border-radius: 6px; border: 2px solid var(--border-color); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .worldmap .cloud { animation: wm-drift 40s linear infinite; }
+  .worldmap .c2 { animation-duration: 54s; } .worldmap .c3 { animation-duration: 66s; }
+  @keyframes wm-drift { from { transform: translateX(0); } to { transform: translateX(110px); } }
+  .worldmap .tree { animation: wm-sway 5s ease-in-out infinite; }
+  .worldmap .tree:nth-child(even) { animation-duration: 6.5s; animation-direction: alternate-reverse; }
+  @keyframes wm-sway { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
+  .worldmap .avatar .you { animation: wm-bob 2.4s ease-in-out infinite; }
+  @keyframes wm-bob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-4px); } }
+}
+
+@media (max-width: 760px) {
+  .worldmap .hud { left: 50%; transform: translateX(-50%); }
+  .worldmap .node-name { font-size: .76rem; } .worldmap .tip { width: 192px; }
+}

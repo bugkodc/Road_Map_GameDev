@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Blocks, BookOpen, Box, ChevronDown, ChevronRight, Hexagon, Home, Map } from 'lucide-react';
+import { Blocks, BookOpen, Box, ChevronDown, ChevronRight, Hexagon, Home, Map, Route } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Link } from '../App';
@@ -102,8 +102,11 @@ const Sidebar = ({ currentPath, isOpen, onClose }) => {
             <Link to="home" className={`sidebar-link root-link ${currentPath === 'home' ? 'active' : ''}`} onClick={onClose}>
               <Home size={17} /><span>{language === 'vi' ? 'Tổng quan' : 'Overview'}</span>
             </Link>
+            <Link to="map" className={`sidebar-link root-link ${currentPath === 'map' ? 'active' : ''}`} onClick={onClose}>
+              <Map size={17} /><span>{language === 'vi' ? 'Bản đồ' : 'World map'}</span>
+            </Link>
             <Link to={`roadmap/${selectedTrack.id}`} className={`sidebar-link root-link ${currentPath.startsWith('roadmap/') ? 'active' : ''}`} onClick={onClose}>
-              <Map size={17} /><span>{language === 'vi' ? 'Roadmap' : 'Roadmap'}</span>
+              <Route size={17} /><span>{language === 'vi' ? 'Lộ trình' : 'Roadmap'}</span>
             </Link>
           </div>
 

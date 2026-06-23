@@ -11,6 +11,8 @@ import './cozy.css';
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const ReaderPage = lazy(() => import('./pages/ReaderPage'));
+const WorldMapPage = lazy(() => import('./pages/WorldMapPage'));
+const EnginePage = lazy(() => import('./pages/EnginePage'));
 
 // Export a lightweight navigation Link component that handles state-based Hash Routing
 export const Link = ({ to, children, className, onClick }) => {
@@ -91,17 +93,26 @@ const MainApp = () => {
         <Header onMenuToggle={toggleSidebar} />
 
         {/* Dynamic Page Router */}
-        <main className={`page-wrapper ${currentRoute === 'home' || currentRoute.startsWith('roadmap/') ? 'full-width' : ''}`}>
-          <Suspense fallback={<div className="route-loader" aria-label="Loading"><span /></div>}>
-            {currentRoute === 'home' && <LandingPage />}
-            {currentRoute.startsWith('roadmap/') && (
-              <RoadmapPage trackId={currentRoute.split('/')[1] || 'foundations'} />
-            )}
-            {currentRoute !== 'home' && !currentRoute.startsWith('roadmap/') && (
-              <ReaderPage path={currentRoute} />
-            )}
-          </Suspense>
-        </main>
+        {(() => {
+          const isMap = currentRoute === 'map';
+          const isEngine = currentRoute.startsWith('engine/');
+          const isRoadmap = currentRoute.startsWith('roadmap/');
+          const isReader = !isMap && !isEngine && !isRoadmap && currentRoute !== 'home';
+          const wrapperClass = isMap
+            ? 'map-wrapper'
+            : (currentRoute === 'home' || isRoadmap || isEngine ? 'full-width' : '');
+          return (
+            <main className={`page-wrapper ${wrapperClass}`}>
+              <Suspense fallback={<div className="route-loader" aria-label="Loading"><span /></div>}>
+                {currentRoute === 'home' && <LandingPage />}
+                {isMap && <WorldMapPage />}
+                {isEngine && <EnginePage trackId={currentRoute.split('/')[1] || 'unity'} />}
+                {isRoadmap && <RoadmapPage trackId={currentRoute.split('/')[1] || 'foundations'} />}
+                {isReader && <ReaderPage path={currentRoute} />}
+              </Suspense>
+            </main>
+          );
+        })()}
       </div>
     </div>
   );

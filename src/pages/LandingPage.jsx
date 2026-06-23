@@ -76,7 +76,7 @@ const LandingPage = () => {
           <Link to="01-Refactoring/00-refactoring-overview.md" className="btn-primary">
             {vi ? 'Bắt đầu hành trình' : 'Start your journey'} <ArrowRight size={18} />
           </Link>
-          <Link to="roadmap/foundations" className="btn-secondary">
+          <Link to="map" className="btn-secondary">
             <Map size={17} /> {vi ? 'Mở bản đồ' : 'Open the map'}
           </Link>
         </div>
