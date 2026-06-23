@@ -52,6 +52,19 @@ Nhận một feature từ **mô tả nghiệp vụ** và tự hoàn thành từ 
 
 ---
 
+## 🏗️ Thiết kế ở cấp này
+
+Đây là cấp bạn bắt đầu *thiết kế ở tầng feature → hệ thống nhỏ*. Pattern liên quan (chi tiết + khi KHÔNG dùng ở [🎨 Pattern theo cấp](./07-patterns-by-level.md)):
+
+* **[State](../../02-Design-Patterns/02-Catalog/03-Behavioral/07-state.md)** — State Machine cho AI/nhân vật thay `switch` khổng lồ trong `Update`.
+* **[Strategy](../../02-Design-Patterns/02-Catalog/03-Behavioral/08-strategy.md)** — đổi thuật toán (di chuyển, tính damage) lúc runtime.
+* **[Singleton](../../02-Design-Patterns/02-Catalog/01-Creational/05-singleton.md)** — *dùng được* nhưng phải hiểu tác hại (coupling toàn cục, khó test).
+* **[Command](../../02-Design-Patterns/02-Catalog/03-Behavioral/02-command.md)** — đóng gói hành động cho undo/replay/remap phím.
+
+🏗️ **Thử thiết kế:** một State Machine cho enemy AI (Idle → Patrol → Chase → Attack). Đối chiếu quy trình 6 bước ở [🏗️ Thiết kế hệ thống](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Sản phẩm minh chứng
 
 * Đóng góp **feature chính** trong một dự án thật (đi làm hoặc team), **hoặc**

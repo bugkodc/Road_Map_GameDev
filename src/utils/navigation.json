@@ -563,6 +563,16 @@
               "id": "unity-career-lead",
               "title": "Technical Lead",
               "path": "03-Unity/00-Career-Path/06-lead.md"
+            },
+            {
+              "id": "unity-career-patterns",
+              "title": "🎨 Design Pattern theo cấp",
+              "path": "03-Unity/00-Career-Path/07-patterns-by-level.md"
+            },
+            {
+              "id": "unity-career-system-design",
+              "title": "🏗️ Thiết kế hệ thống",
+              "path": "03-Unity/00-Career-Path/08-system-design-guide.md"
             }
           ]
         },

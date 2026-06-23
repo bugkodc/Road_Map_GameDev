@@ -43,6 +43,17 @@ Work on small tasks with a **mentor reviewing every step**. The goal isn't produ
 
 ---
 
+## 🎨 Patterns & design at this level
+
+At Intern you **don't need design patterns yet**. What matters more: feel the **Component pattern** Unity already forces on you — *each script does exactly one thing*, never merged into one file.
+
+* ❌ `Player.cs` holding movement + health + audio + UI.
+* ✅ Split into `PlayerMovement`, `PlayerHealth`, `PlayerAudio` — one responsibility each.
+
+> This is the foundation for every pattern later. See the [🎨 Pattern map by level](./07-patterns-by-level.md) for the full picture.
+
+---
+
 ## 🛠️ Proof of work
 
 One **complete mini game** built from scratch to a **runnable build**:

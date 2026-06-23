@@ -49,6 +49,23 @@ Take **clearly described** tasks and complete them with a little guidance. Start
 
 ---
 
+## 🎨 Patterns & design at this level
+
+Your first three patterns — learn each **when you hit the problem**, don't memorize:
+
+| Pattern | When you meet it |
+|---|---|
+| **[Observer](../../02-Design-Patterns/02-Catalog/03-Behavioral/06-observer.md)** (C# `event`/`Action`) | The health/score HUD must update when gameplay changes — but gameplay shouldn't know the UI exists. |
+| **Object Pool** | Constant firing/spawning stutters because of `Instantiate`/`Destroy` → reuse objects. |
+| **[Component](#gpp-doc:component)** | Compose small scripts instead of deep inheritance. |
+
+> [!WARNING]
+> The biggest trap: event-ifying everything until you can't trace who calls whom. Events **announce that something happened** (`OnPlayerDied`), they don't **issue commands**.
+
+🏗️ **Try designing:** a HUD updated via `event` (gameplay never calls the UI directly). See the example in [🏗️ System Design](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Proof of work
 
 A 2D/3D game with **multiple levels**, including:

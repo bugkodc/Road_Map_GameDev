@@ -52,6 +52,19 @@ Take a feature from a **business description** and complete it end to end. Your 
 
 ---
 
+## 🏗️ Design at this level
+
+This is where you start designing at the *feature → small-system* altitude. Related patterns (detail + when NOT to use in [🎨 Patterns by level](./07-patterns-by-level.md)):
+
+* **[State](../../02-Design-Patterns/02-Catalog/03-Behavioral/07-state.md)** — a State Machine for AI/characters instead of a giant `switch` in `Update`.
+* **[Strategy](../../02-Design-Patterns/02-Catalog/03-Behavioral/08-strategy.md)** — swap algorithms (movement, damage formula) at runtime.
+* **[Singleton](../../02-Design-Patterns/02-Catalog/01-Creational/05-singleton.md)** — *usable* but understand its downsides (global coupling, hard to test).
+* **[Command](../../02-Design-Patterns/02-Catalog/03-Behavioral/02-command.md)** — wrap actions for undo/replay/key remapping.
+
+🏗️ **Try designing:** a State Machine for enemy AI (Idle → Patrol → Chase → Attack). Walk through the 6-step process in [🏗️ System Design](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Proof of work
 
 * Deliver a **core feature** in a real project (job or team), **or**

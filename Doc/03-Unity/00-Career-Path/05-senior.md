@@ -41,6 +41,18 @@ Chịu trách nhiệm **kiến trúc kỹ thuật toàn dự án** hoặc nhiề
 
 ---
 
+## 🏗️ Thiết kế ở cấp này
+
+Bạn thiết kế ở **tầng kiến trúc toàn dự án**, không chỉ một hệ thống. Trọng tâm là *cách các hệ thống xếp tầng với nhau* và pattern phục vụ hiệu năng/mở rộng quy mô lớn:
+
+* **Chia tầng (layering):** gameplay → core → platform/services; **phụ thuộc chỉ đi xuống**. Thực thi bằng **Assembly Definitions** (`.asmdef`).
+* **Service Locator / DI container** — cung cấp dịch vụ toàn cục có kiểm soát, thay Singleton.
+* **Spatial Partition · Double Buffer · Bytecode · Subclass Sandbox** — pattern hiệu năng & mở rộng (chi tiết ở [🎨 Pattern theo cấp](./07-patterns-by-level.md)).
+
+🏗️ **Tham chiếu:** mô hình layering toàn dự án + công cụ thực thi ranh giới ở [🏗️ Thiết kế hệ thống — Tầng 3](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Sản phẩm minh chứng
 
 * Đã **ship ≥1 sản phẩm thương mại** với vai trò kiến trúc chính.

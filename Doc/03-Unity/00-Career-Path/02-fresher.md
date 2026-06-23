@@ -49,6 +49,23 @@ Nhận task **đã được mô tả rõ ràng** và hoàn thành với một ch
 
 ---
 
+## 🎨 Pattern & thiết kế ở cấp này
+
+Ba pattern đầu tiên — học **khi gặp đúng vấn đề**, không học thuộc:
+
+| Pattern | Gặp khi nào |
+|---|---|
+| **[Observer](../../02-Design-Patterns/02-Catalog/03-Behavioral/06-observer.md)** (C# `event`/`Action`) | HUD máu/điểm cần cập nhật khi gameplay đổi — mà gameplay không nên biết UI tồn tại. |
+| **Object Pool** | Bắn đạn/spawn liên tục gây giật vì `Instantiate`/`Destroy` → tái dùng object. |
+| **[Component](#gpp-doc:component)** | Ghép nhiều script nhỏ thay vì kế thừa sâu. |
+
+> [!WARNING]
+> Bẫy lớn nhất: event hoá mọi thứ đến mức không lần ra ai gọi ai. Event để **báo việc đã xảy ra** (`OnPlayerDied`), không phải để **ra lệnh**.
+
+🏗️ **Thử thiết kế:** một HUD cập nhật qua `event` (không cho gameplay gọi thẳng UI). Xem mẫu ở [🏗️ Thiết kế hệ thống](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Sản phẩm minh chứng
 
 Một game 2D/3D **nhiều màn**, có:

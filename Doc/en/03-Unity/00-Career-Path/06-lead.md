@@ -55,6 +55,19 @@ Lead the technical effort for one team or several. The focus shifts from *"being
 
 ---
 
+## 🏗️ Design at this level
+
+Leads **don't learn new patterns** — the role shifts to **gatekeeping** the quality of others' designs:
+
+* **Design review:** spot when a Senior is overusing/misusing a pattern (over-engineering is a bug too).
+* **Setting standards:** which DI framework the team uses, the State Machine convention, the "Definition of Done".
+* **Teaching:** turn personal pattern knowledge into a shared team standard.
+
+> [!NOTE]
+> The sign of maturity: at first you ask *"which pattern should I use?"*, later you ask *"do I even need a pattern, or is straightforward code simpler?"*. See [🎨 Patterns by level](./07-patterns-by-level.md) and [🏗️ System Design](./08-system-design-guide.md) — a Lead uses them as a **review framework**, not study material.
+
+---
+
 ## 🛠️ Proof of work
 
 * Led the technical effort of ≥1 project/team to a successful ship.

@@ -58,4 +58,13 @@ Nắm hai trục này, bạn sẽ luôn biết mình cần rèn gì để lên c
 
 ---
 
+## 🔬 Hai trang chuyên sâu (đọc kèm)
+
+Lộ trình cấp bậc cho biết *"cần giỏi đến đâu"*. Hai trang sau trả lời cụ thể *"học cái gì và thiết kế thế nào"* xuyên suốt các cấp:
+
+* **[🎨 Bản đồ Design Pattern theo cấp](./07-patterns-by-level.md)** — cấp nào cần pattern nào, để giải vấn đề gì, khi nào KHÔNG nên dùng. Link thẳng tới lý thuyết + code.
+* **[🏗️ Hướng dẫn Thiết kế Hệ thống](./08-system-design-guide.md)** — quy trình 6 bước + case study thật (Inventory, Combat, Save, Event Bus) kèm sơ đồ; cách leo từ *feature → hệ thống → kiến trúc*.
+
+---
+
 ➡️ Bắt đầu: [Cấp 1 — Intern (Thực tập sinh)](./01-intern.md)
