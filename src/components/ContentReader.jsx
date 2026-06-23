@@ -167,6 +167,31 @@ const getPagination = (currentPath) => {
   };
 };
 
+// Unified, consistent indicator of which language the article body is actually shown in.
+// When the requested language differs from what is shown (translation not ready yet) it becomes
+// a clearer "translation in progress" notice instead of silently showing the other language.
+const ContentLanguageBadge = ({ meta, t }) => {
+  if (!meta) return null;
+  const { shown, requested } = meta;
+  const shownName = shown === 'vi' ? t('langNameVi') : t('langNameEn');
+
+  if (shown === requested) {
+    return (
+      <div className="content-lang-badge" role="note">
+        <span className="cl-dot" aria-hidden="true" />
+        <span>{t('contentLangNotice', shownName)}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="content-lang-badge fallback" role="note">
+      <span className="cl-icon" aria-hidden="true">🌐</span>
+      <span>{t('contentLangFallback', shownName)}</span>
+    </div>
+  );
+};
+
 const ContentReader = ({ path, placeholder }) => {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
@@ -175,7 +200,8 @@ const ContentReader = ({ path, placeholder }) => {
   const [unrealRefreshToken, setUnrealRefreshToken] = useState(0);
   const [gppRefreshToken, setGppRefreshToken] = useState(0);
   const [pdfExists, setPdfExists] = useState(true);
-  
+  const [contentMeta, setContentMeta] = useState(null);
+
   const { isArticleCompleted, toggleArticleCompleted } = useProgress();
   const { language, t, navTitle } = useLanguage();
   const { prev, next, currentItem } = getPagination(path);
@@ -314,7 +340,7 @@ const ContentReader = ({ path, placeholder }) => {
         setLoading(true);
         setError(null);
       });
-      fetchGppDoc(gppDocSlug, { force: gppRefreshToken > 0 })
+      fetchGppDoc(gppDocSlug, { force: gppRefreshToken > 0, language })
         .then((payload) => {
           const parsed = parseGppDocHtml(payload, {
             cacheHit: t('unityDocsCacheHit'),
@@ -323,6 +349,7 @@ const ContentReader = ({ path, placeholder }) => {
             openSource: t('unityDocsOpenSource')
           });
           setContent(parsed.html);
+          setContentMeta({ shown: payload.lang || 'en', requested: language });
           setLoading(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         })
@@ -344,6 +371,7 @@ const ContentReader = ({ path, placeholder }) => {
             openSource: t('unrealDocsOpenSource')
           });
           setContent(parsed.html);
+          setContentMeta({ shown: payload.lang || language, requested: language });
           setLoading(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         })
@@ -365,6 +393,7 @@ const ContentReader = ({ path, placeholder }) => {
             openSource: t('unityDocsOpenSource')
           }, { isManual: unityDocIsManual });
           setContent(parsed.html);
+          setContentMeta({ shown: 'en', requested: language });
           setLoading(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         })
@@ -376,15 +405,31 @@ const ContentReader = ({ path, placeholder }) => {
       return;
     }
 
-    // Fetch the markdown file from our public directory junction
-    fetch(`./Doc/${path}`)
-      .then(res => {
+    // Markdown content. Base files are Vietnamese at ./Doc/<path>; English translations, when
+    // available, live at ./Doc/en/<path>. Falls back to the base copy with a flag so the reader
+    // can show a consistent "translation in progress" badge.
+    (async () => {
+      try {
+        let shown = 'vi';
+        let res;
+        if (language === 'en') {
+          res = await fetch(`./Doc/en/${path}`);
+          if (res.ok) {
+            shown = 'en';
+          } else {
+            res = await fetch(`./Doc/${path}`);
+            shown = 'vi';
+          }
+        } else {
+          res = await fetch(`./Doc/${path}`);
+          shown = 'vi';
+        }
+
         if (!res.ok) {
           throw new Error(t('loadError', path));
         }
-        return res.text();
-      })
-      .then(text => {
+
+        const text = await res.text();
         if (/^\s*<!doctype html/i.test(text) || text.includes('/@vite/client')) {
           throw new Error(t('loadError', path));
         }
@@ -392,29 +437,26 @@ const ContentReader = ({ path, placeholder }) => {
         const preprocessed = preprocessMarkdown(text, path, t);
         const html = marked.parse(preprocessed);
         let cleanHtml = DOMPurify.sanitize(html);
-        
-        // Convert language-mermaid blocks to <div class="mermaid">
+
+        // Convert language-mermaid blocks to <div class="mermaid">.
+        // We keep the HTML entities (like &lt; and &gt;) intact so the browser's HTML parser
+        // does not interpret them as tags. When the browser renders, it automatically
+        // decodes them into text content, which Mermaid will read correctly.
         cleanHtml = cleanHtml.replace(
           /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
-          (match, code) => {
-            // We keep the HTML entities (like &lt; and &gt;) intact so the browser's HTML parser
-            // does not interpret them as tags. When the browser renders, it automatically
-            // decodes them into text content, which Mermaid will read correctly.
-            return `<div class="mermaid">${code}</div>`;
-          }
+          (match, code) => `<div class="mermaid">${code}</div>`
         );
 
         setContent(cleanHtml);
+        setContentMeta({ shown, requested: language });
         setLoading(false);
-        
-        // Scroll to top of reading pane
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      })
-      .catch(err => {
+      } catch (err) {
         console.error(err);
         setError(err.message);
         setLoading(false);
-      });
+      }
+    })();
   }, [path, placeholder, t, language, shouldUseLiveUnityDoc, unityDocPath, unityDocIsManual, unityRefreshToken, shouldUseLiveUnrealDoc, unrealDocSlug, unrealRefreshToken, isPdfDoc, pdfName, isGppDoc, gppDocSlug, gppRefreshToken]);
 
   if (placeholder) {
@@ -463,6 +505,8 @@ const ContentReader = ({ path, placeholder }) => {
 
   return (
     <article className="reading-pane">
+      {!isPdfDoc && <ContentLanguageBadge meta={contentMeta} t={t} />}
+
       {unityDocTarget && (
         <div className="unity-doc-toolbar">
           <div>
@@ -508,7 +552,7 @@ const ContentReader = ({ path, placeholder }) => {
           <button
             className="btn-secondary unity-doc-refresh"
             onClick={() => {
-              clearGppDocCache(gppDocSlug);
+              clearGppDocCache(gppDocSlug, language);
               setGppRefreshToken((value) => value + 1);
             }}
           >
