@@ -8,7 +8,6 @@ import { Link } from '../App';
 import {
   fetchUnityDoc,
   getUnityDocTarget,
-  isUnityScriptingPath,
   parseUnityDocHtml,
   clearUnityDocCache
 } from '../utils/unityDocs';
@@ -207,7 +206,10 @@ const ContentReader = ({ path, placeholder }) => {
   const { prev, next, currentItem } = getPagination(path);
   const isDirectUnityDoc = path.startsWith('unity-doc:');
   const isUnityManualPath = (p) => p.startsWith('03-Unity/01-Manual/');
-  const shouldUseLiveUnityDoc = isDirectUnityDoc || (language === 'en' && (isUnityScriptingPath(path) || isUnityManualPath(path)));
+  // Unity Scripting/Manual roadmap pages now read the curated Markdown in BOTH languages
+  // (VI base + EN under Doc/en/), like every other source. Only explicit #unity-doc: links
+  // still open the official Unity documentation.
+  const shouldUseLiveUnityDoc = isDirectUnityDoc;
   
   const isDirectUnrealDoc = path.startsWith('unreal-doc:');
   const shouldUseLiveUnrealDoc = isDirectUnrealDoc;
