@@ -1,0 +1,480 @@
+/* ============================================================
+   COZY FARM SKIN  — layered over index.css / workspace.css
+   Reskins the whole app into the "GameDev Roadmap — Cozy Farm"
+   look while reusing the existing theme tokens (day = light,
+   night = dark). Loaded last so it wins on shared selectors.
+   ============================================================ */
+
+:root {
+  --cozy-radius: 18px;
+  --cozy-radius-sm: 12px;
+  --t-foundation: var(--foundation);
+  --t-unity: var(--unity);
+  --t-unreal: var(--unreal);
+  --t-resources: var(--resources);
+}
+
+/* ---- soft farm backdrop ---- */
+body {
+  background-color: var(--bg-primary);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(135% 60% at 50% -8%, color-mix(in oklab, var(--color-accent) 16%, transparent) 0%, transparent 58%),
+    radial-gradient(100% 40% at 100% 0%, color-mix(in oklab, var(--unity) 12%, transparent) 0%, transparent 55%);
+}
+
+/* ---- chunky rounded buttons ---- */
+.btn-primary {
+  border-radius: var(--cozy-radius-sm);
+  padding: 11px 22px;
+  font-weight: 600;
+  border: 2px solid color-mix(in oklab, var(--color-accent) 64%, #000 26%);
+  box-shadow: 0 4px 0 -1px color-mix(in oklab, var(--color-accent) 55%, #000 30%);
+  transition: transform 0.14s ease, background-color 0.18s ease, box-shadow 0.14s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-accent-hover);
+}
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 -1px color-mix(in oklab, var(--color-accent) 55%, #000 30%);
+}
+.btn-secondary {
+  border-radius: var(--cozy-radius-sm) !important;
+  border-width: 2px !important;
+  font-weight: 600;
+  box-shadow: 0 4px 0 -1px var(--border-color);
+  transition: transform 0.14s ease, border-color 0.18s ease;
+}
+.btn-secondary:hover { transform: translateY(-2px); border-color: var(--color-accent) !important; }
+
+/* ---- rounded surfaces & inputs ---- */
+.track-card,
+.workspace-summary,
+.roadmap-hero,
+.stage-content,
+.placeholder-container,
+.pdf-viewer-container,
+.pdf-not-found-card,
+.search-results-dropdown,
+.reader-error,
+.article-completion-box,
+.roadmap-next {
+  border-radius: var(--cozy-radius) !important;
+  border-width: 2px !important;
+}
+.icon-button,
+.theme-toggle,
+.language-toggle,
+.stage-index,
+.roadmap-track-tabs a,
+.track-switch,
+.placeholder-badge,
+.search-result-link {
+  border-radius: var(--cozy-radius-sm) !important;
+}
+.header-search-button,
+.search-input-wrapper,
+.progress-track,
+.progress-fill,
+.global-progress .progress-track {
+  border-radius: 999px !important;
+}
+.search-input-wrapper { border-width: 2px !important; }
+.sidebar-link,
+.sidebar-group-title { border-radius: 10px; }
+
+/* ---- header / sidebar warmth ---- */
+.site-header { border-bottom: 2px solid var(--border-color); }
+.sidebar-nav { border-right: 2px solid var(--border-color); }
+.logo-mark,
+.brand-logo {
+  background: linear-gradient(160deg, var(--color-accent), var(--color-accent-hover)) !important;
+  border-radius: var(--cozy-radius-sm) !important;
+  color: #fff !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+.header-logo,
+.brand-info h3 { font-family: var(--font-heading); }
+
+/* ---- progress bars become little vines ---- */
+.progress-track { background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.progress-fill { background: linear-gradient(90deg, var(--color-accent-hover), var(--color-accent)); }
+
+/* ---- markdown reading polish ---- */
+.markdown-body pre { border-radius: var(--cozy-radius-sm); border-width: 2px; }
+.markdown-body code { border-radius: 7px; }
+.markdown-body blockquote { border-radius: 0 var(--cozy-radius-sm) var(--cozy-radius-sm) 0; }
+.markdown-body table { border-radius: var(--cozy-radius-sm); overflow: hidden; }
+
+/* ============================================================
+   LANDING PAGE — cozy farm home
+   ============================================================ */
+.cozy-home { display: flex; flex-direction: column; gap: 30px; padding-top: 8px; }
+
+/* hero */
+.cozy-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 26px;
+  padding: 40px clamp(22px, 4vw, 52px);
+  box-shadow: var(--shadow-lg);
+}
+.cozy-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(var(--border-color) 1.4px, transparent 1.5px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(120deg, transparent 55%, #000 100%);
+  mask-image: linear-gradient(120deg, transparent 55%, #000 100%);
+}
+.cozy-sun {
+  position: absolute;
+  top: -34px;
+  right: -26px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #ffe49b 0%, #f6c044 58%, #eaa42b 100%);
+  box-shadow: 0 0 0 14px color-mix(in oklab, #f6c044 22%, transparent), 0 0 60px color-mix(in oklab, #f6c044 45%, transparent);
+}
+[data-theme='dark'] .cozy-sun {
+  background: radial-gradient(circle at 42% 40%, #fff7da 0%, #f6d873 58%, #d9b24e 100%);
+}
+.cozy-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-accent) 16%, var(--bg-card));
+  border: 2px solid color-mix(in oklab, var(--color-accent) 42%, var(--border-color));
+  color: var(--color-accent-hover);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+[data-theme='dark'] .cozy-badge { color: var(--color-accent); }
+.cozy-badge .pix { font-family: var(--font-pixel); font-size: 0.5rem; }
+.cozy-hero h1 {
+  position: relative;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.5px;
+  margin: 18px 0 0;
+  max-width: 17ch;
+  color: var(--text-primary);
+}
+.cozy-hero h1 .leaf { color: var(--color-accent-hover); }
+[data-theme='dark'] .cozy-hero h1 .leaf { color: var(--color-accent); }
+.cozy-lead {
+  position: relative;
+  margin: 16px 0 0;
+  max-width: 52ch;
+  font-size: 1.04rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.cozy-chips { position: relative; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.cozy-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+}
+.cozy-chip b { font-family: var(--font-heading); font-weight: 700; font-size: 1.15rem; color: var(--text-primary); }
+.cozy-chip span { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+.cozy-cta { position: relative; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.cozy-cta .btn-primary,
+.cozy-cta .btn-secondary { height: 50px; align-items: center; gap: 9px; font-size: 1rem; }
+
+.cozy-search { max-width: 760px; width: 100%; }
+
+/* trail / track cards */
+.cozy-sec-title { text-align: center; margin-bottom: 6px; }
+.cozy-sec-title .eyebrow {
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.56rem;
+  color: var(--color-accent-hover);
+  letter-spacing: 1px;
+}
+[data-theme='dark'] .cozy-sec-title .eyebrow { color: var(--color-accent); }
+.cozy-sec-title h2 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(1.6rem, 3.4vw, 2.3rem); margin-top: 10px; }
+.cozy-sec-title p { margin-top: 6px; font-weight: 600; color: var(--text-secondary); }
+
+.cozy-tracks {
+  position: relative;
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.cozy-tracks::before {
+  content: "";
+  position: absolute;
+  top: 36px;
+  left: 8%;
+  right: 8%;
+  height: 4px;
+  z-index: 0;
+  background-image: linear-gradient(90deg, var(--border-color) 0 14px, transparent 14px 26px);
+  background-size: 26px 4px;
+  border-radius: 4px;
+}
+.cozy-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--cozy-radius);
+  padding: 0 16px 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  --c: var(--color-accent);
+}
+.cozy-card.track-foundation { --c: var(--foundation); }
+.cozy-card.track-unity { --c: var(--unity); }
+.cozy-card.track-unreal { --c: var(--unreal); }
+.cozy-card.track-resources { --c: var(--resources); }
+.cozy-card:hover { transform: translateY(-4px); border-color: var(--c); }
+.cozy-node {
+  width: 56px;
+  height: 56px;
+  margin: -28px auto 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bg-card);
+  border: 3px solid var(--c);
+  color: var(--c);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+.cozy-crop {
+  height: 66px;
+  margin: 14px 0 0;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  background: color-mix(in oklab, var(--c) 13%, var(--bg-card));
+  border: 2px dashed color-mix(in oklab, var(--c) 40%, var(--border-color));
+}
+.cozy-card h3 { font-family: var(--font-heading); font-weight: 600; font-size: 1.3rem; margin: 14px 0 0; color: var(--text-primary); }
+.cozy-card .desc { margin: 6px 0 0; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); flex: 1; }
+.cozy-growth { margin-top: 14px; }
+.cozy-growth-top { display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 0.76rem; }
+.cozy-growth-top .stage { color: var(--c); display: inline-flex; align-items: center; gap: 5px; }
+.cozy-growth-top .pct { font-family: var(--font-heading); color: var(--text-primary); }
+.cozy-card .ptrack { margin-top: 7px; height: 10px; border-radius: 999px; background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.cozy-card .pfill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklab, var(--c) 70%, #fff) 0%, var(--c) 100%); }
+.cozy-go {
+  margin-top: 14px;
+  padding-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px dashed var(--border-color);
+}
+.cozy-go .start { font-family: var(--font-heading); font-weight: 600; font-size: 0.92rem; color: var(--text-primary); display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
+.cozy-card:hover .cozy-go .start { color: var(--c); }
+.cozy-go .meta { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); }
+
+/* sources */
+.cozy-sources {
+  margin-top: 10px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--cozy-radius);
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+.cozy-sources .lab { font-family: var(--font-heading); font-weight: 600; color: var(--text-primary); display: inline-flex; align-items: center; gap: 9px; }
+.cozy-sources .lab svg { color: var(--color-accent-hover); }
+.cozy-sources .src { font-weight: 700; font-size: 0.84rem; color: var(--text-secondary); }
+.cozy-sources .sep { color: var(--border-color); font-weight: 800; }
+
+@media (max-width: 920px) {
+  .cozy-tracks { grid-template-columns: repeat(2, 1fr); gap: 30px 18px; }
+  .cozy-tracks::before { display: none; }
+}
+@media (max-width: 540px) {
+  .cozy-tracks { grid-template-columns: 1fr; }
+  .cozy-hero { padding: 30px 20px; }
+}
+
+/* 3-up primary nav (Overview / Map / Roadmap) */
+.sidebar-primary-nav { grid-template-columns: repeat(3, 1fr) !important; }
+.sidebar-primary-nav .sidebar-link { padding: 9px 4px !important; font-size: 0.72rem; }
+
+/* ============================================================
+   ENGINE PAGE — themed cozy "world" overview for Unity / Unreal
+   ============================================================ */
+.engine-page { --eng: var(--color-accent); display: flex; flex-direction: column; gap: 26px; padding-top: 8px; }
+.engine-page.eng-unity { --eng: var(--unity); }
+.engine-page.eng-unreal { --eng: var(--unreal); }
+.engine-page.eng-foundation { --eng: var(--foundation); }
+.engine-page.eng-resources { --eng: var(--resources); }
+
+.engine-hero {
+  --es-sky1: color-mix(in oklab, var(--eng) 14%, #d7edf4);
+  --es-sky2: color-mix(in oklab, var(--eng) 9%, #e9f2e0);
+  --es-hill-far: color-mix(in oklab, var(--eng) 16%, #bfe0a6);
+  --es-hill-mid: color-mix(in oklab, var(--eng) 13%, #94cf7e);
+  --es-near: #6fb556; --es-ground: #7cbb59; --es-ground2: #69a749; --es-wood: #6e4a2e;
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  border: 2px solid var(--border-color);
+  border-radius: 26px;
+  padding: 34px clamp(22px, 4vw, 52px);
+  box-shadow: var(--shadow-lg);
+  background: var(--es-sky1);
+}
+[data-theme='dark'] .engine-hero {
+  --es-sky1: color-mix(in oklab, var(--eng) 22%, #1c2440);
+  --es-sky2: color-mix(in oklab, var(--eng) 13%, #232c49);
+  --es-hill-far: color-mix(in oklab, var(--eng) 18%, #2c3a52);
+  --es-hill-mid: color-mix(in oklab, var(--eng) 15%, #27425a);
+  --es-near: #234a44; --es-ground: #26503f; --es-ground2: #1f4636; --es-wood: #d79a5e;
+}
+.engine-hero .eng-scene { position: absolute; inset: 0; z-index: 0; }
+.engine-hero .es-layer { position: absolute; left: -2%; right: -2%; bottom: 0; width: 104%; will-change: transform; }
+.engine-hero .es-sky { inset: 0; width: 100%; background: linear-gradient(180deg, var(--es-sky1) 0%, var(--es-sky2) 52%, var(--es-hill-far) 100%); }
+.engine-hero .es-sun {
+  position: absolute; top: 13%; right: 8%; width: 82px; height: 82px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #fff1c4, color-mix(in oklab, var(--eng) 26%, #f6c044) 60%, color-mix(in oklab, var(--eng) 42%, #e7a82c));
+  box-shadow: 0 0 46px color-mix(in oklab, #f6c044 40%, transparent); opacity: .92;
+}
+.engine-hero .es-hills { bottom: 0; height: 74%; }
+.engine-hero .es-hills svg { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; }
+.engine-hero .es-trees { bottom: 13%; left: 0; right: 0; width: 104%; display: flex; justify-content: space-around; align-items: flex-end; opacity: .9; }
+.engine-hero .es-tree { transform-origin: bottom center; }
+.engine-hero .es-ground { bottom: 0; height: 22%; background: linear-gradient(180deg, var(--es-ground), var(--es-ground2)); border-top: 3px solid color-mix(in oklab, var(--es-ground) 70%, #000 12%); }
+.engine-hero .es-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(96deg, var(--bg-card) 0%, color-mix(in oklab, var(--bg-card) 86%, transparent) 40%, color-mix(in oklab, var(--bg-card) 32%, transparent) 66%, transparent 88%);
+}
+.engine-hero .eng-hero-content { position: relative; z-index: 2; max-width: 660px; }
+@media (prefers-reduced-motion: no-preference) {
+  .engine-hero .es-tree { animation: es-sway 5.5s ease-in-out infinite; }
+  .engine-hero .es-tree:nth-child(even) { animation-duration: 7s; animation-direction: alternate-reverse; }
+  @keyframes es-sway { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
+}
+.eng-back { margin-bottom: 14px; }
+.eng-back a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--text-secondary); }
+.eng-back a:hover { color: var(--eng); }
+.eng-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px;
+  background: color-mix(in oklab, var(--eng) 16%, var(--bg-card)); border: 2px solid color-mix(in oklab, var(--eng) 42%, var(--border-color));
+  color: var(--eng); font-family: var(--font-pixel); font-size: 0.5rem; letter-spacing: 0.5px;
+}
+.engine-hero h1 {
+  display: flex; align-items: center; gap: 14px; margin: 16px 0 0;
+  font-family: var(--font-heading); font-weight: 700; font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: -0.5px; color: var(--text-primary);
+}
+.engine-hero h1 .eng-icon {
+  width: 56px; height: 56px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 16px; color: #fff;
+  background: linear-gradient(160deg, color-mix(in oklab, var(--eng) 80%, #fff 0%), color-mix(in oklab, var(--eng) 70%, #000 22%));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+.engine-hero .eng-lead { margin: 14px 0 0; max-width: 62ch; font-size: 1.02rem; font-weight: 600; color: var(--text-secondary); }
+.eng-stats { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; margin-top: 22px; }
+.eng-progress { flex: 1; min-width: 220px; }
+.eng-progress .epc { display: flex; align-items: baseline; gap: 8px; }
+.eng-progress .epc b { font-family: var(--font-heading); font-weight: 700; font-size: 1.7rem; color: var(--text-primary); }
+.eng-progress .epc span { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+.eng-progress .ptrack { margin-top: 8px; height: 10px; border-radius: 999px; background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.eng-progress .pfill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklab, var(--eng) 70%, #fff), var(--eng)); }
+.eng-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.eng-cta .btn-primary { background-color: var(--eng); border-color: color-mix(in oklab, var(--eng) 64%, #000 26%); box-shadow: 0 4px 0 -1px color-mix(in oklab, var(--eng) 55%, #000 30%); height: 50px; align-items: center; gap: 9px; }
+.eng-cta .btn-primary:hover { background-color: color-mix(in oklab, var(--eng) 85%, #000 12%); }
+.eng-cta .btn-secondary { height: 50px; align-items: center; gap: 9px; }
+
+.eng-sec-title { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.eng-sec-title h2 { font-family: var(--font-heading); font-weight: 700; font-size: 1.5rem; }
+.eng-sec-title .count { font-family: var(--font-pixel); font-size: 0.5rem; color: var(--text-secondary); }
+
+.eng-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(244px, 1fr)); gap: 16px; }
+.eng-card {
+  position: relative; display: flex; flex-direction: column; gap: 8px;
+  background: var(--bg-card); border: 2px solid var(--border-color); border-radius: var(--cozy-radius);
+  padding: 18px; box-shadow: var(--shadow); text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.eng-card:hover { transform: translateY(-4px); border-color: var(--eng); }
+.eng-card .ec-top { display: flex; align-items: center; justify-content: space-between; }
+.eng-card .ec-no { font-family: var(--font-pixel); font-size: 0.5rem; color: var(--eng); }
+.eng-card .ec-count { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); }
+.eng-card h3 { font-family: var(--font-heading); font-weight: 600; font-size: 1.08rem; color: var(--text-primary); margin: 2px 0 0; line-height: 1.25; }
+.eng-card .ec-bar { margin-top: auto; height: 8px; border-radius: 999px; background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.eng-card .ec-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklab, var(--eng) 70%, #fff), var(--eng)); }
+.eng-card .ec-go { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-heading); font-weight: 600; font-size: 0.82rem; color: var(--text-secondary); }
+.eng-card:hover .ec-go { color: var(--eng); }
+
+@media (max-width: 700px) {
+  .engine-hero h1 { font-size: 2rem; }
+  .eng-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ROADMAP PAGE — cozy trail polish (reuses existing markup)
+   ============================================================ */
+.roadmap-page { --rm: var(--color-accent); }
+.roadmap-page.roadmap-foundation { --rm: var(--foundation); }
+.roadmap-page.roadmap-unity { --rm: var(--unity); }
+.roadmap-page.roadmap-unreal { --rm: var(--unreal); }
+.roadmap-page.roadmap-resources { --rm: var(--resources); }
+
+.roadmap-track-tabs a.active { border-color: var(--rm) !important; background: color-mix(in oklab, var(--rm) 14%, var(--bg-card)) !important; color: var(--text-primary) !important; }
+.roadmap-hero { background: radial-gradient(120% 130% at 100% -30%, color-mix(in oklab, var(--rm) 22%, var(--bg-card)) 0%, var(--bg-card) 58%) !important; }
+.roadmap-icon { color: #fff !important; background: linear-gradient(160deg, color-mix(in oklab, var(--rm) 82%, #fff 0%), color-mix(in oklab, var(--rm) 70%, #000 20%)) !important; box-shadow: inset 0 2px 0 rgba(255,255,255,0.3); }
+.roadmap-progress-panel .progress-fill { background: linear-gradient(90deg, color-mix(in oklab, var(--rm) 70%, #fff), var(--rm)); }
+
+/* trail stop number → rounded pixel node on a dashed vine */
+.stage-index {
+  color: var(--rm) !important;
+  border: 3px solid var(--rm) !important;
+  background: var(--bg-card) !important;
+  font-family: var(--font-pixel) !important;
+  font-size: 0.5rem !important;
+  border-radius: 14px !important;
+}
+.roadmap-stage::before {
+  left: 26px;
+  width: 0;
+  border-left: 3px dashed color-mix(in oklab, var(--rm) 45%, var(--border-color)) !important;
+  background: none !important;
+}
+.stage-header h2 { font-family: var(--font-heading); }
+.stage-lesson.completed > button { border-color: var(--rm) !important; background: var(--rm) !important; }
+.stage-lesson > a:hover span { color: var(--rm); }
+.roadmap-next .btn-primary { background-color: var(--rm); border-color: color-mix(in oklab, var(--rm) 64%, #000 26%); box-shadow: 0 4px 0 -1px color-mix(in oklab, var(--rm) 55%, #000 30%); }
