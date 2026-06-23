@@ -88,7 +88,7 @@ export const fetchUnrealDoc = async (slug, { language = 'vi', force = false } = 
     if (language === 'vi') {
       const fallbackResponse = await fetch(`./unreal-docs/en/${slug}.json`);
       if (fallbackResponse.ok) {
-        const payload = await fallbackResponse.json();
+        const payload = { ...(await fallbackResponse.json()), lang: 'en' };
         writeCachedUnrealDoc(language, slug, payload);
         return { ...payload, fromCache: false };
       }
@@ -96,7 +96,7 @@ export const fetchUnrealDoc = async (slug, { language = 'vi', force = false } = 
     throw new Error(`Không tải được tài nguyên Unreal Engine cho: ${slug}`);
   }
 
-  const payload = await response.json();
+  const payload = { ...(await response.json()), lang: language };
   writeCachedUnrealDoc(language, slug, payload);
   return { ...payload, fromCache: false };
 };

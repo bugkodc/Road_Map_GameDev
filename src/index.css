@@ -1489,6 +1489,40 @@ button {
   border-radius: 999px;
 }
 
+/* Unified content-language indicator shown on every reader article */
+.content-lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+}
+
+.content-lang-badge .cl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  flex-shrink: 0;
+}
+
+.content-lang-badge.fallback {
+  display: flex;
+  border-radius: 12px;
+  border-style: dashed;
+  background-color: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.content-lang-badge .cl-icon {
+  flex-shrink: 0;
+}
+
 .unity-doc-body .signature,
 .unity-doc-body .sig-block {
   margin: 16px 0;
