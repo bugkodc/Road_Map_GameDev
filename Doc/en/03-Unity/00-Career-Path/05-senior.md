@@ -41,6 +41,18 @@ Own the **technical architecture of the whole project** or several large systems
 
 ---
 
+## 🏗️ Design at this level
+
+You design at the **whole-project architecture** altitude, not just one system. The focus is *how systems stack together* and patterns serving large-scale performance/extensibility:
+
+* **Layering:** gameplay → core → platform/services; **dependencies only point downward**. Enforce with **Assembly Definitions** (`.asmdef`).
+* **Service Locator / DI container** — provide global services with control, replacing Singleton.
+* **Spatial Partition · Double Buffer · Bytecode · Subclass Sandbox** — performance & extensibility patterns (detail in [🎨 Patterns by level](./07-patterns-by-level.md)).
+
+🏗️ **Reference:** the whole-project layering model + boundary-enforcing tools in [🏗️ System Design — Altitude 3](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Proof of work
 
 * **Shipped ≥1 commercial product** as the lead architect.

@@ -49,6 +49,19 @@ Làm chủ **một hệ thống/module lớn** trong dự án (combat, inventory
 
 ---
 
+## 🏗️ Thiết kế ở cấp này
+
+Trọng tâm chuyển từ "một object" sang **làm chủ một hệ thống** với ranh giới rõ. Pattern chủ đạo (chi tiết ở [🎨 Pattern theo cấp](./07-patterns-by-level.md)):
+
+* **[Factory](../../02-Design-Patterns/02-Catalog/01-Creational/01-factory-method.md)** — sinh enemy/item theo loại, không rải `new` khắp nơi.
+* **[Facade](../../02-Design-Patterns/02-Catalog/02-Structural/05-facade.md)** — phơi một cổng API gọn cho hệ thống lớn, giấu nội bộ.
+* **[Flyweight](../../02-Design-Patterns/02-Catalog/02-Structural/06-flyweight.md)** + **Type Object** — data-driven bằng ScriptableObject; chia sẻ dữ liệu chung.
+* **Dependency Injection** (Zenject/VContainer) — thay Singleton tràn lan.
+
+🏗️ **Thử thiết kế trọn vẹn:** một hệ thống **Inventory** hoặc **Combat pipeline** — xem case study đầy đủ kèm sơ đồ ở [🏗️ Thiết kế hệ thống](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Sản phẩm minh chứng
 
 * Sở hữu **kiến trúc của một hệ thống lõi** trong một dự án đã ship.

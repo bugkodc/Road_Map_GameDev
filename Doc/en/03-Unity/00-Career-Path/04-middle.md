@@ -49,6 +49,19 @@ Own a **large system/module** in the project (combat, inventory, networking, eco
 
 ---
 
+## 🏗️ Design at this level
+
+The focus shifts from "one object" to **owning a whole system** with clear boundaries. Lead patterns (detail in [🎨 Patterns by level](./07-patterns-by-level.md)):
+
+* **[Factory](../../02-Design-Patterns/02-Catalog/01-Creational/01-factory-method.md)** — spawn enemies/items by type without scattering `new`.
+* **[Facade](../../02-Design-Patterns/02-Catalog/02-Structural/05-facade.md)** — expose one clean API for a large system, hide internals.
+* **[Flyweight](../../02-Design-Patterns/02-Catalog/02-Structural/06-flyweight.md)** + **Type Object** — data-driven via ScriptableObject; share common data.
+* **Dependency Injection** (Zenject/VContainer) — replace scattered Singletons.
+
+🏗️ **Try designing end-to-end:** an **Inventory** system or a **Combat pipeline** — see the full case studies with diagrams in [🏗️ System Design](./08-system-design-guide.md).
+
+---
+
 ## 🛠️ Proof of work
 
 * Own the **architecture of a core system** in a shipped project.

@@ -58,4 +58,13 @@ Keep these two axes in mind and you will always know what to sharpen to reach th
 
 ---
 
+## 🔬 Two deep-dive pages (read alongside)
+
+The career ladder tells you *"how good you need to be"*. These two pages answer concretely *"what to learn and how to design"* across all levels:
+
+* **[🎨 Design Pattern map by level](./07-patterns-by-level.md)** — which level needs which pattern, what problem it solves, when NOT to use it. Links straight to theory + code.
+* **[🏗️ System Design Guide](./08-system-design-guide.md)** — a 6-step process + real case studies (Inventory, Combat, Save, Event Bus) with diagrams; how to climb from *feature → system → architecture*.
+
+---
+
 ➡️ Start here: [Level 1 — Intern](./01-intern.md)

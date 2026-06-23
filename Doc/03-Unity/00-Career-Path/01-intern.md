@@ -43,6 +43,17 @@ Làm task nhỏ, có **mentor kèm cặp** review từng bước. Mục tiêu kh
 
 ---
 
+## 🎨 Pattern & thiết kế ở cấp này
+
+Ở Intern **chưa cần học design pattern**. Việc quan trọng hơn: cảm nhận **Component pattern** mà Unity ép sẵn — *mỗi script làm đúng một việc*, không gộp tất cả vào một file.
+
+* ❌ `Player.cs` ôm di chuyển + máu + âm thanh + UI.
+* ✅ Tách `PlayerMovement`, `PlayerHealth`, `PlayerAudio` — mỗi cái một trách nhiệm.
+
+> Đây là nền móng cho mọi pattern về sau. Xem [🎨 Bản đồ Pattern theo cấp](./07-patterns-by-level.md) để biết bức tranh toàn cảnh.
+
+---
+
 ## 🛠️ Sản phẩm minh chứng
 
 Một **game mini hoàn chỉnh** tự làm từ đầu đến **build ra file chạy**:
