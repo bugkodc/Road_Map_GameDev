@@ -1,14 +1,14 @@
 :root {
   --workspace-sidebar: 284px;
-  --foundation: #d85b3f;
-  --unity: #167d78;
-  --unreal: #3973d6;
-  --resources: #8e44ad;
-  --surface-raised: #ffffff;
+  --foundation: #e0654a;
+  --unity: #4facd2;
+  --unreal: #e2a23c;
+  --resources: #b07cc4;
+  --surface-raised: #fffdf7;
 }
 
 [data-theme='dark'] {
-  --surface-raised: #1d2736;
+  --surface-raised: #2a3450;
 }
 
 .main-content { margin-left: var(--workspace-sidebar); }

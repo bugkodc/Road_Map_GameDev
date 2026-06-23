@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import './App.css';
 import './workspace.css';
+import './cozy.css';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));

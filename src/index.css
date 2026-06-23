@@ -3,27 +3,28 @@
 /* --- DESIGN SYSTEM TOKENS --- */
 :root {
   /* Font Families */
-  --font-heading: 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Fredoka', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-pixel: 'Press Start 2P', monospace;
 
   /* Theme Transitions */
   --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
   /* Light Theme Variables (Default) */
-  --bg-primary: #f7f8fb;
-  --bg-secondary: #eef2f5;
-  --bg-card: #ffffff;
-  --text-primary: #18212f;
-  --text-secondary: #667085;
-  --color-accent: #0f8b8d;
-  --color-accent-hover: #0b6f71;
-  --color-warm: #e35d45;
-  --border-color: #dde3ea;
-  --sidebar-active-bg: #e2f1f1;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(45, 49, 66, 0.06);
-  --shadow-lg: 0 12px 24px rgba(45, 49, 66, 0.08);
+  --bg-primary: #f4ecd6;
+  --bg-secondary: #ece1c6;
+  --bg-card: #fffdf7;
+  --text-primary: #3c2d20;
+  --text-secondary: #8a7560;
+  --color-accent: #5f9a43;
+  --color-accent-hover: #4e8a3a;
+  --color-warm: #e0654a;
+  --border-color: #e4d6b8;
+  --sidebar-active-bg: #e8f0d6;
+  --shadow-sm: 0 2px 0 rgba(110, 74, 46, 0.07);
+  --shadow-md: 0 6px 16px -8px rgba(110, 74, 46, 0.25);
+  --shadow-lg: 0 18px 34px -18px rgba(110, 74, 46, 0.4);
 
   /* Alerts (Light) */
   --alert-note-bg: #eef7fc;
@@ -45,16 +46,16 @@
 
 [data-theme='dark'] {
   /* Dark Theme Variables */
-  --bg-primary: #111827;
-  --bg-secondary: #182233;
-  --bg-card: #202a3b;
-  --text-primary: #eef4ff;
-  --text-secondary: #aab6c7;
-  --color-accent: #36c7c9;
-  --color-accent-hover: #67dadd;
-  --color-warm: #ff8a6c;
-  --border-color: #2d3a4f;
-  --sidebar-active-bg: #173c45;
+  --bg-primary: #1f2742;
+  --bg-secondary: #28304b;
+  --bg-card: #313c5c;
+  --text-primary: #f5eedd;
+  --text-secondary: #a99c83;
+  --color-accent: #80c35f;
+  --color-accent-hover: #93d271;
+  --color-warm: #f0866c;
+  --border-color: #3e496b;
+  --sidebar-active-bg: #2e4140;
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);

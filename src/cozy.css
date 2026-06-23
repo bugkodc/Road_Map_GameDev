@@ -1,0 +1,331 @@
+/* ============================================================
+   COZY FARM SKIN  — layered over index.css / workspace.css
+   Reskins the whole app into the "GameDev Roadmap — Cozy Farm"
+   look while reusing the existing theme tokens (day = light,
+   night = dark). Loaded last so it wins on shared selectors.
+   ============================================================ */
+
+:root {
+  --cozy-radius: 18px;
+  --cozy-radius-sm: 12px;
+  --t-foundation: var(--foundation);
+  --t-unity: var(--unity);
+  --t-unreal: var(--unreal);
+  --t-resources: var(--resources);
+}
+
+/* ---- soft farm backdrop ---- */
+body {
+  background-color: var(--bg-primary);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(135% 60% at 50% -8%, color-mix(in oklab, var(--color-accent) 16%, transparent) 0%, transparent 58%),
+    radial-gradient(100% 40% at 100% 0%, color-mix(in oklab, var(--unity) 12%, transparent) 0%, transparent 55%);
+}
+
+/* ---- chunky rounded buttons ---- */
+.btn-primary {
+  border-radius: var(--cozy-radius-sm);
+  padding: 11px 22px;
+  font-weight: 600;
+  border: 2px solid color-mix(in oklab, var(--color-accent) 64%, #000 26%);
+  box-shadow: 0 4px 0 -1px color-mix(in oklab, var(--color-accent) 55%, #000 30%);
+  transition: transform 0.14s ease, background-color 0.18s ease, box-shadow 0.14s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-accent-hover);
+}
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 -1px color-mix(in oklab, var(--color-accent) 55%, #000 30%);
+}
+.btn-secondary {
+  border-radius: var(--cozy-radius-sm) !important;
+  border-width: 2px !important;
+  font-weight: 600;
+  box-shadow: 0 4px 0 -1px var(--border-color);
+  transition: transform 0.14s ease, border-color 0.18s ease;
+}
+.btn-secondary:hover { transform: translateY(-2px); border-color: var(--color-accent) !important; }
+
+/* ---- rounded surfaces & inputs ---- */
+.track-card,
+.workspace-summary,
+.roadmap-hero,
+.stage-content,
+.placeholder-container,
+.pdf-viewer-container,
+.pdf-not-found-card,
+.search-results-dropdown,
+.reader-error,
+.article-completion-box,
+.roadmap-next {
+  border-radius: var(--cozy-radius) !important;
+  border-width: 2px !important;
+}
+.icon-button,
+.theme-toggle,
+.language-toggle,
+.stage-index,
+.roadmap-track-tabs a,
+.track-switch,
+.placeholder-badge,
+.search-result-link {
+  border-radius: var(--cozy-radius-sm) !important;
+}
+.header-search-button,
+.search-input-wrapper,
+.progress-track,
+.progress-fill,
+.global-progress .progress-track {
+  border-radius: 999px !important;
+}
+.search-input-wrapper { border-width: 2px !important; }
+.sidebar-link,
+.sidebar-group-title { border-radius: 10px; }
+
+/* ---- header / sidebar warmth ---- */
+.site-header { border-bottom: 2px solid var(--border-color); }
+.sidebar-nav { border-right: 2px solid var(--border-color); }
+.logo-mark,
+.brand-logo {
+  background: linear-gradient(160deg, var(--color-accent), var(--color-accent-hover)) !important;
+  border-radius: var(--cozy-radius-sm) !important;
+  color: #fff !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+.header-logo,
+.brand-info h3 { font-family: var(--font-heading); }
+
+/* ---- progress bars become little vines ---- */
+.progress-track { background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.progress-fill { background: linear-gradient(90deg, var(--color-accent-hover), var(--color-accent)); }
+
+/* ---- markdown reading polish ---- */
+.markdown-body pre { border-radius: var(--cozy-radius-sm); border-width: 2px; }
+.markdown-body code { border-radius: 7px; }
+.markdown-body blockquote { border-radius: 0 var(--cozy-radius-sm) var(--cozy-radius-sm) 0; }
+.markdown-body table { border-radius: var(--cozy-radius-sm); overflow: hidden; }
+
+/* ============================================================
+   LANDING PAGE — cozy farm home
+   ============================================================ */
+.cozy-home { display: flex; flex-direction: column; gap: 30px; padding-top: 8px; }
+
+/* hero */
+.cozy-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 26px;
+  padding: 40px clamp(22px, 4vw, 52px);
+  box-shadow: var(--shadow-lg);
+}
+.cozy-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(var(--border-color) 1.4px, transparent 1.5px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(120deg, transparent 55%, #000 100%);
+  mask-image: linear-gradient(120deg, transparent 55%, #000 100%);
+}
+.cozy-sun {
+  position: absolute;
+  top: -34px;
+  right: -26px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #ffe49b 0%, #f6c044 58%, #eaa42b 100%);
+  box-shadow: 0 0 0 14px color-mix(in oklab, #f6c044 22%, transparent), 0 0 60px color-mix(in oklab, #f6c044 45%, transparent);
+}
+[data-theme='dark'] .cozy-sun {
+  background: radial-gradient(circle at 42% 40%, #fff7da 0%, #f6d873 58%, #d9b24e 100%);
+}
+.cozy-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-accent) 16%, var(--bg-card));
+  border: 2px solid color-mix(in oklab, var(--color-accent) 42%, var(--border-color));
+  color: var(--color-accent-hover);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+[data-theme='dark'] .cozy-badge { color: var(--color-accent); }
+.cozy-badge .pix { font-family: var(--font-pixel); font-size: 0.5rem; }
+.cozy-hero h1 {
+  position: relative;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.5px;
+  margin: 18px 0 0;
+  max-width: 17ch;
+  color: var(--text-primary);
+}
+.cozy-hero h1 .leaf { color: var(--color-accent-hover); }
+[data-theme='dark'] .cozy-hero h1 .leaf { color: var(--color-accent); }
+.cozy-lead {
+  position: relative;
+  margin: 16px 0 0;
+  max-width: 52ch;
+  font-size: 1.04rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.cozy-chips { position: relative; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.cozy-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+}
+.cozy-chip b { font-family: var(--font-heading); font-weight: 700; font-size: 1.15rem; color: var(--text-primary); }
+.cozy-chip span { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+.cozy-cta { position: relative; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.cozy-cta .btn-primary,
+.cozy-cta .btn-secondary { height: 50px; align-items: center; gap: 9px; font-size: 1rem; }
+
+.cozy-search { max-width: 760px; width: 100%; }
+
+/* trail / track cards */
+.cozy-sec-title { text-align: center; margin-bottom: 6px; }
+.cozy-sec-title .eyebrow {
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.56rem;
+  color: var(--color-accent-hover);
+  letter-spacing: 1px;
+}
+[data-theme='dark'] .cozy-sec-title .eyebrow { color: var(--color-accent); }
+.cozy-sec-title h2 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(1.6rem, 3.4vw, 2.3rem); margin-top: 10px; }
+.cozy-sec-title p { margin-top: 6px; font-weight: 600; color: var(--text-secondary); }
+
+.cozy-tracks {
+  position: relative;
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.cozy-tracks::before {
+  content: "";
+  position: absolute;
+  top: 36px;
+  left: 8%;
+  right: 8%;
+  height: 4px;
+  z-index: 0;
+  background-image: linear-gradient(90deg, var(--border-color) 0 14px, transparent 14px 26px);
+  background-size: 26px 4px;
+  border-radius: 4px;
+}
+.cozy-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--cozy-radius);
+  padding: 0 16px 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  --c: var(--color-accent);
+}
+.cozy-card.track-foundation { --c: var(--foundation); }
+.cozy-card.track-unity { --c: var(--unity); }
+.cozy-card.track-unreal { --c: var(--unreal); }
+.cozy-card.track-resources { --c: var(--resources); }
+.cozy-card:hover { transform: translateY(-4px); border-color: var(--c); }
+.cozy-node {
+  width: 56px;
+  height: 56px;
+  margin: -28px auto 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bg-card);
+  border: 3px solid var(--c);
+  color: var(--c);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+.cozy-crop {
+  height: 66px;
+  margin: 14px 0 0;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  background: color-mix(in oklab, var(--c) 13%, var(--bg-card));
+  border: 2px dashed color-mix(in oklab, var(--c) 40%, var(--border-color));
+}
+.cozy-card h3 { font-family: var(--font-heading); font-weight: 600; font-size: 1.3rem; margin: 14px 0 0; color: var(--text-primary); }
+.cozy-card .desc { margin: 6px 0 0; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); flex: 1; }
+.cozy-growth { margin-top: 14px; }
+.cozy-growth-top { display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 0.76rem; }
+.cozy-growth-top .stage { color: var(--c); display: inline-flex; align-items: center; gap: 5px; }
+.cozy-growth-top .pct { font-family: var(--font-heading); color: var(--text-primary); }
+.cozy-card .ptrack { margin-top: 7px; height: 10px; border-radius: 999px; background: var(--bg-secondary); border: 2px solid var(--border-color); overflow: hidden; }
+.cozy-card .pfill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklab, var(--c) 70%, #fff) 0%, var(--c) 100%); }
+.cozy-go {
+  margin-top: 14px;
+  padding-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px dashed var(--border-color);
+}
+.cozy-go .start { font-family: var(--font-heading); font-weight: 600; font-size: 0.92rem; color: var(--text-primary); display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
+.cozy-card:hover .cozy-go .start { color: var(--c); }
+.cozy-go .meta { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); }
+
+/* sources */
+.cozy-sources {
+  margin-top: 10px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--cozy-radius);
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+.cozy-sources .lab { font-family: var(--font-heading); font-weight: 600; color: var(--text-primary); display: inline-flex; align-items: center; gap: 9px; }
+.cozy-sources .lab svg { color: var(--color-accent-hover); }
+.cozy-sources .src { font-weight: 700; font-size: 0.84rem; color: var(--text-secondary); }
+.cozy-sources .sep { color: var(--border-color); font-weight: 800; }
+
+@media (max-width: 920px) {
+  .cozy-tracks { grid-template-columns: repeat(2, 1fr); gap: 30px 18px; }
+  .cozy-tracks::before { display: none; }
+}
+@media (max-width: 540px) {
+  .cozy-tracks { grid-template-columns: 1fr; }
+  .cozy-hero { padding: 30px 20px; }
+}
